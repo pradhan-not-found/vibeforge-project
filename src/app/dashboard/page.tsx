@@ -2,7 +2,7 @@ export default function DashboardOverview() {
   return (
     <div className="flex flex-col gap-8 max-w-5xl">
       <div>
-        <h1 className="text-2xl font-[550] tracking-[-0.03em] mb-1 text-ink">Dashboard Overview</h1>
+        <h1 className="text-3xl font-[550] tracking-tight mb-2 text-ink" style={{ fontFamily: "var(--font-geist-pixel-grid, monospace)", fontWeight: "bold" }}>Dashboard Overview</h1>
         <p className="text-[14px] text-ink-muted">Monitor your autonomous agent activity and firewall interventions.</p>
       </div>
 
@@ -30,7 +30,7 @@ export default function DashboardOverview() {
       </div>
 
       <div>
-        <h2 className="text-lg font-[550] tracking-[-0.02em] mb-4 text-ink">Recent Interventions (Human-in-the-Loop)</h2>
+        <h2 className="text-xl font-[550] tracking-tight mb-4 text-ink" style={{ fontFamily: "var(--font-geist-pixel-grid, monospace)", fontWeight: "bold" }}>Recent Interventions (Human-in-the-Loop)</h2>
         <div className="bg-white rounded-2xl border border-border-card overflow-hidden">
           <table className="w-full text-left border-collapse">
             <thead>
