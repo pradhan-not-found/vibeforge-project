@@ -2,12 +2,43 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { auth } from '@/lib/firebase';
+import { GoogleAuthProvider, GithubAuthProvider, signInWithPopup } from 'firebase/auth';
 
 /* ──────────────────────────────────────────────────────────
    Auth Panel (shared between desktop right + mobile bottom)
 ────────────────────────────────────────────────────────── */
 function AuthPanel({ defaultTab }: { defaultTab: 'signin' | 'signup' }) {
   const [activeTab, setActiveTab] = useState<'signin' | 'signup'>(defaultTab);
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+
+  const handleGoogleAuth = async () => {
+    try {
+      setLoading(true);
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider);
+      router.push('/dashboard');
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGithubAuth = async () => {
+    try {
+      setLoading(true);
+      const provider = new GithubAuthProvider();
+      await signInWithPopup(auth, provider);
+      router.push('/dashboard');
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="flex flex-col items-center w-full px-6">
@@ -58,13 +89,21 @@ function AuthPanel({ defaultTab }: { defaultTab: 'signin' | 'signup' }) {
       {/* Buttons */}
       <div className="flex flex-col gap-[10px] w-full max-w-[380px]">
         {/* Google */}
-        <button className="cta-btn-dark flex items-center justify-center w-full gap-[10px] px-[16px] py-[10px] rounded-[8px] text-[14px] font-[500] text-on-dark hover:opacity-90 transition-opacity">
+        <button 
+          onClick={handleGoogleAuth}
+          disabled={loading}
+          className="cta-btn-dark flex items-center justify-center w-full gap-[10px] px-[16px] py-[10px] rounded-[8px] text-[14px] font-[500] text-on-dark hover:opacity-90 transition-opacity disabled:opacity-50"
+        >
           <GoogleIcon />
           {activeTab === 'signup' ? 'Sign up' : 'Sign in'} with Google
         </button>
 
         {/* GitHub */}
-        <button className="cta-btn-dark flex items-center justify-center w-full gap-[10px] px-[16px] py-[10px] rounded-[8px] text-[14px] font-[500] text-on-dark hover:opacity-90 transition-opacity">
+        <button 
+          onClick={handleGithubAuth}
+          disabled={loading}
+          className="cta-btn-dark flex items-center justify-center w-full gap-[10px] px-[16px] py-[10px] rounded-[8px] text-[14px] font-[500] text-on-dark hover:opacity-90 transition-opacity disabled:opacity-50"
+        >
           <GitHubIcon />
           {activeTab === 'signup' ? 'Sign up' : 'Sign in'} with GitHub
         </button>
