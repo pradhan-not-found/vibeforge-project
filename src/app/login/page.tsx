@@ -58,13 +58,13 @@ function AuthPanel({ defaultTab }: { defaultTab: 'signin' | 'signup' }) {
       {/* Buttons */}
       <div className="flex flex-col gap-[10px] w-full max-w-[380px]">
         {/* Google */}
-        <button className="dark-pill-btn" style={darkPillStyle}>
+        <button className="cta-btn-dark flex items-center justify-center w-full gap-[10px] px-[16px] py-[10px] rounded-[8px] text-[14px] font-[500] text-on-dark hover:opacity-90 transition-opacity">
           <GoogleIcon />
           {activeTab === 'signup' ? 'Sign up' : 'Sign in'} with Google
         </button>
 
         {/* GitHub */}
-        <button className="dark-pill-btn" style={darkPillStyle}>
+        <button className="cta-btn-dark flex items-center justify-center w-full gap-[10px] px-[16px] py-[10px] rounded-[8px] text-[14px] font-[500] text-on-dark hover:opacity-90 transition-opacity">
           <GitHubIcon />
           {activeTab === 'signup' ? 'Sign up' : 'Sign in'} with GitHub
         </button>
@@ -77,7 +77,7 @@ function AuthPanel({ defaultTab }: { defaultTab: 'signin' | 'signup' }) {
         </div>
 
         {/* School email */}
-        <button className="dark-pill-btn" style={darkPillStyle}>
+        <button className="cta-btn-dark flex items-center justify-center w-full gap-[10px] px-[16px] py-[10px] rounded-[8px] text-[14px] font-[500] text-on-dark hover:opacity-90 transition-opacity">
           <EmailIcon />
           Continue with school email
         </button>
@@ -255,7 +255,7 @@ function FooterText({ light = false }: { light?: boolean }) {
       <svg width="12" height="12" viewBox="0 0 24 24" fill="#c0605a" xmlns="http://www.w3.org/2000/svg" style={{ display: 'inline', flexShrink: 0, marginBottom: '-1px' }} aria-label="love">
         <path d="M12 21.593c-5.63-5.539-11-10.297-11-14.402 0-3.791 3.068-5.191 5.281-5.191 1.312 0 4.151.501 5.719 4.457 1.59-3.968 4.464-4.447 5.726-4.447 2.54 0 5.274 1.621 5.274 5.181 0 4.069-5.136 8.625-11 14.402z"/>
       </svg>
-      <span>for devs by devs.</span>
+      <span>by Fantastic 4</span>
     </p>
   );
 }
