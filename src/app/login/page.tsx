@@ -20,8 +20,9 @@ function AuthPanel({ defaultTab }: { defaultTab: 'signin' | 'signup' }) {
       const provider = new GoogleAuthProvider();
       await signInWithPopup(auth, provider);
       router.push('/dashboard');
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
+      alert('Google Auth Error: ' + (error.message || 'Unknown error. Have you enabled Google Sign-in in your Firebase Console?'));
     } finally {
       setLoading(false);
     }

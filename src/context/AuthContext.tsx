@@ -1,7 +1,7 @@
 "use client";
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { auth } from '@/lib/firebase';
-import { onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut as firebaseSignOut, updateProfile } from 'firebase/auth';
+import { onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut as firebaseSignOut, updateProfile, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 
 type User = {
   id: string;
@@ -14,6 +14,7 @@ type AuthContextType = {
   user: User | null;
   loading: boolean;
   signIn: (email: string, password?: string) => Promise<void>;
+  signInWithGoogle: () => Promise<void>;
   signUp: (email: string, password?: string, company?: string, name?: string) => Promise<void>;
   signOut: () => Promise<void>;
   updateUser: (data: Partial<User>) => void;
@@ -47,6 +48,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await signInWithEmailAndPassword(auth, email, password || 'default_hackathon_password');
   };
 
+  const signInWithGoogle = async () => {
+    const provider = new GoogleAuthProvider();
+    await signInWithPopup(auth, provider);
+  };
+
   const signUp = async (email: string, password?: string, company?: string, name?: string) => {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password || 'default_hackathon_password');
     if (name) {
@@ -65,7 +71,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, signIn, signUp, signOut, updateUser }}>
+    <AuthContext.Provider value={{ user, loading, signIn, signInWithGoogle, signUp, signOut, updateUser }}>
       {children}
     </AuthContext.Provider>
   );

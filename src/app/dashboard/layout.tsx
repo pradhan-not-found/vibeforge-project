@@ -73,9 +73,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         />
       )}
 
-      {/* Sidebar - Always visible */}
-      <aside className="relative w-64 h-full shrink-0 border-r border-[var(--app-hairline)] bg-[var(--app-canvas)] flex flex-col z-20">
-        <div className="py-5 px-6 border-b border-[var(--app-hairline)] mb-4">
+      {/* Sidebar */}
+      <aside className={`fixed inset-y-0 left-0 z-50 w-64 transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 transition-transform duration-200 ease-in-out border-r border-[var(--app-hairline)] bg-[var(--app-canvas)] flex flex-col z-20`}>
+        <div className="py-5 px-6 border-b border-[var(--app-hairline)] mb-4 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="flex flex-col leading-[1.1]">
               <span
@@ -87,11 +87,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               >
                 Checkpost
               </span>
-              <span className="text-[11px] text-[var(--app-muted)] tracking-tighter font-medium mt-1 uppercase">
-                AI Agent Firewall
-              </span>
             </div>
           </div>
+          <button className="md:hidden text-[var(--app-muted)]" onClick={() => setSidebarOpen(false)}>
+            <X className="size-5" />
+          </button>
         </div>
 
         <div className="flex-1 overflow-y-auto px-4 gap-5 flex flex-col">
