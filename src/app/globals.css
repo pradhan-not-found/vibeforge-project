@@ -1,4 +1,4 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
 
 :root {
   --background: #ffffff;
@@ -84,4 +84,23 @@ hover-tilt::part(tilt)::before{border-radius:20px}html{scrollbar-gutter:stable}
 }
 ::-webkit-scrollbar-thumb:hover {
   background-color: rgba(38, 35, 35, 0.3);
+}
+
+/* Footer pixel grass */
+.pixel-bg-footer:before {
+  content: "";
+  pointer-events: none;
+  z-index: 1;
+  background-image: url(/decor/hero-pixels.png);
+  background-repeat: repeat-x;
+  background-size: 1440px 92px;
+  background-position: bottom;
+  width: 100%;
+  height: 92px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+@media (max-width: 1400px) {
+  .pixel-bg-footer:before { background-size: cover; }
 }
