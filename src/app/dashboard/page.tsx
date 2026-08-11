@@ -46,7 +46,7 @@ export default function DashboardOverview() {
   ];
 
   return (
-    <div className="flex flex-col gap-6 w-full" style={{ fontFamily: 'var(--font-tt-neoris, sans-serif)' }}>
+    <div className="flex flex-col gap-6 w-full" style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
@@ -69,62 +69,66 @@ export default function DashboardOverview() {
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {[
           { 
             label: 'TOTAL REQUESTS', 
             value: '1,918', 
             subtext: 'No active sessions', 
             icon: MessageSquare,
-            sparkline: "M0 20 L20 20 L30 20 L40 20 L50 20 L60 20 L70 20 L80 18 L90 20 L100 20 L110 5 L120 20 L130 20 L140 20 L150 20 L160 20"
+            sparkline: "M 0.0 32.0 L 13.3 32.0 L 26.7 32.0 L 40.0 32.0 L 53.3 32.0 L 66.7 32.0 L 80.0 32.0 L 93.3 28.8 L 106.7 32.0 L 120.0 32.0 L 133.3 8.0 L 146.7 32.0 L 160.0 32.0 L 173.3 32.0 L 186.7 32.0 L 200.0 32.0"
           },
           { 
             label: 'TOTAL TOKENS', 
             value: '12028.3k', 
             subtext: 'Input + output combined', 
             icon: Cpu,
-            sparkline: "M0 20 L20 20 L40 20 L60 20 L80 20 L100 20 L110 20 L120 4 L130 20 L140 20 L150 20 L160 20"
+            sparkline: "M 0.0 32.0 L 18.2 32.0 L 36.4 32.0 L 54.5 32.0 L 72.7 32.0 L 90.9 32.0 L 109.1 32.0 L 127.3 6.4 L 145.5 32.0 L 163.6 32.0 L 181.8 32.0 L 200.0 32.0"
           },
           { 
             label: 'ESTIMATED COST', 
             value: '$5.08', 
             subtext: 'Based on model pricing', 
             icon: TrendingUp,
-            sparkline: "M0 20 L20 20 L30 20 L40 18 L50 19 L60 17 L70 19 L80 18 L90 20 L100 20 L110 8 L120 20 L130 20 L140 20 L150 20 L160 20"
+            sparkline: "M 0.0 32.0 L 13.3 32.0 L 26.7 32.0 L 40.0 28.8 L 53.3 30.4 L 66.7 27.2 L 80.0 30.4 L 93.3 28.8 L 106.7 32.0 L 120.0 32.0 L 133.3 12.8 L 146.7 32.0 L 160.0 32.0 L 173.3 32.0 L 186.7 32.0 L 200.0 32.0"
           },
           { 
             label: 'ACTIVE PROVIDERS', 
             value: '8', 
             subtext: 'Top: claude-sonnet-4-6', 
             icon: Zap,
-            sparkline: "M0 20 L20 20 L30 20 L40 20 L50 20 L60 20 L70 20 L80 20 L90 20 L100 20 L110 20 L120 20 L130 20 L140 20 L150 20 L160 20"
+            sparkline: ""
           }
         ].map((stat, i) => (
-          <div key={i} className="bg-white p-5 rounded-[16px] border border-[#E5E5E5] shadow-[0_2px_12px_rgba(0,0,0,0.02)] flex flex-col relative overflow-hidden h-[160px]">
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-[11px] font-semibold text-[rgba(38,35,35,0.4)] uppercase tracking-wider">{stat.label}</span>
-              <stat.icon className="w-[14px] h-[14px] text-[rgba(38,35,35,0.4)]" />
+          <div key={i} className="bg-white p-4 sm:p-5 rounded-[16px] border border-[#E5E5E5] shadow-[0_2px_12px_rgba(0,0,0,0.02)] flex flex-col relative overflow-hidden">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-[10px] sm:text-xs font-semibold text-[rgba(38,35,35,0.4)] uppercase tracking-wide">{stat.label}</span>
+              <span className="inline-flex items-center justify-center size-7 text-[rgba(38,35,35,0.5)]">
+                <stat.icon className="size-4" />
+              </span>
             </div>
             
-            <div className="flex flex-col">
-              <span className="text-[28px] font-medium text-[#1A1A1A] leading-none mb-1" style={{ fontFamily: 'var(--font-geist-pixel-grid, monospace)' }}>{stat.value}</span>
-              <span className="text-[11.5px] font-medium text-[rgba(38,35,35,0.5)]">{stat.subtext}</span>
+            <div className="text-2xl sm:text-3xl font-medium text-[#1A1A1A] tracking-tight tabular-nums" style={{ fontFamily: 'var(--font-geist-pixel-grid, monospace)' }}>
+              {stat.value}
             </div>
+            <p className="text-[10px] sm:text-xs text-[rgba(38,35,35,0.5)] mt-1 truncate font-medium">{stat.subtext}</p>
 
-            {/* Sparkline */}
-            <div className="absolute bottom-4 left-5 right-5 h-6">
-              <svg width="100%" height="100%" viewBox="0 0 160 24" preserveAspectRatio="none" className="overflow-visible">
-                <path 
-                  d={stat.sparkline} 
-                  fill="none" 
-                  stroke="#1A1A1A" 
-                  strokeWidth="1.5" 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round" 
-                  vectorEffect="non-scaling-stroke"
-                />
-              </svg>
-            </div>
+            {/* Sparkline exactly like Trace MiniSparkline */}
+            {stat.sparkline && (
+              <div className="mt-3 pt-3 border-t border-[#E5E5E5]">
+                <svg width="100%" height={32} viewBox="0 0 200 32" preserveAspectRatio="none" className="overflow-visible">
+                  <path 
+                    d={stat.sparkline} 
+                    fill="none" 
+                    stroke="#1A1A1A" 
+                    strokeWidth="2" 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round" 
+                    vectorEffect="non-scaling-stroke"
+                  />
+                </svg>
+              </div>
+            )}
           </div>
         ))}
       </div>
