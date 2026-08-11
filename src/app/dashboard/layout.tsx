@@ -74,22 +74,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       )}
 
       {/* Sidebar */}
-      <aside className={`fixed inset-y-0 left-0 z-50 w-64 transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 transition-transform duration-200 ease-in-out border-r border-[var(--app-hairline)] bg-[var(--app-canvas)] flex flex-col z-20`}>
+      <aside className={`fixed inset-y-0 left-0 z-50 w-64 transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:relative lg:translate-x-0 transition-transform duration-200 ease-in-out border-r border-[var(--app-hairline)] bg-[var(--app-canvas)] flex flex-col z-20`}>
         <div className="py-5 px-6 border-b border-[var(--app-hairline)] mb-4 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="flex flex-col leading-[1.1]">
               <span
-                className="text-[26px] text-[var(--app-ink)] tracking-tight"
-                style={{
-                  fontFamily: "var(--font-geist-pixel-grid, monospace)",
-                  fontWeight: "bold",
-                }}
+                className="text-[26px] text-[var(--app-ink)] tracking-tight font-serif font-bold"
               >
                 Checkpost
               </span>
             </div>
           </div>
-          <button className="md:hidden text-[var(--app-muted)]" onClick={() => setSidebarOpen(false)}>
+          <button className="lg:hidden text-[var(--app-muted)] p-1 hover:bg-[var(--app-soft)] rounded-md transition-colors" onClick={() => setSidebarOpen(false)}>
             <X className="size-5" />
           </button>
         </div>
