@@ -160,13 +160,12 @@ function DesktopLeftContent() {
       <div className="max-w-[420px] text-center">
         <h2 className="text-white text-[26px] font-medium leading-[1.2] tracking-[0.15px] mb-4"
           style={{ fontFamily: 'var(--font-tt-neoris, sans-serif)', textShadow: '0 1px 6px rgba(0,0,0,0.2)' }}>
-          A full roadmap tailored<br />to your company
+          Enterprise-grade WAF<br />for AI Agents
         </h2>
         <p className="text-white/80 text-[14px] font-medium leading-[1.5] tracking-[0.14px]"
           style={{ fontFamily: 'var(--font-tt-neoris, sans-serif)', textShadow: '0 1px 4px rgba(0,0,0,0.15)' }}>
-          When you start a company, it&apos;s hard to know what&apos;s next.
-          Cofounder guides you through every step to get a real business
-          started, and kicks off agents at each milestone as you build.
+          Monitor your autonomous agent activity and firewall interventions.
+          Checkpost protects your systems by enforcing policies, intercepting destructive actions, and preventing infinite loops.
         </p>
       </div>
 
@@ -289,10 +288,10 @@ export default function Signup() {
           <div className="flex-1 flex flex-col items-center justify-center">
             {/* Logo */}
             <h1 style={{ fontFamily: 'var(--font-geist-pixel-grid), monospace', fontSize: '32px', fontWeight: 500, color: '#1A1A1A', marginBottom: '6px', letterSpacing: '0.02em' }}>
-              Cofounder
+              Checkpost
             </h1>
             <p style={{ fontSize: '16px', color: 'rgba(38,35,35,0.5)', fontWeight: 430, marginBottom: '36px', letterSpacing: '0.15px' }}>
-              Let&apos;s build your company.
+              Let&apos;s secure your agents.
             </p>
             <AuthPanel defaultTab="signin" />
           </div>
@@ -329,11 +328,11 @@ export default function Signup() {
               boxShadow: '0 2px 12px rgba(0,0,0,0.13), 0 0 0 1px rgba(255,255,255,0.5) inset',
             }}>
               <span style={{ fontFamily: 'var(--font-geist-pixel-grid), monospace', fontSize: '26px', fontWeight: 500, color: '#1A1A1A', letterSpacing: '0.02em', lineHeight: 1.2 }}>
-                Cofounder
+                Checkpost
               </span>
             </div>
             <p style={{ color: 'rgba(255,255,255,0.92)', fontSize: '14px', fontWeight: 460, letterSpacing: '0.14px', textShadow: '0 1px 6px rgba(0,0,0,0.25)', margin: 0 }}>
-              Run an entire company with agents.
+              Enterprise-grade WAF for AI Agents.
             </p>
           </div>
         </div>
