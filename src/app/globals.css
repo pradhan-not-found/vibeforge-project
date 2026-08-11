@@ -1,8 +1,5 @@
 @import "tailwindcss";
-@import url("https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&display=swap");
-
 :root {
-  --font-eb-garamond: "EB Garamond", Georgia, serif;
   --background: #ffffff;
   --foreground: #171717;
 }
@@ -16,7 +13,6 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-  --font-eb-garamond: "EB Garamond", Georgia, serif;
     --background: #0a0a0a;
     --foreground: #ededed;
   }
@@ -55,7 +51,6 @@ body {
   font-display: swap;
 }
 :root {
-  --font-eb-garamond: "EB Garamond", Georgia, serif;
   --font-neoris: 'TT Neoris Variable', sans-serif;
   --font-departure: 'Departure Mono', monospace;
 }
