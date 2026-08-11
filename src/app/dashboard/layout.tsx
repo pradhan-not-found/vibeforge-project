@@ -56,10 +56,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           email: currentUser.email || 'admin@checkpost.app',
           avatar: currentUser.photoURL || null
         });
+      } else {
+        router.push('/login');
       }
     });
     return () => unsubscribe();
-  }, []);
+  }, [router]);
 
   const gradientClass = "from-cyan-500/[0.06] via-transparent to-blue-500/[0.05] dark:from-cyan-900/10 dark:to-blue-950/10";
 

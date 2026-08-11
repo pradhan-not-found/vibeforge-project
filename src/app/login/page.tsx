@@ -41,6 +41,15 @@ function AuthPanel({ defaultTab }: { defaultTab: 'signin' | 'signup' }) {
     }
   };
 
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        router.push('/dashboard');
+      }
+    });
+    return () => unsubscribe();
+  }, [router]);
+
   return (
     <div className="flex flex-col items-center w-full px-6">
       {/* Tab Toggle */}
@@ -93,7 +102,7 @@ function AuthPanel({ defaultTab }: { defaultTab: 'signin' | 'signup' }) {
         <button 
           onClick={handleGoogleAuth}
           disabled={loading}
-          className="cta-btn-dark flex items-center justify-center w-full gap-[10px] px-[16px] py-[10px] rounded-[8px] text-[14px] font-[500] text-on-dark hover:opacity-90 transition-opacity disabled:opacity-50"
+          className="cta-btn-dark bg-black !text-white flex items-center justify-center w-full gap-[10px] px-[16px] py-[10px] rounded-[8px] text-[14px] font-[500] hover:opacity-90 transition-opacity disabled:opacity-50"
         >
           <GoogleIcon />
           {activeTab === 'signup' ? 'Sign up' : 'Sign in'} with Google
@@ -103,7 +112,7 @@ function AuthPanel({ defaultTab }: { defaultTab: 'signin' | 'signup' }) {
         <button 
           onClick={handleGithubAuth}
           disabled={loading}
-          className="cta-btn-dark flex items-center justify-center w-full gap-[10px] px-[16px] py-[10px] rounded-[8px] text-[14px] font-[500] text-on-dark hover:opacity-90 transition-opacity disabled:opacity-50"
+          className="cta-btn-dark bg-black !text-white flex items-center justify-center w-full gap-[10px] px-[16px] py-[10px] rounded-[8px] text-[14px] font-[500] hover:opacity-90 transition-opacity disabled:opacity-50"
         >
           <GitHubIcon />
           {activeTab === 'signup' ? 'Sign up' : 'Sign in'} with GitHub
@@ -117,7 +126,7 @@ function AuthPanel({ defaultTab }: { defaultTab: 'signin' | 'signup' }) {
         </div>
 
         {/* School email */}
-        <button className="cta-btn-dark flex items-center justify-center w-full gap-[10px] px-[16px] py-[10px] rounded-[8px] text-[14px] font-[500] text-on-dark hover:opacity-90 transition-opacity">
+        <button className="cta-btn-dark bg-black !text-white flex items-center justify-center w-full gap-[10px] px-[16px] py-[10px] rounded-[8px] text-[14px] font-[500] hover:opacity-90 transition-opacity">
           <EmailIcon />
           Continue with school email
         </button>
