@@ -1,17 +1,41 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ReactNode, useState, useEffect } from 'react';
+import { LayoutDashboard, Shield, ShieldAlert, BookOpen, Settings, Menu, X } from 'lucide-react';
 import { auth } from '@/lib/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
-import { LayoutDashboard, Shield, Bot, Settings, UserCircle, LogOut } from 'lucide-react';
 
-export default function DashboardLayout({ children }: { children: ReactNode }) {
+const navSections = [
+  {
+    label: "Monitoring",
+    items: [
+      { title: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
+      { title: "Audit Logs", path: "/dashboard/logs", icon: BookOpen },
+    ],
+  },
+  {
+    label: "Security",
+    items: [
+      { title: "Policies", path: "/dashboard/policies", icon: Shield },
+      { title: "Threats", path: "/dashboard/threats", icon: ShieldAlert },
+    ],
+  },
+  {
+    label: "System",
+    items: [
+      { title: "Settings", path: "/dashboard/settings", icon: Settings },
+    ],
+  },
+];
+
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [user, setUser] = useState<{name: string, email: string, avatar: string | null}>({
-    name: 'John Doe',
-    email: 'john@acmecorp.com',
+    name: 'Admin User',
+    email: 'admin@checkpost.app',
     avatar: null
   });
 
@@ -19,8 +43,8 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
         setUser({
-          name: currentUser.displayName || 'User',
-          email: currentUser.email || 'user@example.com',
+          name: currentUser.displayName || 'Admin User',
+          email: currentUser.email || 'admin@checkpost.app',
           avatar: currentUser.photoURL || null
         });
       }
@@ -28,85 +52,116 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     return () => unsubscribe();
   }, []);
 
-  const getInitials = (name: string) => {
-    return name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
-  };
-
-  const navItems = [
-    { name: 'Overview', href: '/dashboard', icon: LayoutDashboard },
-    { name: 'Agents', href: '/dashboard/agents', icon: Bot },
-    { name: 'Policies Engine', href: '/dashboard/policies', icon: Shield },
-  ];
+  const gradientClass = "from-cyan-500/[0.06] via-transparent to-blue-500/[0.05] dark:from-cyan-900/10 dark:to-blue-950/10";
 
   return (
-    <div className="h-screen flex bg-[#FDFDFB] text-[#1A1A1A] antialiased overflow-hidden" style={{ fontFamily: 'var(--font-tt-neoris, sans-serif)' }}>
+    <div className="flex h-screen bg-[var(--app-canvas)] text-[var(--app-ink)] antialiased overflow-hidden" style={{ fontFamily: 'Helvetica, sans-serif' }}>
       
-      {/* Sidebar */}
-      <aside className="w-[260px] flex flex-col justify-between shrink-0 bg-[#FDFDFB] border-r border-[#E5E5E5] z-20">
-        
-        {/* Top Section */}
-        <div className="flex flex-col gap-4 p-4">
-          <div className="px-2 py-4">
-            <Link href="/" className="inline-flex items-center gap-2">
-              <span className="text-[#1A1A1A]" style={{ fontFamily: "var(--font-geist-pixel-grid, monospace)", fontWeight: "bold", fontSize: "1.25rem" }}>Checkpost</span>
-            </Link>
-          </div>
+      {/* Mobile Backdrop */}
+      {sidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
 
-          <nav className="flex flex-col gap-1">
-            {navItems.map((item) => {
-              const isActive = pathname === item.href;
-              return (
-                <Link 
-                  key={item.href} 
-                  href={item.href} 
-                  className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 ${
-                    isActive 
-                      ? 'bg-white shadow-[0_1px_3px_rgba(0,0,0,0.05)] border border-[#E5E5E5] text-[#1A1A1A] font-semibold' 
-                      : 'text-[rgba(38,35,35,0.6)] hover:bg-[rgba(0,0,0,0.04)] hover:text-[#1A1A1A] font-medium'
-                  }`}
-                >
-                  <item.icon className={`w-[18px] h-[18px] ${isActive ? 'text-[#1A1A1A]' : 'text-[rgba(38,35,35,0.5)]'}`} />
-                  <span className="text-[14px] tracking-tight">{item.name}</span>
-                </Link>
-              );
-            })}
-          </nav>
+      {/* Sidebar */}
+      <aside className={`fixed inset-y-0 left-0 z-50 w-64 transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:relative lg:translate-x-0 transition-transform duration-200 ease-in-out border-r border-[var(--app-hairline)] bg-[var(--app-canvas)] flex flex-col`}>
+        <div className="py-5 px-4">
+          <div className="flex items-center gap-2.5">
+            <div className="size-10 flex items-center justify-center bg-[var(--app-info)] text-white rounded-xl shrink-0">
+              <Shield className="size-5" />
+            </div>
+            
+            <div className="flex flex-col leading-[1.1]">
+              <span className="text-xl font-semibold tracking-tight text-[var(--app-ink)]">
+                Checkpost
+              </span>
+              <span className="text-xs text-[var(--app-muted)] tracking-tighter font-medium">
+                AI Agent Firewall
+              </span>
+            </div>
+            
+            <button className="ml-auto lg:hidden text-[var(--app-muted)]" onClick={() => setSidebarOpen(false)}>
+              <X className="size-5" />
+            </button>
+          </div>
         </div>
 
-        {/* Bottom Section */}
-        <div className="p-4 pb-6 flex flex-col gap-1 border-t border-[#E5E5E5]">
-          <Link 
-            href="/dashboard/profile" 
-            className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 ${
-              pathname === '/dashboard/profile'
-                ? 'bg-white shadow-[0_1px_3px_rgba(0,0,0,0.05)] border border-[#E5E5E5] text-[#1A1A1A] font-semibold' 
-                : 'text-[rgba(38,35,35,0.6)] hover:bg-[rgba(0,0,0,0.04)] hover:text-[#1A1A1A] font-medium'
-            }`}
-          >
-            {user.avatar ? (
-              <img src={user.avatar} alt={user.name} className="w-[22px] h-[22px] rounded-full object-cover shrink-0" />
-            ) : (
-              <UserCircle className="w-[18px] h-[18px]" />
-            )}
-            <span className="text-[14px] tracking-tight">Profile</span>
-          </Link>
-          <button 
-            className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[rgba(38,35,35,0.6)] hover:bg-[rgba(224,82,82,0.1)] hover:text-[#e05252] font-medium transition-all duration-200 text-left"
-            onClick={() => auth.signOut()}
-          >
-            <LogOut className="w-[18px] h-[18px]" />
-            <span className="text-[14px] tracking-tight">Log Out</span>
-          </button>
+        <div className="flex-1 overflow-y-auto px-4 gap-5 flex flex-col">
+          {navSections.map((section) => (
+            <div key={section.label} className="flex flex-col">
+              <span className="text-[10px] font-semibold tracking-wider text-[var(--app-muted)] px-2 py-1 mb-1">
+                {section.label}
+              </span>
+              <nav className="flex flex-col gap-0.5">
+                {section.items.map((item) => {
+                  const isActive = pathname === item.path || pathname.startsWith(item.path + '/');
+                  return (
+                    <Link 
+                      key={item.path} 
+                      href={item.path}
+                      onClick={() => setSidebarOpen(false)}
+                      className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-all font-medium tracking-tight ${
+                        isActive 
+                          ? 'bg-[var(--app-ink)] text-[var(--app-canvas)] hover:bg-[var(--app-ink)]' 
+                          : 'text-[var(--app-muted)] hover:bg-[var(--app-soft)] hover:text-[var(--app-ink)]'
+                      }`}
+                    >
+                      <item.icon className="size-4" />
+                      <span>{item.title}</span>
+                    </Link>
+                  );
+                })}
+              </nav>
+            </div>
+          ))}
+        </div>
+
+        <div className="p-4 pb-4 px-4">
+          <div className="group flex items-center gap-3 rounded-xl p-2.5 border border-[var(--app-hairline)] bg-[var(--app-soft)] w-full">
+            <div className="size-9 rounded-full bg-[var(--app-ink)] flex items-center justify-center shrink-0 overflow-hidden">
+              <span className="text-xs font-semibold text-[var(--app-canvas)]">
+                {user.name.substring(0, 2).toUpperCase()}
+              </span>
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-[var(--app-ink)] truncate">{user.name}</p>
+              <p className="text-[11px] text-[var(--app-muted)] truncate">{user.email}</p>
+            </div>
+          </div>
         </div>
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 relative flex flex-col min-h-0 overflow-y-auto bg-[#FDFDFB]">
-        <div className="p-6 sm:p-8 lg:p-10 max-w-[1200px] w-full mx-auto">
-          {children}
-        </div>
-      </main>
+      <div className="flex-1 flex flex-col relative w-full lg:w-[calc(100%-16rem)] h-screen overflow-hidden bg-[var(--app-canvas)]">
+        {/* Ambient accent backdrop tone */}
+        <div className={`absolute inset-0 bg-gradient-to-br ${gradientClass} pointer-events-none z-0`} />
+        {/* Fine noise texture overlay */}
+        <div className="absolute inset-0 opacity-[0.015] dark:opacity-[0.025] pointer-events-none z-0 mix-blend-overlay" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }} />
 
+        {/* Top bar */}
+        <header className="sticky top-0 z-30 flex h-14 shrink-0 items-center justify-between gap-2 border-b border-[var(--app-hairline)] bg-[var(--app-canvas)]/85 backdrop-blur-md px-3 sm:px-4">
+          <div className="flex items-center gap-2">
+            <button 
+              className="lg:hidden text-[var(--app-muted)] hover:text-[var(--app-ink)] p-1"
+              onClick={() => setSidebarOpen(true)}
+            >
+              <Menu className="size-5" />
+            </button>
+            <div className="lg:hidden flex items-center gap-2">
+              <div className="size-6 bg-[var(--app-info)] text-white rounded-md flex items-center justify-center">
+                <Shield className="size-3" />
+              </div>
+              <span className="text-base font-semibold text-[var(--app-ink)]">Checkpost</span>
+            </div>
+          </div>
+        </header>
+
+        <main className="flex-1 overflow-y-auto relative z-10 w-full min-h-[calc(100svh-3.5rem)]">
+          {children}
+        </main>
+      </div>
     </div>
   );
 }
