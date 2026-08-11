@@ -114,9 +114,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <div className="p-4 pb-4 px-4">
             <div className="group flex items-center gap-3 rounded-xl p-2.5 border border-[var(--app-hairline)] bg-[var(--app-soft)] w-full">
               <div className="size-9 rounded-full bg-[var(--app-ink)] flex items-center justify-center shrink-0 overflow-hidden">
-                <span className="text-xs font-semibold text-[var(--app-canvas)]">
-                  {user.name.substring(0, 2).toUpperCase()}
-                </span>
+                {user.avatar ? (
+                  <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-xs font-semibold text-[var(--app-canvas)]">
+                    {user.name.substring(0, 2).toUpperCase()}
+                  </span>
+                )}
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-[var(--app-ink)] truncate">{user.name}</p>
