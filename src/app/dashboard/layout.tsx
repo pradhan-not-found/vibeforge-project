@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { ReactNode, useState, useEffect } from 'react';
 import { auth } from '@/lib/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
-import { LayoutDashboard, Shield, Bot, Settings, UserCircle, LogOut } from 'lucide-react';
+import { LayoutDashboard, Shield, Bot, Settings, UserCircle, LogOut, Sparkles, Activity } from 'lucide-react';
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
@@ -36,6 +36,8 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     { name: 'Overview', href: '/dashboard', icon: LayoutDashboard },
     { name: 'Agents', href: '/dashboard/agents', icon: Bot },
     { name: 'Policies Engine', href: '/dashboard/policies', icon: Shield },
+    { name: 'Observability', href: '/dashboard/observability', icon: Activity },
+    { name: 'Test LLM', href: '/dashboard/llm-test', icon: Sparkles },
   ];
 
   return (
