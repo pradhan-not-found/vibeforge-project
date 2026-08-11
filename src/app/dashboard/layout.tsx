@@ -90,7 +90,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 </span>
                 <nav className="flex flex-col gap-0.5">
                   {section.items.map((item) => {
-                    const isActive = pathname === item.path || pathname.startsWith(item.path + '/');
+                    const isActive = item.path === '/dashboard' 
+                    ? pathname === '/dashboard' 
+                    : (pathname === item.path || pathname.startsWith(item.path + '/'));
                     return (
                       <Link 
                         key={item.path} 

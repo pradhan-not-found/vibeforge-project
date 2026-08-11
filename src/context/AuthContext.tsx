@@ -8,6 +8,7 @@ type User = {
   email: string;
   name?: string;
   workspaceName?: string;
+  avatar?: string | null;
 };
 
 type AuthContextType = {
@@ -34,6 +35,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           email: currentUser.email || '',
           name: currentUser.displayName || '',
           workspaceName: '', // Placeholder since we don't have this in basic Firebase Auth profile
+          avatar: currentUser.photoURL || null,
         });
       } else {
         setUser(null);

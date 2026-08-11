@@ -252,7 +252,7 @@ export default function Page() {
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="shrink-0 mt-2 px-5 py-2.5 bg-[var(--app-ink)] text-[var(--app-canvas)] text-sm font-semibold rounded-xl hover:opacity-80 transition-opacity shadow-sm"
+          className="cta-btn-dark text-on-dark shadow-sm shrink-0 mt-2 px-[16px] py-[10px] text-[14px] font-[500] rounded-[8px] transition-all"
         >
           Register New Agent
         </button>
@@ -266,7 +266,7 @@ export default function Page() {
           <p className="text-[var(--app-muted)] mb-4">No agents registered yet for your account.</p>
           <button
             onClick={() => setIsModalOpen(true)}
-            className="px-4 py-2 bg-[var(--app-ink)] text-[var(--app-canvas)] text-sm font-medium rounded-xl hover:opacity-80"
+            className="cta-btn-dark text-on-dark shadow-sm px-[16px] py-[10px] text-[14px] font-[500] rounded-[8px] transition-all"
           >
             Register your first agent
           </button>
