@@ -240,7 +240,7 @@ export default function Page() {
       <div className="flex items-start justify-between gap-4 mb-8">
         <div>
           <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--app-muted)] mb-3">Security</p>
-          <h1 className="font-serif text-4xl sm:text-5xl text-[var(--app-ink)] tracking-tight">Agent Registry</h1>
+          <h1 className="font-sans text-4xl sm:text-5xl text-[var(--app-ink)] tracking-tight">Agent Registry</h1>
           <p className="text-sm text-[var(--app-muted)] mt-2">
             Manage, monitor, and govern your connected AI models.
             {user?.email && (
@@ -457,3 +457,4 @@ export default function Page() {
     </>
   );
 }
+

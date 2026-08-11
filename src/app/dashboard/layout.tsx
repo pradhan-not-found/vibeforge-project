@@ -17,6 +17,12 @@ const navSections = [
     ],
   },
   {
+    label: "Assets",
+    items: [
+      { title: "Agents", path: "/dashboard/agents", icon: LayoutDashboard },
+    ],
+  },
+  {
     label: "Security",
     items: [
       { title: "Policies", path: "/dashboard/policies", icon: Shield },
@@ -57,7 +63,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <AuthProvider>
-    <div className="flex h-screen bg-[var(--app-canvas)] text-[var(--app-ink)] antialiased overflow-hidden" style={{ fontFamily: 'Helvetica, sans-serif' }}>
+    <div className="flex h-screen bg-[var(--app-canvas)] text-[var(--app-ink)] antialiased overflow-hidden">
       
       {/* Mobile Backdrop */}
       {sidebarOpen && (
@@ -67,26 +73,24 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         />
       )}
 
-      {/* Sidebar */}
-      <aside className={`fixed inset-y-0 left-0 z-50 w-64 transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:relative lg:translate-x-0 transition-transform duration-200 ease-in-out border-r border-[var(--app-hairline)] bg-[var(--app-canvas)] flex flex-col`}>
-        <div className="py-5 px-4">
+      {/* Sidebar - Always visible */}
+      <aside className="relative w-64 h-full shrink-0 border-r border-[var(--app-hairline)] bg-[var(--app-canvas)] flex flex-col z-20">
+        <div className="py-5 px-6 border-b border-[var(--app-hairline)] mb-4">
           <div className="flex items-center gap-2.5">
-            <div className="size-10 flex items-center justify-center bg-white border border-gray-200 rounded-xl shrink-0 overflow-hidden shadow-sm">
-              <img src="/icon.png" alt="Checkpost Logo" className="w-full h-full object-cover" />
-            </div>
-            
             <div className="flex flex-col leading-[1.1]">
-              <span className="text-xl font-semibold tracking-tight text-[var(--app-ink)]">
+              <span
+                className="text-[26px] text-[var(--app-ink)] tracking-tight"
+                style={{
+                  fontFamily: "var(--font-geist-pixel-grid, monospace)",
+                  fontWeight: "bold",
+                }}
+              >
                 Checkpost
               </span>
-              <span className="text-xs text-[var(--app-muted)] tracking-tighter font-medium">
+              <span className="text-[11px] text-[var(--app-muted)] tracking-tighter font-medium mt-1 uppercase">
                 AI Agent Firewall
               </span>
             </div>
-            
-            <button className="ml-auto lg:hidden text-[var(--app-muted)]" onClick={() => setSidebarOpen(false)}>
-              <X className="size-5" />
-            </button>
           </div>
         </div>
 
@@ -152,10 +156,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <Menu className="size-5" />
             </button>
             <div className="lg:hidden flex items-center gap-2">
-              <div className="size-6 bg-white border border-gray-200 rounded-md flex items-center justify-center overflow-hidden shadow-sm">
-                <img src="/icon.png" alt="Checkpost Logo" className="w-full h-full object-cover" />
-              </div>
-              <span className="text-base font-semibold text-[var(--app-ink)]">Checkpost</span>
+              <span 
+                className="text-xl text-[var(--app-ink)] tracking-tight"
+                style={{
+                  fontFamily: "var(--font-geist-pixel-grid, monospace)",
+                  fontWeight: "bold",
+                }}
+              >
+                Checkpost
+              </span>
             </div>
           </div>
         </header>

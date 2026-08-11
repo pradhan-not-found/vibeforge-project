@@ -39,7 +39,7 @@ export default function Page() {
       {/* Header */}
       <div className="mb-8">
         <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--app-muted)] mb-3">Account</p>
-        <h1 className="font-serif text-4xl sm:text-5xl text-[var(--app-ink)] tracking-tight">Settings</h1>
+        <h1 className="font-sans text-4xl sm:text-5xl text-[var(--app-ink)] tracking-tight">Settings</h1>
         <p className="text-sm text-[var(--app-muted)] mt-2">Manage your workspace, API keys, and preferences.</p>
       </div>
 
@@ -55,7 +55,7 @@ export default function Page() {
               <div className="w-8 h-8 rounded-lg bg-[var(--app-canvas)] border border-[var(--app-hairline)] flex items-center justify-center text-[var(--app-muted)] shadow-sm">
                 {section.icon}
               </div>
-              <h2 className="font-serif text-xl text-[var(--app-ink)] tracking-tight">{section.title}</h2>
+              <h2 className="font-sans text-xl text-[var(--app-ink)] tracking-tight">{section.title}</h2>
             </div>
             <div className="flex flex-col gap-3">
               {section.fields.map((field) => (
@@ -83,7 +83,7 @@ export default function Page() {
             <div className="w-8 h-8 rounded-lg bg-[var(--app-canvas)] border border-[var(--app-hairline)] flex items-center justify-center text-[var(--app-muted)] shadow-sm">
               <Key className="w-4 h-4" />
             </div>
-            <h2 className="font-serif text-xl text-[var(--app-ink)] tracking-tight">API Keys</h2>
+            <h2 className="font-sans text-xl text-[var(--app-ink)] tracking-tight">API Keys</h2>
           </div>
           <div className="flex items-center justify-between gap-4 rounded-xl bg-[var(--app-canvas)] border border-[var(--app-hairline)] px-4 py-3 mb-3">
             <div>
@@ -112,7 +112,7 @@ export default function Page() {
             <div className="w-8 h-8 rounded-lg bg-white border border-red-200 flex items-center justify-center text-red-500 shadow-sm overflow-hidden p-1.5">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-full h-full"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
             </div>
-            <h2 className="font-serif text-xl text-red-700 tracking-tight">Danger Zone</h2>
+            <h2 className="font-sans text-xl text-red-700 tracking-tight">Danger Zone</h2>
           </div>
           <div className="flex items-center justify-between gap-4 rounded-xl bg-white border border-red-200 px-4 py-3">
             <div>
@@ -128,4 +128,5 @@ export default function Page() {
     </div>
   );
 }
+
 

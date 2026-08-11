@@ -196,7 +196,7 @@ export default function Page() {
           </p>
           <div className="mt-5 sm:mt-6">
             <p className="text-sm sm:text-base text-[var(--app-muted)]">Good afternoon,</p>
-            <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl leading-[1.05] tracking-tight mt-1 text-[var(--app-ink)] [overflow-wrap:anywhere] capitalize">
+            <h1 className="font-sans text-4xl sm:text-5xl lg:text-6xl leading-[1.05] tracking-tight mt-1 text-[var(--app-ink)] [overflow-wrap:anywhere] capitalize">
               {firstName}.
             </h1>
             <p className="mt-3 text-sm text-[var(--app-muted)] max-w-md">
@@ -205,18 +205,26 @@ export default function Page() {
           </div>
         </div>
 
-        <button 
-          onClick={simulateAttack}
-          disabled={isAttacking}
-          className="flex items-center gap-2 bg-[var(--app-canvas)] hover:bg-[var(--app-soft)] text-red-600 border border-[var(--app-hairline)] px-4 py-2 rounded-lg text-sm font-semibold transition-all shadow-sm disabled:opacity-50 mt-1"
-        >
-          {isAttacking ? (
-            <div className="w-3.5 h-3.5 border-2 border-red-500 border-t-transparent rounded-full animate-spin" />
-          ) : (
-            <Zap className="w-3.5 h-3.5" />
-          )}
-          {isAttacking ? 'Simulating...' : 'Simulate Threat'}
-        </button>
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 mt-1">
+          <a
+            href="/dashboard/agents"
+            className="flex items-center justify-center gap-2 bg-[var(--app-ink)] hover:opacity-80 text-[var(--app-canvas)] px-4 py-2 rounded-lg text-sm font-semibold transition-all shadow-sm"
+          >
+            Register Agent
+          </a>
+          <button 
+            onClick={simulateAttack}
+            disabled={isAttacking}
+            className="flex items-center justify-center gap-2 bg-[var(--app-canvas)] hover:bg-[var(--app-soft)] text-red-600 border border-[var(--app-hairline)] px-4 py-2 rounded-lg text-sm font-semibold transition-all shadow-sm disabled:opacity-50"
+          >
+            {isAttacking ? (
+              <div className="w-3.5 h-3.5 border-2 border-red-500 border-t-transparent rounded-full animate-spin" />
+            ) : (
+              <Zap className="w-3.5 h-3.5" />
+            )}
+            {isAttacking ? 'Simulating...' : 'Simulate Threat'}
+          </button>
+        </div>
       </div>
 
       {/* Activity overview */}
@@ -267,7 +275,7 @@ export default function Page() {
           className="bg-[var(--app-soft)] rounded-2xl border-2 border-[var(--app-hairline)] p-4 sm:p-6 card-elevate card-depth"
         >
           <div className="flex items-center justify-between mb-4 sm:mb-5">
-            <h2 className="text-xl sm:text-2xl font-serif font-normal text-[var(--app-ink)] tracking-tight">Top Active Agents</h2>
+            <h2 className="text-xl sm:text-2xl font-sans font-normal text-[var(--app-ink)] tracking-tight">Top Active Agents</h2>
             <span className="text-[10px] sm:text-xs font-medium text-[var(--app-muted)] uppercase tracking-wide">By action count</span>
           </div>
           <div className="space-y-2.5">
@@ -317,7 +325,7 @@ export default function Page() {
           className="bg-[var(--app-soft)] rounded-2xl border-2 border-[var(--app-hairline)] p-4 sm:p-6 card-elevate card-depth"
         >
           <div className="flex items-center justify-between mb-4 sm:mb-5">
-            <h2 className="text-xl sm:text-2xl font-serif font-normal text-[var(--app-ink)] tracking-tight">Recent Violations</h2>
+            <h2 className="text-xl sm:text-2xl font-sans font-normal text-[var(--app-ink)] tracking-tight">Recent Violations</h2>
             <span className="text-[10px] sm:text-xs font-medium text-[var(--app-muted)] uppercase tracking-wide">
               Last 24 hours
             </span>
@@ -356,3 +364,4 @@ export default function Page() {
     </div>
   );
 }
+
