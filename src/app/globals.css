@@ -62,5 +62,10 @@ hover-tilt::part(tilt)::before{border-radius:20px}html{scrollbar-gutter:stable}
   100% { transform: translateX(-50%); }
 }
 
-.footer-bg { background-image: url('/footer/footer-bg.jpg'); background-size: cover; background-position: bottom; }
+.footer-bg {
+  background-image: url('/footer/bg-footer-pattern.png'), url('/footer/footer-bg.jpg');
+  background-repeat: repeat-x, no-repeat;
+  background-position: bottom, center;
+  background-size: auto, cover;
+}
 
