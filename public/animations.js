@@ -13,7 +13,22 @@ document.addEventListener("DOMContentLoaded", () => {
       const dx = x - xc;
       const dy = y - yc;
       el.style.transform = `perspective(1000px) rotateY(${dx / 30}deg) rotateX(${-dy / 30}deg)`;
+    
+  // Sticky Navbar Scroll Effect
+  const header = document.getElementById('site-header');
+  if (header) {
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
+        header.classList.add('bg-white/80', 'backdrop-blur-md', 'border-border-divider');
+        header.classList.remove('bg-transparent', 'border-transparent');
+      } else {
+        header.classList.remove('bg-white/80', 'backdrop-blur-md', 'border-border-divider');
+        header.classList.add('bg-transparent', 'border-transparent');
+      }
     });
+  }
+});
+
     el.addEventListener('mouseleave', () => {
       el.style.transform = 'perspective(1000px) rotateY(0) rotateX(0)';
       el.style.transition = 'transform 0.5s ease-out';
