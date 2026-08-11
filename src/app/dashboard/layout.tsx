@@ -12,7 +12,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
             <div className="w-6 h-6 rounded bg-lime-300 border border-[rgba(0,0,0,0.1)] flex items-center justify-center">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="3"><path d="M20 6L9 17l-5-5"/></svg>
             </div>
-            <span className="font-[550] text-[18px] tracking-[-0.02em] text-ink">Checkpost</span>
+            <span className="text-ink" style={{ fontFamily: "var(--font-geist-pixel-grid, monospace)", fontWeight: "bold", fontSize: "1.25rem" }}>Checkpost</span>
           </Link>
 
           <nav className="flex flex-col gap-2">
