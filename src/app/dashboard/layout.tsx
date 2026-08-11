@@ -72,13 +72,6 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col h-screen overflow-y-auto bg-surface">
-        <header className="h-16 border-b border-border-card flex items-center justify-between px-8 shrink-0">
-          <div className="font-medium text-[15px]">WAF Dashboard</div>
-          <div className="flex items-center gap-4">
-            <span className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]"></span>
-            <span className="text-[13px] text-ink-muted font-medium">System Operational</span>
-          </div>
-        </header>
         <div className="p-8">
           {children}
         </div>
