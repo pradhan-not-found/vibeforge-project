@@ -206,12 +206,6 @@ export default function Page() {
         </div>
 
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 mt-1">
-          <a
-            href="/dashboard/agents"
-            className="cta-btn-dark text-on-dark shadow-sm flex items-center justify-center gap-[10px] px-[16px] py-[10px] text-[14px] font-[500] rounded-[8px] transition-all"
-          >
-            Register Agent
-          </a>
           <button 
             onClick={simulateAttack}
             disabled={isAttacking}
