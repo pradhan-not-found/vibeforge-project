@@ -12,6 +12,10 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
+if (typeof window !== 'undefined' && !firebaseConfig.apiKey) {
+  console.error("FIREBASE CONFIG MISSING! Did you restart the Next.js dev server after adding .env.local?");
+}
+
 // Initialize Firebase only if it hasn't been initialized already
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 
