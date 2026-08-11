@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import { MoreVertical, X, ChevronDown } from 'lucide-react';
+import { MoreVertical, X, ChevronDown, Plus } from 'lucide-react';
 import { MotionCard } from '@/components/MotionCard';
 import { useAuth } from '@/context/AuthContext';
 
@@ -266,8 +266,9 @@ export default function Page() {
           <p className="text-[var(--app-muted)] mb-4">No agents registered yet for your account.</p>
           <button
             onClick={() => setIsModalOpen(true)}
-            className="cta-btn-dark text-on-dark shadow-sm px-[16px] py-[10px] text-[14px] font-[500] rounded-[8px] transition-all"
+            className="cta-btn-dark text-on-dark shadow-sm px-[16px] py-[10px] text-[14px] font-[500] rounded-[8px] transition-all flex items-center justify-center gap-2"
           >
+            <Plus className="size-4" />
             Register your first agent
           </button>
         </div>

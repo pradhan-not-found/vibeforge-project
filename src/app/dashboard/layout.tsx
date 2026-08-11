@@ -156,25 +156,25 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <div className="p-4 pb-4 px-4 relative">
             {isProfileOpen && (
               <div className="absolute bottom-full left-4 right-4 mb-2 bg-[var(--app-canvas)] border border-[var(--app-hairline)] rounded-xl shadow-lg overflow-hidden py-1 z-50">
-                <button className="w-full flex items-center gap-3 px-4 py-2 text-sm font-medium text-[var(--app-ink)] hover:bg-[var(--app-soft)] transition-colors">
+                <Link href="/dashboard/profile" className="w-full flex items-center gap-3 px-4 py-2 text-sm font-medium text-[var(--app-ink)] hover:bg-[var(--app-soft)] transition-colors">
                   <User className="size-4 text-[var(--app-muted)]" />
                   Profile
-                </button>
-                <button className="w-full flex items-center gap-3 px-4 py-2 text-sm font-medium text-[var(--app-ink)] hover:bg-[var(--app-soft)] transition-colors">
+                </Link>
+                <Link href="/dashboard/settings" className="w-full flex items-center gap-3 px-4 py-2 text-sm font-medium text-[var(--app-ink)] hover:bg-[var(--app-soft)] transition-colors">
                   <Settings className="size-4 text-[var(--app-muted)]" />
                   Settings
-                </button>
-                <button className="w-full flex items-center gap-3 px-4 py-2 text-sm font-medium text-[var(--app-ink)] hover:bg-[var(--app-soft)] transition-colors">
+                </Link>
+                <Link href="/dashboard/account" className="w-full flex items-center gap-3 px-4 py-2 text-sm font-medium text-[var(--app-ink)] hover:bg-[var(--app-soft)] transition-colors">
                   <Cloud className="size-4 text-[var(--app-muted)]" />
                   Account
-                </button>
+                </Link>
                 
                 <div className="h-px bg-[var(--app-hairline)] my-1" />
                 
-                <button className="w-full flex items-center gap-3 px-4 py-2 text-sm font-medium text-[var(--app-ink)] hover:bg-[var(--app-soft)] transition-colors">
+                <Link href="/dashboard/help" className="w-full flex items-center gap-3 px-4 py-2 text-sm font-medium text-[var(--app-ink)] hover:bg-[var(--app-soft)] transition-colors">
                   <HelpCircle className="size-4 text-[var(--app-muted)]" />
                   Help Center
-                </button>
+                </Link>
                 
                 <div className="h-px bg-[var(--app-hairline)] my-1" />
                 

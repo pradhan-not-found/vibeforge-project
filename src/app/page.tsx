@@ -4772,6 +4772,139 @@ export default function LandingPage() {
           </div>
         </div>
       </div>
+      {/* ──────────────────────────────────────────────────────────
+         PRICING SECTION
+      ────────────────────────────────────────────────────────── */}
+      <section className="w-full relative flex flex-col items-center py-24 px-4 sm:px-8 bg-gradient-to-b from-transparent to-[#F2F2F2]">
+        <div className="max-w-[1200px] w-full mx-auto flex flex-col items-center">
+          <div className="text-center mb-16 max-w-2xl">
+            <h2 className="text-[32px] sm:text-[40px] md:text-[48px] font-semibold text-[var(--app-ink)] mb-4" style={{ fontFamily: 'var(--font-tt-neoris, sans-serif)', letterSpacing: '-0.02em', lineHeight: '1.1' }}>
+              <span className="text-[var(--app-muted)]">Start simple.</span> Grow without limits.
+            </h2>
+            <p className="text-[16px] sm:text-[18px] text-[var(--app-muted)] font-medium" style={{ fontFamily: 'var(--font-tt-neoris, sans-serif)' }}>
+              Build and scale without managing the systems behind it.
+            </p>
+          </div>
+
+          <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 items-start">
+            
+            {/* Free Trial */}
+            <div className="w-full rounded-2xl border border-[var(--app-hairline)] bg-[var(--app-canvas)] shadow-sm hover:shadow-md transition-shadow overflow-hidden flex flex-col h-full">
+              <div className="p-6 pb-0">
+                <p className="text-[13px] font-medium text-[var(--app-muted)] mb-3">Free Trial</p>
+                <div className="w-full aspect-[1.8/1] rounded-xl overflow-hidden mb-6 relative">
+                  <Image src="/assets/pricing/Free.avif" alt="Free Trial" fill className="object-cover" />
+                </div>
+                <p className="text-[13px] font-medium text-[var(--app-muted)] mb-2">7 day free trial</p>
+                <h3 className="text-[36px] font-medium text-[var(--app-ink)]" style={{ fontFamily: 'var(--font-geist-pixel-grid, monospace)' }}>
+                  Free
+                </h3>
+              </div>
+              
+              <div className="p-6 pt-6 flex-1 flex flex-col justify-end">
+                <div className="h-px w-full bg-[var(--app-hairline)] mb-6" />
+                <ul className="space-y-4 mb-8 flex-1">
+                  {[
+                    '$10 in usage included',
+                    '7 days of Cofounder Pro',
+                    'Access to multiple AI models',
+                    'Agent-built previews',
+                    'Preview environments'
+                  ].map((feature, i) => (
+                    <li key={i} className="flex items-start gap-3">
+                      <Check className="size-5 text-emerald-500 shrink-0" strokeWidth={2} />
+                      <span className="text-[14px] text-[var(--app-ink)] font-medium">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+                <a href="/signup" className="w-full block text-center rounded-xl py-3 border border-[var(--app-hairline)] bg-[var(--app-soft)] hover:bg-[var(--app-canvas)] text-[var(--app-ink)] font-semibold text-[15px] transition-colors">
+                  Get started
+                </a>
+              </div>
+            </div>
+
+            {/* Pro */}
+            <div className="w-full rounded-2xl border-2 border-[var(--app-ink)] bg-[var(--app-canvas)] shadow-lg hover:shadow-xl transition-shadow overflow-hidden flex flex-col h-full relative -translate-y-2">
+              <div className="absolute top-0 right-0 bg-[var(--app-ink)] text-white text-[11px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
+                Most Popular
+              </div>
+              <div className="p-6 pb-0">
+                <p className="text-[13px] font-medium text-[var(--app-muted)] mb-3">Checkpost Pro</p>
+                <div className="w-full aspect-[1.8/1] rounded-xl overflow-hidden mb-6 relative border border-[var(--app-hairline)]">
+                  <Image src="/assets/pricing/Pro.avif" alt="Pro Plan" fill className="object-cover" />
+                </div>
+                <p className="text-[13px] font-medium text-[var(--app-muted)] mb-2">Starting at</p>
+                <div className="flex items-end gap-1">
+                  <h3 className="text-[36px] font-medium text-[var(--app-ink)]" style={{ fontFamily: 'var(--font-geist-pixel-grid, monospace)' }}>
+                    $20
+                  </h3>
+                  <span className="text-[14px] text-[var(--app-muted)] mb-2 font-medium">/ month usage included</span>
+                </div>
+              </div>
+              
+              <div className="p-6 pt-6 flex-1 flex flex-col justify-end bg-gradient-to-b from-transparent to-blue-50/30">
+                <div className="h-px w-full bg-[var(--app-hairline)] mb-6" />
+                <ul className="space-y-4 mb-8 flex-1">
+                  {[
+                    'Everything in the Free Plan',
+                    'Access to multiple AI models',
+                    'Domain purchasing and hosting',
+                    'Agent inboxes',
+                    'Graduate data from the platform'
+                  ].map((feature, i) => (
+                    <li key={i} className="flex items-start gap-3">
+                      <Check className="size-5 text-emerald-500 shrink-0" strokeWidth={2} />
+                      <span className="text-[14px] text-[var(--app-ink)] font-medium">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+                <a href="/signup" className="w-full block text-center rounded-xl py-3 bg-[var(--app-ink)] hover:bg-black text-white font-semibold text-[15px] shadow-sm transition-colors">
+                  Get started
+                </a>
+              </div>
+            </div>
+
+            {/* Team */}
+            <div className="w-full rounded-2xl border border-[var(--app-hairline)] bg-[var(--app-canvas)] shadow-sm hover:shadow-md transition-shadow overflow-hidden flex flex-col h-full">
+              <div className="p-6 pb-0">
+                <p className="text-[13px] font-medium text-[var(--app-muted)] mb-3">Team Plan</p>
+                <div className="w-full aspect-[1.8/1] rounded-xl overflow-hidden mb-6 relative">
+                  <Image src="/assets/pricing/Team.avif" alt="Team Plan" fill className="object-cover" />
+                </div>
+                <p className="text-[13px] font-medium text-[var(--app-muted)] mb-2">Coming soon</p>
+                <div className="flex items-end gap-1">
+                  <h3 className="text-[36px] font-medium text-[var(--app-ink)]" style={{ fontFamily: 'var(--font-geist-pixel-grid, monospace)' }}>
+                    $50
+                  </h3>
+                  <span className="text-[14px] text-[var(--app-muted)] mb-2 font-medium">/ month usage included</span>
+                </div>
+              </div>
+              
+              <div className="p-6 pt-6 flex-1 flex flex-col justify-end">
+                <div className="h-px w-full bg-[var(--app-hairline)] mb-6" />
+                <ul className="space-y-4 mb-8 flex-1">
+                  {[
+                    'Everything in the Pro Plan',
+                    'Multiplayer',
+                    'SOC 2',
+                    'Priority support'
+                  ].map((feature, i) => (
+                    <li key={i} className="flex items-start gap-3">
+                      <Check className="size-5 text-emerald-500 shrink-0" strokeWidth={2} />
+                      <span className="text-[14px] text-[var(--app-ink)] font-medium">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+                <a href="/signup" className="w-full block text-center rounded-xl py-3 border border-[var(--app-hairline)] bg-[var(--app-soft)] hover:bg-[var(--app-canvas)] text-[var(--app-ink)] font-semibold text-[15px] transition-colors">
+                  Join waitlist
+                </a>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
       <footer className="w-full footer-bg relative overflow-x-hidden">
         <picture className="pointer-events-none absolute inset-x-0 bottom-0 h-[75px]">
           <source srcSet="/footer/footer-bg.avif" type="image/avif" />

@@ -312,6 +312,28 @@ function FooterText({ light = false }: { light?: boolean }) {
    PAGE
 ══════════════════════════════════════════════════════════ */
 export default function Login() {
+  const [authLoading, setAuthLoading] = useState(true);
+  const router = useRouter();
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        router.push('/dashboard');
+      } else {
+        setAuthLoading(false);
+      }
+    });
+    return () => unsubscribe();
+  }, [router]);
+
+  if (authLoading) {
+    return (
+      <div className="flex min-h-[100dvh] items-center justify-center" style={{ background: '#EBEBEA' }}>
+        <div className="animate-spin rounded-full h-8 w-8 border-2 border-[rgba(38,35,35,0.2)] border-t-[rgba(38,35,35,0.8)]"></div>
+      </div>
+    );
+  }
+
   return (
     <div style={{ fontFamily: 'var(--font-tt-neoris, sans-serif)', background: '#EBEBEA', minHeight: '100dvh' }}>
 
