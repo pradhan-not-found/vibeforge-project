@@ -58,13 +58,13 @@ function AuthPanel({ defaultTab }: { defaultTab: 'signin' | 'signup' }) {
       {/* Buttons */}
       <div className="flex flex-col gap-[10px] w-full max-w-[380px]">
         {/* Google */}
-        <button className="dark-pill-btn" style={darkPillStyle}>
+        <button className="cta-btn-dark flex items-center justify-center w-full gap-[10px] px-[16px] py-[10px] rounded-[8px] text-[14px] font-[500] text-on-dark hover:opacity-90 transition-opacity">
           <GoogleIcon />
           {activeTab === 'signup' ? 'Sign up' : 'Sign in'} with Google
         </button>
 
         {/* GitHub */}
-        <button className="dark-pill-btn" style={darkPillStyle}>
+        <button className="cta-btn-dark flex items-center justify-center w-full gap-[10px] px-[16px] py-[10px] rounded-[8px] text-[14px] font-[500] text-on-dark hover:opacity-90 transition-opacity">
           <GitHubIcon />
           {activeTab === 'signup' ? 'Sign up' : 'Sign in'} with GitHub
         </button>
@@ -77,7 +77,7 @@ function AuthPanel({ defaultTab }: { defaultTab: 'signin' | 'signup' }) {
         </div>
 
         {/* School email */}
-        <button className="dark-pill-btn" style={darkPillStyle}>
+        <button className="cta-btn-dark flex items-center justify-center w-full gap-[10px] px-[16px] py-[10px] rounded-[8px] text-[14px] font-[500] text-on-dark hover:opacity-90 transition-opacity">
           <EmailIcon />
           Continue with school email
         </button>

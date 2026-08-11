@@ -1,4 +1,4 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import Image from "next/image";
 import React from "react";
 
@@ -99,18 +99,24 @@ export default function LandingPage() {
               Log in
             </a>
             <a
-              className="text-[15px] font-[500] text-ink-muted hover:text-ink transition-colors"
+              className="cta-btn-dark px-[16px] py-[8px] rounded-[8px] text-[14px] font-[500] text-on-dark hover:opacity-90 transition-opacity"
               href="/signup"
             >
               Sign up
             </a>
           </nav>
-          <div className="flex items-center min-[1000px]:hidden gap-4">
+          <div className="flex items-center min-[1000px]:hidden gap-3">
             <a
-              className="cta-btn-dark px-[16px] py-[10px] rounded-[8px] text-[15px] font-[500] text-on-dark hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
-              href="/dashboard"
+              className="text-[14px] font-[500] text-ink-muted hover:text-ink transition-colors px-2 py-1"
+              href="/login"
             >
-              Dashboard
+              Log in
+            </a>
+            <a
+              className="cta-btn-dark px-[12px] py-[8px] rounded-[6px] text-[14px] font-[500] text-on-dark hover:opacity-90 transition-opacity flex items-center justify-center"
+              href="/signup"
+            >
+              Sign up
             </a>
           </div>
         </div>
@@ -196,12 +202,12 @@ export default function LandingPage() {
                     className="hero-stagger"
                     style={{ "--stagger": "0" } as any}
                   >
-                    <h1 className="m-0 font-normal hero-gradient-text text-left max-w-[20ch] xl:max-w-[580px] text-[46px] leading-[108%] filter-[drop-shadow(0_1px_3px_rgba(0,0,0,0.12))] max-[900px]:text-[38px] max-[500px]:text-[34px] max-[500px]:font-normal max-[500px]:leading-[110%]">
-                      Checkpost lets you Web Application Firewall with AI
+                    <h1 className="m-0 font-normal hero-gradient-text text-left max-w-[20ch] xl:max-w-[780px] text-[46px] leading-[108%] filter-[drop-shadow(0_1px_3px_rgba(0,0,0,0.12))] max-[900px]:text-[38px] max-[500px]:text-[34px] max-[500px]:font-normal max-[500px]:leading-[110%]">
+                      Build products and manage your infrastructure with Cofounder
                     </h1>
                   </div>
                   <p
-                    className="hero-stagger mt-5 max-w-[540px] pl-[2px] text-left text-[16px] font-[460] leading-[140%] tracking-[0.15px] text-[rgba(255,255,255,0.8)] [text-shadow:0_1px_1px_rgba(0,0,0,0.08)] max-[500px]:mt-4"
+                    className="hero-stagger mt-5 max-w-[640px] pl-[2px] text-left text-[16px] font-[460] leading-[140%] tracking-[0.15px] text-[rgba(255,255,255,0.8)] [text-shadow:0_1px_1px_rgba(0,0,0,0.08)] max-[500px]:mt-4"
                     style={
                       {
                         "--stagger": "1",
@@ -210,8 +216,7 @@ export default function LandingPage() {
                       } as any
                     }
                   >
-                    Start with an AI roadmap, then hand off engineering, sales,
-                    marketing, design, finance, and ops to agents.
+                    Design, build, and deploy products with engineering agents. Once you're live, infrastructure and security agents monitor and fix issues.
                   </p>
                   <div
                     className="hero-stagger mt-6 flex flex-wrap items-center gap-3 max-[500px]:mt-5"
@@ -269,175 +274,70 @@ export default function LandingPage() {
       <div
         id="social-proof"
         aria-label="social proof"
-        className="w-full bg-surface flex flex-col items-center pt-[32px] pb-[72px] max-[700px]:pt-[24px] max-[700px]:pb-[56px]"
+        className="w-full bg-surface flex flex-col items-center gap-8 pt-[32px] pb-[72px] max-[700px]:pt-[24px] max-[700px]:pb-[56px]"
       >
-        <div className="relative grid grid-cols-2 justify-items-center min-[1001px]:flex min-[1001px]:items-center">
-          <a
-            className="flex items-center justify-center p-[6px] cursor-pointer"
-            aria-label="View Checkpost case studies"
-            href="/resources"
-          >
-            <div className="logo-tile flex items-center justify-center w-[170px] h-[84px] p-[28px]">
-              <img
-                alt="ActiveGraph"
-                loading="lazy"
-                width="115"
-                height="26"
-                decoding="async"
-                data-nimg="1"
-                className="object-contain"
-                style={
-                  {
-                    color: "transparent",
-                    width: "115px",
-                    height: "26px",
-                  } as any
-                }
-                src="https://cofounder.co/logos/activegraph-wordmark.png?dpl=dpl_3zXpeVy7Nm78WHWZexnxVcbxyBhj"
-              />
-            </div>
-          </a>
-          <a
-            className="flex items-center justify-center p-[6px] cursor-pointer"
-            aria-label="View Checkpost case studies"
-            href="/resources"
-          >
-            <div className="logo-tile flex items-center justify-center w-[170px] h-[84px] p-[28px]">
-              <img
-                alt="Veery"
-                loading="lazy"
-                width="98"
-                height="26"
-                decoding="async"
-                data-nimg="1"
-                className="object-contain"
-                style={
-                  { color: "transparent", width: "98px", height: "26px" } as any
-                }
-                src="https://cofounder.co/logos/veery-wordmark.png?dpl=dpl_3zXpeVy7Nm78WHWZexnxVcbxyBhj"
-              />
-            </div>
-          </a>
-          <a
-            className="flex items-center justify-center p-[6px] cursor-pointer"
-            aria-label="View Checkpost case studies"
-            href="/resources"
-          >
-            <div className="logo-tile flex items-center justify-center w-[170px] h-[84px] p-[28px]">
-              <span className="whitespace-nowrap text-[17px] font-[520] leading-none text-ink/70">
-                LearnPath
-              </span>
-            </div>
-          </a>
-          <a
-            className="flex items-center justify-center p-[6px] cursor-pointer"
-            aria-label="View Checkpost case studies"
-            href="/resources"
-          >
-            <div className="logo-tile flex items-center justify-center w-[170px] h-[84px] p-[28px]">
-              <span className="whitespace-nowrap text-[17px] font-[520] leading-none text-ink/70">
-                Valence OS
-              </span>
-            </div>
-          </a>
-          <div
-            className="pointer-events-none absolute z-50 -translate-x-1/2 translate-y-[24px] transition-[opacity,scale] ease-[cubic-bezier(0.23,1,0.32,1)] opacity-0 scale-[0.8] duration-200"
-            style={{ left: "0", top: "0" } as any}
-          >
-            <span className="logo-pill inline-flex min-w-[32px] items-center gap-[4px] whitespace-nowrap">
-              <span className="m-0 text-[13px] font-[460] leading-[140%] tracking-[0.13px] text-white/90">
-                Case Studies
-              </span>
-              <span className="flex items-center">
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                  <g clipPath="url(#clip0_762_8763)">
-                    <g filter="url(#filter0_ii_762_8763)">
-                      <path
-                        fillRule="evenodd"
-                        clipRule="evenodd"
-                        d="M6.39648 2.27169C6.59175 2.07643 6.90825 2.07643 7.10352 2.27169L10.4785 5.64669C10.5102 5.6784 10.5352 5.71413 10.5566 5.75118C10.5834 5.79745 10.6044 5.84747 10.6152 5.90157C10.6282 5.96631 10.6281 6.03311 10.6152 6.09786C10.5956 6.19673 10.5471 6.28518 10.4785 6.35372L7.10352 9.72872C6.90829 9.92387 6.59173 9.92384 6.39648 9.72872C6.20125 9.53348 6.2013 9.21696 6.39648 9.02169L8.91797 6.50021H1.875C1.59896 6.50017 1.37512 6.27622 1.375 6.00021C1.375 5.72409 1.59889 5.50024 1.875 5.50021H8.91797L6.39648 2.97872C6.20125 2.78348 6.2013 2.46696 6.39648 2.27169Z"
-                        fill="white"
-                        fillOpacity="0.5"
-                      />
-                    </g>
-                  </g>
-                  <defs>
-                    <filter
-                      id="filter0_ii_762_8763"
-                      x="1.375"
-                      y="2.12524"
-                      width="9.24988"
-                      height="7.74976"
-                      filterUnits="userSpaceOnUse"
-                      colorInterpolationFilters="sRGB"
-                    >
-                      <feFlood
-                        flood-opacity="0"
-                        result="BackgroundImageFix"
-                      ></feFlood>
-                      <feBlend
-                        mode="normal"
-                        in="SourceGraphic"
-                        in2="BackgroundImageFix"
-                        result="shape"
-                      ></feBlend>
-                      <feColorMatrix
-                        in="SourceAlpha"
-                        type="matrix"
-                        values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-                        result="hardAlpha"
-                      ></feColorMatrix>
-                      <feOffset dy="0.5"></feOffset>
-                      <feComposite
-                        in2="hardAlpha"
-                        operator="arithmetic"
-                        k2="-1"
-                        k3="1"
-                      ></feComposite>
-                      <feColorMatrix
-                        type="matrix"
-                        values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.2 0"
-                      ></feColorMatrix>
-                      <feBlend
-                        mode="normal"
-                        in2="shape"
-                        result="effect1_innerShadow_762_8763"
-                      ></feBlend>
-                      <feColorMatrix
-                        in="SourceAlpha"
-                        type="matrix"
-                        values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-                        result="hardAlpha"
-                      ></feColorMatrix>
-                      <feOffset dy="-0.5"></feOffset>
-                      <feComposite
-                        in2="hardAlpha"
-                        operator="arithmetic"
-                        k2="-1"
-                        k3="1"
-                      ></feComposite>
-                      <feColorMatrix
-                        type="matrix"
-                        values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0"
-                      ></feColorMatrix>
-                      <feBlend
-                        mode="normal"
-                        in2="effect1_innerShadow_762_8763"
-                        result="effect2_innerShadow_762_8763"
-                      ></feBlend>
-                    </filter>
-                    <clipPath id="clip0_762_8763">
-                      <rect width="12" height="12" fill="white" />
-                    </clipPath>
-                  </defs>
-                </svg>
-              </span>
-            </span>
+        {/* Logo Marquee */}
+        <div className="w-full overflow-hidden relative">
+          {/* Strong gradient fade edges */}
+          <div className="absolute left-0 top-0 bottom-0 w-48 z-10 pointer-events-none" style={{ background: 'linear-gradient(to right, var(--surface, #FAFAF7) 40%, transparent 100%)' }} />
+          <div className="absolute right-0 top-0 bottom-0 w-48 z-10 pointer-events-none" style={{ background: 'linear-gradient(to left, var(--surface, #FAFAF7) 40%, transparent 100%)' }} />
+
+          <div className="logo-marquee-track flex py-5">
+            {[...Array(2)].map((_, i) => (
+              <div key={i} className="flex items-center gap-[72px] px-[36px] shrink-0">
+                {[
+                  { file: "anthropic.svg", name: "Anthropic" },
+                  { file: "openai.svg", name: "OpenAI" },
+                  { file: "google.svg", name: "Google" },
+                  { file: "meta.svg", name: "Meta" },
+                  { file: "gemini.svg", name: "Gemini" },
+                  { file: "cursor.svg", name: "Cursor" },
+                  { file: "github.svg", name: "GitHub" },
+                  { file: "mistral.svg", name: "Mistral" },
+                  { file: "deepseek.svg", name: "DeepSeek" },
+                  { file: "ollama.svg", name: "Ollama" },
+                  { file: "perplexity.svg", name: "Perplexity" },
+                  { file: "huggingface.svg", name: "HuggingFace" },
+                  { file: "xai.svg", name: "xAI" },
+                  { file: "qwen.svg", name: "Qwen" },
+                ].map(({ file, name }) => (
+                  <div key={name + i} className="logo-marquee-item flex items-center justify-center" style={{ height: "84px" }}>
+                    <img
+                      src={`/ai-logos/${file}`}
+                      alt={name}
+                      style={{ height: "72px", width: "auto", objectFit: "contain", maxWidth: "220px" }}
+                    />
+                  </div>
+                ))}
+              </div>
+            ))}
           </div>
+          <style dangerouslySetInnerHTML={{ __html: `
+            @keyframes logo-marquee {
+              0% { transform: translateX(0); }
+              100% { transform: translateX(-50%); }
+            }
+            .logo-marquee-track {
+              animation: logo-marquee 32s linear infinite;
+            }
+            .logo-marquee-track:hover {
+              animation-play-state: paused;
+            }
+            .logo-marquee-item {
+              opacity: 0.45;
+              filter: grayscale(1);
+              transition: opacity 0.25s ease, filter 0.25s ease;
+            }
+            .logo-marquee-item:hover {
+              opacity: 1;
+              filter: grayscale(0);
+            }
+          ` }} />
         </div>
-        <p className="m-0 text-[13px] font-[460] leading-[140%] tracking-[0.13px] mt-6 text-ink-faint text-center max-w-[366px]">
-          <span className="shimmer">over 10,650 companies</span> {/*   */}are
-          running on Checkpost
+
+        <p className="m-0 text-[13px] font-[460] leading-[140%] tracking-[0.13px] text-ink-faint text-center max-w-[366px]">
+          <span className="shimmer">over 10,650 companies</span>{" "}
+          are running on Checkpost
         </p>
       </div>
       <div className="relative w-full overflow-hidden bg-surface pt-[20px] min-[1100px]:pt-[20px] pb-[80px] min-[768px]:pb-[120px]">
@@ -5303,26 +5203,28 @@ export default function LandingPage() {
               className="absolute inset-0 flex items-end justify-center pb-[14px]"
               style={{ zIndex: 2 }}
             >
-              <div className="flex items-center justify-center gap-[6px]">
-                <span className="footer-made-with font-[family-name:var(--font-neoris)] text-[12px] font-[460] leading-[140%] tracking-[0.12px] text-[rgba(38,35,35,0.7)]">
-                  Made with
-                </span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="11"
-                  height="11"
-                  viewBox="0 0 12 12"
-                  fill="none"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M6 10.5s-5-3.2-5-6.2a2.8 2.8 0 015-1.8 2.8 2.8 0 015 1.8c0 3-5 6.2-5 6.2z"
-                    fill="#e05252"
-                  />
-                </svg>
-                <span className="footer-made-with font-[family-name:var(--font-neoris)] text-[12px] font-[460] leading-[140%] tracking-[0.12px] text-[rgba(38,35,35,0.7)]">
-                  by Fantastic 4
-                </span>
+              <div className="flex flex-col items-center justify-center min-[1000px]:items-end min-[1000px]:justify-end">
+                <div className="flex flex-wrap items-center justify-center gap-[4px] min-[1000px]:justify-end">
+                  <span className="footer-made-with font-[family-name:var(--font-neoris)] text-[12px] font-[460] leading-[140%] tracking-[0.12px] text-[rgba(38,35,35,0.7)]">
+                    Made with
+                  </span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="11"
+                    height="11"
+                    viewBox="0 0 12 12"
+                    fill="none"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M6 10.5s-5-3.2-5-6.2a2.8 2.8 0 015-1.8 2.8 2.8 0 015 1.8c0 3-5 6.2-5 6.2z"
+                      fill="#e05252"
+                    />
+                  </svg>
+                  <span className="footer-made-with font-[family-name:var(--font-neoris)] text-[12px] font-[460] leading-[140%] tracking-[0.12px] text-[rgba(38,35,35,0.7)]">
+                    by Fantastic 4
+                  </span>
+                </div>
               </div>
             </div>
           </div>
