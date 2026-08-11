@@ -36,7 +36,6 @@ export const metadata: Metadata = {
     shortcut: "/_assets/static/logo.png",
     apple: "/_assets/static/logo.png",
   },
-  manifest: "/site.webmanifest",
 };
 
 export default function RootLayout({

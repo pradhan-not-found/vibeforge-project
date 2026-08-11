@@ -21,12 +21,14 @@ export default function DashboardOverview() {
     return () => unsubscribe();
   }, []);
 
-  const getGreeting = () => {
+  const [greeting, setGreeting] = useState('');
+
+  useEffect(() => {
     const hour = new Date().getHours();
-    if (hour < 12) return 'Good morning';
-    if (hour < 18) return 'Good afternoon';
-    return 'Good evening';
-  };
+    if (hour < 12) setGreeting('Good morning');
+    else if (hour < 18) setGreeting('Good afternoon');
+    else setGreeting('Good evening');
+  }, []);
 
   const trafficData = [
     { time: '00:00', volume: 40 }, { time: '02:00', volume: 25 }, { time: '04:00', volume: 60 },
@@ -58,7 +60,7 @@ export default function DashboardOverview() {
             )}
           </div>
           <h1 className="text-[24px] font-medium tracking-[-0.01em] text-[#1A1A1A]" style={{ fontFamily: 'var(--font-geist-pixel-grid, monospace)' }}>
-            {getGreeting()}, {userName}
+            {greeting ? `${greeting}, ${userName}` : userName}
           </h1>
         </div>
         <button className="w-9 h-9 rounded-[8px] bg-white border border-[#E5E5E5] flex items-center justify-center text-[rgba(38,35,35,0.6)] hover:text-[#1A1A1A] hover:bg-[#FAFAF7] transition-colors shadow-sm">
