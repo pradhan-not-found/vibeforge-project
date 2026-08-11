@@ -1,7 +1,9 @@
 'use client';
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { User, Pencil, Camera } from "lucide-react";
+import { auth } from "@/lib/firebase";
+import { onAuthStateChanged } from "firebase/auth";
 
 export default function ProfilePage() {
   const [editing, setEditing] = useState(false);
@@ -14,6 +16,22 @@ export default function ProfilePage() {
   const [draftName, setDraftName] = useState(profile.name);
   const [draftAvatar, setDraftAvatar] = useState<string | null>(profile.avatar);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setProfile(prev => ({
+          ...prev,
+          name: user.displayName || "User",
+          email: user.email || prev.email,
+          avatar: user.photoURL || prev.avatar,
+        }));
+        setDraftName(user.displayName || "User");
+        setDraftAvatar(user.photoURL || null);
+      }
+    });
+    return () => unsubscribe();
+  }, []);
 
   const startEdit = () => {
     setDraftName(profile.name);

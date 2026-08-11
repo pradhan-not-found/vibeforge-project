@@ -1,7 +1,35 @@
+'use client';
+
 import Link from 'next/link';
-import { ReactNode } from 'react';
+import { ReactNode, useState, useEffect } from 'react';
+import { auth } from '@/lib/firebase';
+import { onAuthStateChanged } from 'firebase/auth';
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
+  const [user, setUser] = useState<{name: string, email: string, avatar: string | null}>({
+    name: 'John Doe',
+    email: 'john@acmecorp.com',
+    avatar: null
+  });
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser) {
+        setUser({
+          name: currentUser.displayName || 'User',
+          email: currentUser.email || 'user@example.com',
+          avatar: currentUser.photoURL || null
+        });
+      }
+    });
+    return () => unsubscribe();
+  }, []);
+
+  // Helper to get initials
+  const getInitials = (name: string) => {
+    return name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+  };
+
   return (
     <div className="min-h-screen bg-surface font-[family-name:var(--font-neoris)] flex text-ink">
       
@@ -27,12 +55,16 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
         <div className="p-6 border-t border-border-card">
           <Link href="/dashboard/profile" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-            <div className="w-8 h-8 rounded-full bg-ink text-white flex items-center justify-center font-bold text-xs">
-              JD
-            </div>
+            {user.avatar ? (
+              <img src={user.avatar} alt={user.name} className="w-8 h-8 rounded-full object-cover" />
+            ) : (
+              <div className="w-8 h-8 rounded-full bg-ink text-white flex items-center justify-center font-bold text-xs">
+                {getInitials(user.name)}
+              </div>
+            )}
             <div className="flex flex-col">
-              <span className="text-[14px] font-medium">John Doe</span>
-              <span className="text-[12px] text-ink-muted">Company Admin</span>
+              <span className="text-[14px] font-medium truncate w-32">{user.name}</span>
+              <span className="text-[12px] text-ink-muted truncate w-32">Company Admin</span>
             </div>
           </Link>
         </div>
