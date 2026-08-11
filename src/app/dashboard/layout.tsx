@@ -39,7 +39,6 @@ const navSections = [
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [user, setUser] = useState<{name: string, email: string, avatar: string | null}>({
     name: 'Admin User',
     email: 'admin@checkpost.app',
@@ -63,113 +62,82 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <AuthProvider>
-    <div className="flex h-screen bg-[var(--app-canvas)] text-[var(--app-ink)] antialiased overflow-hidden">
-      
-      {/* Mobile Backdrop */}
-      {sidebarOpen && (
-        <div 
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
-
-      {/* Sidebar */}
-      <aside className={`fixed inset-y-0 left-0 z-50 w-64 transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:relative lg:translate-x-0 transition-transform duration-200 ease-in-out border-r border-[var(--app-hairline)] bg-[var(--app-canvas)] flex flex-col z-20`}>
-        <div className="py-5 px-6 border-b border-[var(--app-hairline)] mb-4 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="flex flex-col leading-[1.1]">
-              <span
-                className="text-[26px] text-[var(--app-ink)] tracking-tight font-serif font-bold"
-              >
-                Checkpost
-              </span>
+      <div className="flex h-screen w-full bg-[var(--app-canvas)] text-[var(--app-ink)] antialiased overflow-hidden">
+        
+        {/* Permanent Sidebar */}
+        <aside className="w-64 h-full border-r border-[var(--app-hairline)] bg-[var(--app-canvas)] flex flex-col shrink-0 z-20">
+          <div className="py-5 px-6 border-b border-[var(--app-hairline)] mb-4 flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <div className="flex flex-col leading-[1.1]">
+                <span 
+                  className="text-[26px] text-[var(--app-ink)] tracking-tight"
+                  style={{
+                    fontFamily: "var(--font-geist-pixel-grid, monospace)",
+                    fontWeight: "bold",
+                  }}
+                >
+                  Checkpost
+                </span>
+              </div>
             </div>
           </div>
-          <button className="lg:hidden text-[var(--app-muted)] p-1 hover:bg-[var(--app-soft)] rounded-md transition-colors" onClick={() => setSidebarOpen(false)}>
-            <X className="size-5" />
-          </button>
-        </div>
 
-        <div className="flex-1 overflow-y-auto px-4 gap-5 flex flex-col">
-          {navSections.map((section) => (
-            <div key={section.label} className="flex flex-col">
-              <span className="text-[10px] font-semibold tracking-wider text-[var(--app-muted)] px-2 py-1 mb-1">
-                {section.label}
-              </span>
-              <nav className="flex flex-col gap-0.5">
-                {section.items.map((item) => {
-                  const isActive = pathname === item.path || pathname.startsWith(item.path + '/');
-                  return (
-                    <Link 
-                      key={item.path} 
-                      href={item.path}
-                      onClick={() => setSidebarOpen(false)}
-                      className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-all font-medium tracking-tight ${
-                        isActive 
-                          ? 'bg-[var(--app-ink)] text-[var(--app-canvas)] hover:bg-[var(--app-ink)]' 
-                          : 'text-[var(--app-muted)] hover:bg-[var(--app-soft)] hover:text-[var(--app-ink)]'
-                      }`}
-                    >
-                      <item.icon className="size-4" />
-                      <span>{item.title}</span>
-                    </Link>
-                  );
-                })}
-              </nav>
-            </div>
-          ))}
-        </div>
+          <div className="flex-1 overflow-y-auto px-4 gap-5 flex flex-col">
+            {navSections.map((section) => (
+              <div key={section.label} className="flex flex-col">
+                <span className="text-[10px] font-semibold tracking-wider text-[var(--app-muted)] px-2 py-1 mb-1">
+                  {section.label}
+                </span>
+                <nav className="flex flex-col gap-0.5">
+                  {section.items.map((item) => {
+                    const isActive = pathname === item.path || pathname.startsWith(item.path + '/');
+                    return (
+                      <Link 
+                        key={item.path} 
+                        href={item.path}
+                        className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-all font-medium tracking-tight ${
+                          isActive 
+                            ? 'bg-[var(--app-ink)] text-[var(--app-canvas)] hover:bg-[var(--app-ink)]' 
+                            : 'text-[var(--app-muted)] hover:bg-[var(--app-soft)] hover:text-[var(--app-ink)]'
+                        }`}
+                      >
+                        <item.icon className="size-4" />
+                        <span>{item.title}</span>
+                      </Link>
+                    );
+                  })}
+                </nav>
+              </div>
+            ))}
+          </div>
 
-        <div className="p-4 pb-4 px-4">
-          <div className="group flex items-center gap-3 rounded-xl p-2.5 border border-[var(--app-hairline)] bg-[var(--app-soft)] w-full">
-            <div className="size-9 rounded-full bg-[var(--app-ink)] flex items-center justify-center shrink-0 overflow-hidden">
-              <span className="text-xs font-semibold text-[var(--app-canvas)]">
-                {user.name.substring(0, 2).toUpperCase()}
-              </span>
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-[var(--app-ink)] truncate">{user.name}</p>
-              <p className="text-[11px] text-[var(--app-muted)] truncate">{user.email}</p>
+          <div className="p-4 pb-4 px-4">
+            <div className="group flex items-center gap-3 rounded-xl p-2.5 border border-[var(--app-hairline)] bg-[var(--app-soft)] w-full">
+              <div className="size-9 rounded-full bg-[var(--app-ink)] flex items-center justify-center shrink-0 overflow-hidden">
+                <span className="text-xs font-semibold text-[var(--app-canvas)]">
+                  {user.name.substring(0, 2).toUpperCase()}
+                </span>
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-[var(--app-ink)] truncate">{user.name}</p>
+                <p className="text-[11px] text-[var(--app-muted)] truncate">{user.email}</p>
+              </div>
             </div>
           </div>
-        </div>
-      </aside>
+        </aside>
 
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col relative w-full lg:w-[calc(100%-16rem)] h-screen overflow-hidden bg-[var(--app-canvas)]">
-        {/* Ambient accent backdrop tone */}
-        <div className={`absolute inset-0 bg-gradient-to-br ${gradientClass} pointer-events-none z-0`} />
-        {/* Fine noise texture overlay */}
-        <div className="absolute inset-0 opacity-[0.015] dark:opacity-[0.025] pointer-events-none z-0 mix-blend-overlay" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }} />
+        {/* Main Content Area */}
+        <main className="flex-1 h-screen overflow-y-auto relative bg-[var(--app-canvas)] flex flex-col">
+          {/* Ambient accent backdrop tone */}
+          <div className={`absolute inset-0 bg-gradient-to-br ${gradientClass} pointer-events-none z-0`} />
+          {/* Fine noise texture overlay */}
+          <div className="absolute inset-0 opacity-[0.015] dark:opacity-[0.025] pointer-events-none z-0 mix-blend-overlay" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }} />
 
-        {/* Top bar */}
-        <header className="sticky top-0 z-30 flex h-14 shrink-0 items-center justify-between gap-2 border-b border-[var(--app-hairline)] bg-[var(--app-canvas)]/85 backdrop-blur-md px-3 sm:px-4">
-          <div className="flex items-center gap-2">
-            <button 
-              className="lg:hidden text-[var(--app-muted)] hover:text-[var(--app-ink)] p-1"
-              onClick={() => setSidebarOpen(true)}
-            >
-              <Menu className="size-5" />
-            </button>
-            <div className="lg:hidden flex items-center gap-2">
-              <span 
-                className="text-xl text-[var(--app-ink)] tracking-tight"
-                style={{
-                  fontFamily: "var(--font-geist-pixel-grid, monospace)",
-                  fontWeight: "bold",
-                }}
-              >
-                Checkpost
-              </span>
-            </div>
+          <div className="relative z-10 w-full min-h-screen">
+            {children}
           </div>
-        </header>
-
-        <main className="flex-1 overflow-y-auto relative z-10 w-full min-h-[calc(100svh-3.5rem)]">
-          {children}
         </main>
       </div>
-    </div>
     </AuthProvider>
   );
 }
