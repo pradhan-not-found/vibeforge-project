@@ -1,32 +1,29 @@
-// Custom element for hover-tilt effect
-class HoverTilt extends HTMLElement {
-  connectedCallback() {
-    this.style.display = 'block';
-    this.addEventListener('mousemove', (e) => {
-      const rect = this.getBoundingClientRect();
+﻿// Modified animations.js
+document.addEventListener("DOMContentLoaded", () => {
+  // Apply hover-tilt effect to elements with data-tilt-factor
+  const tiltElements = document.querySelectorAll('[data-tilt-factor]');
+  tiltElements.forEach(el => {
+    el.style.display = 'block';
+    el.addEventListener('mousemove', (e) => {
+      const rect = el.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
       const xc = rect.width / 2;
       const yc = rect.height / 2;
       const dx = x - xc;
       const dy = y - yc;
-      this.style.transform = `perspective(1000px) rotateY(${dx / 30}deg) rotateX(${-dy / 30}deg)`;
+      el.style.transform = `perspective(1000px) rotateY(${dx / 30}deg) rotateX(${-dy / 30}deg)`;
     });
-    this.addEventListener('mouseleave', () => {
-      this.style.transform = 'perspective(1000px) rotateY(0) rotateX(0)';
-      this.style.transition = 'transform 0.5s ease-out';
+    el.addEventListener('mouseleave', () => {
+      el.style.transform = 'perspective(1000px) rotateY(0) rotateX(0)';
+      el.style.transition = 'transform 0.5s ease-out';
     });
-    this.addEventListener('mouseenter', () => {
-      this.style.transition = 'none';
+    el.addEventListener('mouseenter', () => {
+      el.style.transition = 'none';
     });
-  }
-}
-if (!customElements.get('hover-tilt')) {
-  customElements.define('hover-tilt', HoverTilt);
-}
+  });
 
-// Add simple fade-in animations for scroll
-document.addEventListener("DOMContentLoaded", () => {
+  // Scroll animations
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -38,14 +35,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }, { threshold: 0.1 });
 
-  // Select elements that are hidden by default
   const hiddenElements = document.querySelectorAll('[style*="opacity: 0"]');
   hiddenElements.forEach(el => observer.observe(el));
-});
 
-
-// Carousel fix
-document.addEventListener("DOMContentLoaded", () => {
+  // Carousel fix
   const images = document.querySelectorAll('img[src*="carousel"]');
   const tracks = new Set();
   images.forEach(img => {
@@ -56,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   
   tracks.forEach(track => {
-    track.style.transform = 'none'; // clear framer motion inline styles
+    track.style.transform = 'none';
     track.style.animation = 'marquee 20s linear infinite';
   });
 });
