@@ -69,3 +69,19 @@ hover-tilt::part(tilt)::before{border-radius:20px}html{scrollbar-gutter:stable}
   background-size: auto;
 }
 
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background-color: rgba(38, 35, 35, 0.2);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(38, 35, 35, 0.3);
+}
