@@ -2,19 +2,19 @@ import Link from 'next/link';
 
 export default function Signup() {
   return (
-    <div className="min-h-screen bg-surface flex flex-col justify-center items-center px-4 relative overflow-hidden">
+    <div className="min-h-screen bg-[#FDFDFB] flex flex-col justify-center items-center px-4 relative overflow-hidden">
       
       {/* Decorative Grid Background */}
       <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(rgba(38, 35, 35, 1) 1px, transparent 1px), linear-gradient(90deg, rgba(38, 35, 35, 1) 1px, transparent 1px)', backgroundSize: '32px 32px' }}></div>
       <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#F5F5F2_80%)] pointer-events-none"></div>
 
-      <div className="w-full max-w-[460px] bg-white/60 backdrop-blur-xl rounded-2xl p-8 sm:p-10 border border-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative z-10 my-8">
+      <div className="w-full max-w-[460px] bg-white/60 backdrop-blur-xl rounded-2xl p-8 sm:p-10 border border-white/40 shadow-sm relative z-10 my-8">
         <div className="text-center mb-8 flex flex-col items-center">
           <Link href="/" className="inline-flex items-center justify-center mb-6">
             <span className="text-black text-4xl" style={{ fontFamily: "var(--font-geist-pixel-grid, monospace)", fontWeight: "bold", textShadow: "0 2px 10px rgba(0,0,0,0.05)" }}>Checkpost</span>
           </Link>
           <h1 className="text-2xl font-[500] tracking-tight text-ink mb-2">Create an account</h1>
-          <p className="text-[14px] text-ink-muted leading-relaxed">Join Checkpost and secure your autonomous AI agents today.</p>
+          <p className="text-[14px] text-ink-muted leading-relaxed">Join Checkpost and manage your AI agent workforce.</p>
         </div>
 
         <form action="/dashboard" className="flex flex-col gap-5">
