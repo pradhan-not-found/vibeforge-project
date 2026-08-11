@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import React from "react";
+import { Check } from "lucide-react";
 
 export default function LandingPage() {
   return (
@@ -4441,6 +4442,116 @@ export default function LandingPage() {
           </a>
         </div>
         <div className="h-[100px]"></div>
+      </div>
+      <div id="pricing" className="w-full bg-surface py-[80px] md:py-[120px] flex flex-col items-center justify-center">
+        <div className="text-center mb-[60px] px-6">
+          <h2 className="text-[32px] md:text-[40px] text-ink font-normal leading-[115%] mb-4 max-w-[600px] mx-auto">
+            <span className="text-ink" style={{ filter: "url(#headline-inner-shadow-dark)" }}>Start simple.</span> <span className="text-ink-faint" style={{ filter: "url(#headline-inner-shadow-light)" }}>Grow without limits.</span>
+          </h2>
+          <p className="text-[16px] text-ink-muted font-medium">
+            Build and scale without managing the systems behind it.
+          </p>
+        </div>
+
+        <div className="flex flex-col lg:flex-row gap-6 w-full max-w-[1100px] px-6">
+          {/* Free Trial */}
+          <div className="flex-1 flex flex-col bg-surface-raised rounded-[16px] p-[32px] border border-[rgba(0,0,0,0.06)] shadow-[0_4px_24px_-12px_rgba(0,0,0,0.1)] transition-transform hover:-translate-y-1">
+            <div className="mb-6">
+              <h3 className="text-[18px] font-semibold text-ink mb-2">Checkpost Free Trial</h3>
+              <div className="flex items-baseline gap-1">
+                <span className="text-[36px] font-bold text-ink">Free</span>
+              </div>
+              <p className="text-[14px] text-ink-muted mt-2">7 day free trial</p>
+            </div>
+            
+            <div className="flex-1 flex flex-col gap-[12px] mb-8">
+              {[
+                "$10 in usage included",
+                "7 days of Checkpost Pro",
+                "Access to multiple AI models",
+                "Agent-built previews",
+                "Preview environments"
+              ].map((feature, i) => (
+                <div key={i} className="flex items-center gap-[10px]">
+                  <Check className="w-5 h-5 text-feature-success shrink-0" />
+                  <span className="text-[15px] font-[460] text-ink-muted">{feature}</span>
+                </div>
+              ))}
+            </div>
+            
+            <button className="w-full py-[12px] rounded-[8px] bg-white border border-[rgba(0,0,0,0.1)] text-[15px] font-medium text-ink hover:bg-[rgba(0,0,0,0.02)] transition-colors shadow-sm">
+              Get started
+            </button>
+          </div>
+
+          {/* Pro Plan */}
+          <div className="flex-1 flex flex-col bg-white rounded-[16px] p-[32px] border border-[rgba(0,0,0,0.12)] shadow-[0_12px_32px_-12px_rgba(0,0,0,0.12)] relative transition-transform hover:-translate-y-1">
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#1A1A1A] text-white px-3 py-1 rounded-full text-[12px] font-medium tracking-wide">
+              MOST POPULAR
+            </div>
+            <div className="mb-6">
+              <h3 className="text-[18px] font-semibold text-ink mb-2">Checkpost Pro</h3>
+              <div className="flex items-baseline gap-1">
+                <span className="text-[14px] text-ink-muted mr-1">Starting at</span>
+                <span className="text-[36px] font-bold text-ink">$20</span>
+                <span className="text-[14px] text-ink-muted">/month</span>
+              </div>
+              <p className="text-[14px] text-ink-muted mt-2">usage included</p>
+            </div>
+            
+            <div className="flex-1 flex flex-col gap-[12px] mb-8">
+              {[
+                "Everything in the Free Plan",
+                "Access to multiple AI models",
+                "Domain purchasing and hosting",
+                "Agent inboxes",
+                "Graduate data from the platform"
+              ].map((feature, i) => (
+                <div key={i} className="flex items-center gap-[10px]">
+                  <Check className="w-5 h-5 text-feature-success shrink-0" />
+                  <span className="text-[15px] font-[460] text-ink">{feature}</span>
+                </div>
+              ))}
+            </div>
+            
+            <button className="cta-btn-dark w-full py-[12px] rounded-[8px] bg-[#1A1A1A] text-white text-[15px] font-medium hover:bg-black transition-colors shadow-sm">
+              Get started
+            </button>
+          </div>
+
+          {/* Team Plan */}
+          <div className="flex-1 flex flex-col bg-surface-raised rounded-[16px] p-[32px] border border-[rgba(0,0,0,0.06)] shadow-[0_4px_24px_-12px_rgba(0,0,0,0.1)] transition-transform hover:-translate-y-1">
+            <div className="mb-6">
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-[18px] font-semibold text-ink">Checkpost Team</h3>
+                <span className="bg-[rgba(0,0,0,0.05)] text-[12px] font-medium text-ink-muted px-2 py-0.5 rounded-full">Coming soon</span>
+              </div>
+              <div className="flex items-baseline gap-1">
+                <span className="text-[36px] font-bold text-ink-muted">$50</span>
+                <span className="text-[14px] text-ink-muted">/month</span>
+              </div>
+              <p className="text-[14px] text-ink-muted mt-2">usage included</p>
+            </div>
+            
+            <div className="flex-1 flex flex-col gap-[12px] mb-8 opacity-70">
+              {[
+                "Everything in the Pro Plan",
+                "Multiplayer",
+                "SOC 2",
+                "Priority support"
+              ].map((feature, i) => (
+                <div key={i} className="flex items-center gap-[10px]">
+                  <Check className="w-5 h-5 text-feature-success shrink-0" />
+                  <span className="text-[15px] font-[460] text-ink-muted">{feature}</span>
+                </div>
+              ))}
+            </div>
+            
+            <button className="w-full py-[12px] rounded-[8px] bg-[rgba(0,0,0,0.03)] border border-[rgba(0,0,0,0.05)] text-[15px] font-medium text-ink-muted hover:bg-[rgba(0,0,0,0.05)] transition-colors">
+              Join waitlist
+            </button>
+          </div>
+        </div>
       </div>
       <div className="w-full bg-white py-24 flex flex-col items-center justify-center border-t border-border-divider">
         <div className="text-center mb-16">

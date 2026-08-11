@@ -3,12 +3,24 @@ import { GeistPixelGrid } from "geist/font/pixel";
 import "./globals.css";
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://checkpost.ai'),
   title: {
     default: "Checkpost | Enterprise WAF for AI Agents",
     template: "%s | Checkpost"
   },
   description: "Enterprise-grade Web Application Firewall (WAF) to monitor, secure, and enforce policies on your autonomous AI agents.",
-  keywords: ["AI Agents", "WAF", "Security", "Firewall", "LLM Security", "Agentic Security", "Checkpost"],
+  keywords: ["AI Agents", "WAF", "Security", "Firewall", "LLM Security", "Agentic Security", "Checkpost", "AI Security", "AI Monitoring"],
+  authors: [{ name: "Checkpost Team", url: "https://checkpost.ai" }],
+  creator: "Checkpost",
+  publisher: "Checkpost",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
     title: "Checkpost | Enterprise WAF for AI Agents",
     description: "Monitor your autonomous agent activity and firewall interventions in real-time. Enforce policies and prevent destructive actions.",
@@ -27,9 +39,22 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
+    site: "@checkpost",
+    creator: "@checkpost",
     title: "Checkpost | Enterprise WAF for AI Agents",
     description: "Secure your AI agents with Checkpost. Intercept destructive actions and enforce strict operational policies.",
     images: ["/_assets/static/logo.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
   },
   icons: {
     icon: "/_assets/static/logo.png",

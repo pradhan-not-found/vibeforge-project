@@ -77,27 +77,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   return (
     <AuthProvider>
       <div className="flex absolute inset-0 bg-[var(--app-canvas)] text-[var(--app-ink)] antialiased overflow-hidden font-sans">
-        <style dangerouslySetInnerHTML={{ __html: `
-          .sidebar-scroll::-webkit-scrollbar {
-            width: 4px;
-          }
-          .sidebar-scroll::-webkit-scrollbar-track {
-            background: transparent;
-          }
-          .sidebar-scroll::-webkit-scrollbar-thumb {
-            background-color: rgba(0, 0, 0, 0.1);
-            border-radius: 4px;
-          }
-          .sidebar-scroll:hover::-webkit-scrollbar-thumb {
-            background-color: rgba(0, 0, 0, 0.2);
-          }
-          .dark .sidebar-scroll::-webkit-scrollbar-thumb {
-            background-color: rgba(255, 255, 255, 0.1);
-          }
-          .dark .sidebar-scroll:hover::-webkit-scrollbar-thumb {
-            background-color: rgba(255, 255, 255, 0.2);
-          }
-        `}} />
+
         {/* Mobile Navigation Toggle */}
         <button
           onClick={() => setIsMobileMenuOpen(true)}
@@ -115,7 +95,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         )}
 
         {/* Sidebar */}
-        <aside className={`fixed inset-y-0 left-0 z-50 w-64 shrink-0 transition-transform duration-200 ease-in-out border-r border-[var(--app-hairline)] bg-[var(--app-canvas)] flex flex-col md:relative md:translate-x-0 md:transform-none ${isMobileMenuOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full'}`}>
+        <aside className={`fixed inset-y-0 left-0 z-50 w-64 shrink-0 transition-transform duration-200 ease-in-out border-r border-[var(--app-hairline)] bg-[var(--app-canvas)] flex flex-col md:relative md:translate-x-0 ${isMobileMenuOpen ? 'translate-x-0 shadow-2xl' : 'max-md:-translate-x-full'}`}>
           <div className="py-5 px-6 border-b border-[var(--app-hairline)] mb-4 flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <img src="/icon.png" alt="Checkpost Logo" className="w-8 h-8 rounded-md" />
