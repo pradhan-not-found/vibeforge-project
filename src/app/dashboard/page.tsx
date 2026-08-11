@@ -57,7 +57,7 @@ export default function DashboardOverview() {
               </span>
             )}
           </div>
-          <h1 className="text-[24px] font-semibold tracking-[-0.02em] text-[#1A1A1A]">
+          <h1 className="text-[24px] font-medium tracking-[-0.01em] text-[#1A1A1A]" style={{ fontFamily: 'var(--font-geist-pixel-grid, monospace)' }}>
             {getGreeting()}, {userName}
           </h1>
         </div>
@@ -105,7 +105,7 @@ export default function DashboardOverview() {
             </div>
             
             <div className="flex flex-col">
-              <span className="text-[28px] font-semibold text-[#1A1A1A] leading-none mb-1">{stat.value}</span>
+              <span className="text-[28px] font-medium text-[#1A1A1A] leading-none mb-1" style={{ fontFamily: 'var(--font-geist-pixel-grid, monospace)' }}>{stat.value}</span>
               <span className="text-[11.5px] font-medium text-[rgba(38,35,35,0.5)]">{stat.subtext}</span>
             </div>
 
