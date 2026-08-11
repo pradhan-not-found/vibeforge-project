@@ -11,8 +11,10 @@
   "dependencies": {
     "cheerio": "^1.2.0",
     "firebase": "^12.17.1",
+    "framer-motion": "^13.1.0",
     "geist": "^1.7.2",
     "lucide-react": "^1.31.0",
+    "motion": "^13.1.0",
     "next": "16.3.0",
     "react": "19.2.8",
     "react-dom": "19.2.8",

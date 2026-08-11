@@ -104,3 +104,35 @@ hover-tilt::part(tilt)::before{border-radius:20px}html{scrollbar-gutter:stable}
 @media (max-width: 1400px) {
   .pixel-bg-footer:before { background-size: cover; }
 }
+
+@layer base {
+  :root {
+    --app-ink: #171717;
+    --app-canvas: #fffbf7;
+    --app-soft: #f5f2ef;
+    --app-hairline: #e5e2df;
+    --app-muted: #6b6b6b;
+    --app-info: #2563eb;
+    --app-success: #22c55e;
+  }
+}
+
+@layer utilities {
+  .app-surface { background-color: var(--app-canvas); }
+  .app-card { background-color: var(--app-soft); border-radius: 0.875rem; }
+  .app-hairline { border-color: var(--app-hairline); }
+
+  .card-elevate {
+    transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1),
+      border-color 200ms ease;
+  }
+  .card-elevate:hover {
+    border-color: var(--app-hairline);
+    box-shadow: inset 0 0 0 4px rgba(255, 255, 255, 0.45), 0 8px 24px -12px rgba(0, 0, 0, 0.18);
+  }
+  .card-depth {
+    border-width: 2px;
+    box-shadow: inset 0 0 0 4px rgba(255, 255, 255, 0.35);
+  }
+}
