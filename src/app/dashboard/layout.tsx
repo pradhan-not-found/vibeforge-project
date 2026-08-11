@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { LayoutDashboard, Shield, ShieldAlert, BookOpen, Settings, Menu, X } from 'lucide-react';
 import { auth } from '@/lib/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
+import { AuthProvider } from '@/context/AuthContext';
 
 const navSections = [
   {
@@ -55,6 +56,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const gradientClass = "from-cyan-500/[0.06] via-transparent to-blue-500/[0.05] dark:from-cyan-900/10 dark:to-blue-950/10";
 
   return (
+    <AuthProvider>
     <div className="flex h-screen bg-[var(--app-canvas)] text-[var(--app-ink)] antialiased overflow-hidden" style={{ fontFamily: 'Helvetica, sans-serif' }}>
       
       {/* Mobile Backdrop */}
@@ -163,5 +165,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </main>
       </div>
     </div>
+    </AuthProvider>
   );
 }
