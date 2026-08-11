@@ -41,6 +41,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const pathname = usePathname();
   const router = useRouter();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [user, setUser] = useState<{name: string, email: string, avatar: string | null}>({
     name: 'Admin User',
     email: 'admin@checkpost.app',
