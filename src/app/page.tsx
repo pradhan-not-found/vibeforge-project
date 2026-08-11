@@ -87,18 +87,20 @@ export default function LandingPage() {
             color: black;
           }
           .site-header.scrolled .nav-link {
-            color: rgba(0, 0, 0, 0.6);
+            color: rgba(0, 0, 0, 0.6) !important;
           }
           .site-header.scrolled .nav-link:hover {
-            color: black;
+            color: black !important;
           }
           .site-header.scrolled .cta-btn-dark {
-            background-color: #111;
-            color: white;
+            background-color: #111 !important;
+            background-image: none !important;
+            color: white !important;
           }
           .site-header:not(.scrolled) .cta-btn-dark {
-            background-color: white;
-            color: black;
+            background-color: white !important;
+            background-image: none !important;
+            color: black !important;
           }
         `}} />
         <script dangerouslySetInnerHTML={{ __html: `
@@ -240,7 +242,7 @@ export default function LandingPage() {
                     style={{ "--stagger": "0" } as any}
                   >
                     <h1 className="m-0 font-normal hero-gradient-text text-left max-w-[20ch] xl:max-w-[780px] text-[46px] leading-[108%] filter-[drop-shadow(0_1px_3px_rgba(0,0,0,0.12))] max-[900px]:text-[38px] max-[500px]:text-[34px] max-[500px]:font-normal max-[500px]:leading-[110%]">
-                      Build products and manage your infrastructure with Cofounder
+                      Build products and manage your infrastructure with Checkpost
                     </h1>
                   </div>
                   <p
@@ -4756,7 +4758,7 @@ export default function LandingPage() {
                           }
                         >
                           <span className="text-white">
-                            Cofounder is an agent orchestration platform
+                            Checkpost is an agent orchestration platform
                           </span>{" "}
                           <span
                             style={
@@ -5181,7 +5183,7 @@ export default function LandingPage() {
                         }
                       >
                         <span className="text-white">
-                          Cofounder is an agent orchestration platform
+                          Checkpost is an agent orchestration platform
                         </span>{" "}
                         <span
                           style={

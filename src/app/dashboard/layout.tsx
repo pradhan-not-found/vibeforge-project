@@ -74,7 +74,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <AuthProvider>
-      <div className="flex h-screen w-full bg-[var(--app-canvas)] text-[var(--app-ink)] antialiased overflow-hidden font-sans">
+      <div className="flex absolute inset-0 bg-[var(--app-canvas)] text-[var(--app-ink)] antialiased overflow-hidden font-sans">
         <style dangerouslySetInnerHTML={{ __html: `
           .sidebar-scroll::-webkit-scrollbar {
             width: 4px;
@@ -230,7 +230,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </aside>
 
         {/* Main Content Area */}
-        <main className="flex-1 h-screen overflow-y-auto relative bg-[var(--app-canvas)] flex flex-col">
+        <main className="flex-1 h-full overflow-y-auto relative bg-[var(--app-canvas)] flex flex-col">
           {/* Ambient accent backdrop tone */}
           <div className={`absolute inset-0 bg-gradient-to-br ${gradientClass} pointer-events-none z-0`} />
           {/* Fine noise texture overlay */}
