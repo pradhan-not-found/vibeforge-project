@@ -36,8 +36,8 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       {/* Sidebar */}
       <aside className="w-64 border-r border-border-card bg-surface-raised flex flex-col justify-between">
         <div className="p-6">
-          <Link href="/" className="inline-flex items-center mb-8">
-            <span className="text-ink" style={{ fontFamily: "var(--font-geist-pixel-grid, monospace)", fontWeight: "bold", fontSize: "1.25rem" }}>Checkpost</span>
+          <Link href="/" className="inline-flex items-center mb-8 gap-2">
+            <span className="text-[20px] font-bold tracking-tight text-[#1A1A1A]">Checkpost</span>
           </Link>
 
           <nav className="flex flex-col gap-2">
