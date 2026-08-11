@@ -1,76 +1,459 @@
-export default function AgentsPage() {
+"use client";
+import React, { useState, useEffect } from 'react';
+import { MoreVertical, X, ChevronDown } from 'lucide-react';
+import { MotionCard } from '@/components/MotionCard';
+import { useAuth } from '@/context/AuthContext';
+
+// ─── Provider presets ────────────────────────────────────────────────────────
+const PROVIDERS = [
+  // OpenAI
+  { label: 'OpenAI GPT-4o',       provider: 'OpenAI',       logo: '/ai-logos/openai.svg'      },
+  { label: 'OpenAI GPT-4',        provider: 'OpenAI',       logo: '/ai-logos/openai.svg'      },
+  { label: 'OpenAI o3',           provider: 'OpenAI',       logo: '/ai-logos/openai.svg'      },
+  // Anthropic / Claude
+  { label: 'Claude 3.5 Sonnet',   provider: 'Anthropic',    logo: '/ai-logos/claude.png'      },
+  { label: 'Claude 3 Opus',       provider: 'Anthropic',    logo: '/ai-logos/claude.png'      },
+  { label: 'Claude Code',         provider: 'Anthropic',    logo: '/ai-logos/claudecode.png'  },
+  // Google
+  { label: 'Gemini 2.0 Flash',    provider: 'Google',       logo: '/ai-logos/gemini.svg'      },
+  { label: 'Gemini 1.5 Pro',      provider: 'Google',       logo: '/ai-logos/gemini.svg'      },
+  { label: 'Gemma 2',             provider: 'Google',       logo: '/ai-logos/gemma.png'       },
+  // Meta
+  { label: 'Llama 3 70B',         provider: 'Meta',         logo: '/ai-logos/meta.svg'        },
+  { label: 'Llama 3.1 405B',      provider: 'Meta',         logo: '/ai-logos/meta.svg'        },
+  // Mistral
+  { label: 'Mistral Large',       provider: 'Mistral',      logo: '/ai-logos/mistral.svg'     },
+  { label: 'Mixtral 8x7B',        provider: 'Mistral',      logo: '/ai-logos/mistral.svg'     },
+  // DeepSeek
+  { label: 'DeepSeek R2',         provider: 'DeepSeek',     logo: '/ai-logos/deepseek.svg'    },
+  { label: 'DeepSeek Coder',      provider: 'DeepSeek',     logo: '/ai-logos/deepseek.svg'    },
+  // xAI
+  { label: 'Grok 3',              provider: 'xAI',          logo: '/ai-logos/xai.svg'         },
+  { label: 'Grok 2',              provider: 'xAI',          logo: '/ai-logos/xai.svg'         },
+  // Perplexity
+  { label: 'Perplexity Sonar',    provider: 'Perplexity',   logo: '/ai-logos/perplexity.svg'  },
+  // Qwen / Alibaba
+  { label: 'Qwen Max',            provider: 'Alibaba',      logo: '/ai-logos/qwen.svg'        },
+  { label: 'Qwen 2.5 Coder',      provider: 'Alibaba',      logo: '/ai-logos/qwen.svg'        },
+  // Kimi
+  { label: 'Kimi k2',             provider: 'Moonshot',     logo: '/ai-logos/kimi.png'        },
+  // Ollama (local)
+  { label: 'Local Ollama Model',  provider: 'Ollama',       logo: '/ai-logos/ollama.svg'      },
+  // HuggingFace
+  { label: 'HuggingFace Model',   provider: 'HuggingFace',  logo: '/ai-logos/huggingface.svg' },
+  // Cursor
+  { label: 'Cursor Agent',        provider: 'Cursor',       logo: '/ai-logos/cursor.svg'      },
+  // GitHub Copilot
+  { label: 'GitHub Copilot',      provider: 'GitHub',       logo: '/ai-logos/github.svg'      },
+  // Custom
+  { label: 'Custom Agent',        provider: 'Custom',       logo: '/ai-logos/openai.svg'      },
+];
+
+// ─── localStorage helpers ─────────────────────────────────────────────────────
+// Persist logo + provider per agent ID so DB round-trips don't lose the selection
+const LS_KEY = 'tw_agent_logos';
+
+function saveAgentMeta(id: string, logo: string, provider: string) {
+  try {
+    const store = JSON.parse(localStorage.getItem(LS_KEY) || '{}');
+    store[id] = { logo, provider };
+    localStorage.setItem(LS_KEY, JSON.stringify(store));
+  } catch {}
+}
+
+function loadAgentMeta(id: string): { logo: string; provider: string } | null {
+  try {
+    const store = JSON.parse(localStorage.getItem(LS_KEY) || '{}');
+    return store[id] || null;
+  } catch { return null; }
+}
+
+// ─── Fallback logo guesser (for agents created before this update) ────────────
+function guessLogo(name: string): { provider: string; logo: string } {
+  const n = name.toLowerCase();
+  if (n.includes('gpt') || n.includes('openai') || n.includes(' o1') || n.includes(' o3')) return { provider: 'OpenAI',      logo: '/ai-logos/openai.svg'      };
+  if (n.includes('claude code') || n.includes('claudecode'))                                  return { provider: 'Anthropic',   logo: '/ai-logos/claudecode.png'  };
+  if (n.includes('claude') || n.includes('anthropic') || n.includes('sonnet') || n.includes('opus') || n.includes('haiku')) return { provider: 'Anthropic', logo: '/ai-logos/claude.png' };
+  if (n.includes('gemma'))                                                                    return { provider: 'Google',      logo: '/ai-logos/gemma.png'       };
+  if (n.includes('gemini') || n.includes('google') || n.includes('bard'))                    return { provider: 'Google',      logo: '/ai-logos/gemini.svg'      };
+  if (n.includes('llama') || n.includes('meta'))                                              return { provider: 'Meta',        logo: '/ai-logos/meta.svg'        };
+  if (n.includes('mistral') || n.includes('mixtral'))                                         return { provider: 'Mistral',     logo: '/ai-logos/mistral.svg'     };
+  if (n.includes('deepseek'))                                                                  return { provider: 'DeepSeek',    logo: '/ai-logos/deepseek.svg'    };
+  if (n.includes('grok') || n.includes('xai'))                                                return { provider: 'xAI',         logo: '/ai-logos/xai.svg'         };
+  if (n.includes('perplexity'))                                                               return { provider: 'Perplexity',  logo: '/ai-logos/perplexity.svg'  };
+  if (n.includes('qwen') || n.includes('alibaba'))                                            return { provider: 'Alibaba',     logo: '/ai-logos/qwen.svg'        };
+  if (n.includes('kimi') || n.includes('moonshot'))                                           return { provider: 'Moonshot',    logo: '/ai-logos/kimi.png'        };
+  if (n.includes('ollama') || n.includes('local'))                                            return { provider: 'Ollama',      logo: '/ai-logos/ollama.svg'      };
+  if (n.includes('hugging') || n.includes('hf'))                                              return { provider: 'HuggingFace', logo: '/ai-logos/huggingface.svg' };
+  if (n.includes('cursor'))                                                                   return { provider: 'Cursor',      logo: '/ai-logos/cursor.svg'      };
+  if (n.includes('github') || n.includes('copilot'))                                          return { provider: 'GitHub',      logo: '/ai-logos/github.svg'      };
+  return { provider: 'Custom', logo: '/ai-logos/openai.svg' };
+}
+
+// ─── Types ────────────────────────────────────────────────────────────────────
+type Agent = {
+  id: string;
+  name: string;
+  owner: string;
+  risk_score: number;
+  provider: string;
+  logo: string;
+  status: string;
+  calls: string;
+  risk: string;
+  progress: number;
+};
+
+function statusStyles(status: string) {
+  if (status === 'Active') return 'bg-emerald-50 text-emerald-700 ring-emerald-600/20';
+  if (status === 'Warning') return 'bg-amber-50 text-amber-700 ring-amber-600/20';
+  if (status === 'Compromised') return 'bg-red-50 text-red-700 ring-red-600/20';
+  return 'bg-[var(--app-soft)] text-[var(--app-muted)] ring-[var(--app-hairline)]';
+}
+
+function riskColor(risk: string) {
+  if (risk === 'High') return 'text-red-600';
+  if (risk === 'Medium') return 'text-amber-600';
+  if (risk === 'Unknown') return 'text-[var(--app-muted)]';
+  return 'text-emerald-600';
+}
+
+// ─── Component ────────────────────────────────────────────────────────────────
+export default function Page() {
+  const [agents, setAgents] = useState<Agent[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedPreset, setSelectedPreset] = useState(PROVIDERS[0]);
+  const [customName, setCustomName] = useState('');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [activeMenu, setActiveMenu] = useState<string | null>(null);
+  const { user } = useAuth();
+
+  useEffect(() => {
+    if (user) fetchAgents();
+  }, [user]);
+
+  const agentName = customName.trim() || selectedPreset.label;
+
+  // ── Fetch ONLY this user's agents ──────────────────────────────────────────
+  const fetchAgents = async () => {
+    if (!user?.email) return;
+    try {
+      setLoading(true);
+      const response = await fetch(`http://localhost:8000/api/agents?user_id=${user.email}`);
+      if (!response.ok) throw new Error('API error');
+      const data = await response.json();
+      if (data) {
+        const mappedAgents = data.map((item: any) => {
+          let risk = 'Unknown';
+          let progress = 0;
+          if (item.risk_score > 70) { risk = 'High'; progress = item.risk_score; }
+          else if (item.risk_score > 30) { risk = 'Medium'; progress = item.risk_score; }
+          else if (item.risk_score >= 0) { risk = 'Low'; progress = item.risk_score; }
+
+          // Try saved logo first, then fall back to name-based guess
+          const saved = loadAgentMeta(item.id);
+          const { provider, logo } = saved || guessLogo(item.name);
+
+          return {
+            id: item.id,
+            name: item.name,
+            owner: item.owner,
+            risk_score: item.risk_score,
+            provider,
+            logo,
+            status: 'Active',
+            calls: '0',
+            risk,
+            progress,
+          };
+        });
+        setAgents(mappedAgents.reverse());
+      }
+    } catch (err) {
+      console.error('Error fetching agents:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ── Register agent ─────────────────────────────────────────────────────────
+  const handleAddAgent = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch('http://localhost:8000/api/agents', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: agentName,
+          user_id: user?.email || 'admin',
+          provider: selectedPreset.provider
+        })
+      });
+      
+      if (!response.ok) {
+        throw new Error('API returned an error');
+      }
+      
+      const data = await response.json();
+      const newId = data.id;
+
+      // Save the exact logo immediately BEFORE inserting (so it's ready when fetchAgents runs)
+      saveAgentMeta(newId, selectedPreset.logo, selectedPreset.provider);
+
+      fetchAgents();
+      closeModal();
+      
+      // Show the generated API key to the user
+      alert(`Agent Registered Successfully!\n\nID: ${data.id}\nProxy URL: ${data.proxy_url}\nAPI Key: ${data.proxy_api_key}\n\nPlease save this API key securely.`);
+      
+    } catch (err) {
+      console.error('Error inserting agent:', err);
+      alert('Failed to register agent. Check console for details.');
+    }
+  };
+
+  const handleDeleteAgent = async (id: string) => {
+    try {
+      const response = await fetch(`http://localhost:8000/api/agents/${id}`, { method: 'DELETE' });
+      if (!response.ok) throw new Error('Delete failed');
+      setAgents(agents.filter(a => a.id !== id));
+    } catch (err) {
+      console.error('Error deleting agent:', err);
+      alert('Failed to delete agent.');
+    }
+    setActiveMenu(null);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedPreset(PROVIDERS[0]);
+    setCustomName('');
+    setIsDropdownOpen(false);
+  };
+
+  // ── Render ─────────────────────────────────────────────────────────────────
   return (
-    <div className="flex flex-col gap-8 max-w-5xl">
-      <div className="flex items-center justify-between">
+    <>
+      <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto animate-fade-down relative">
+      <div className="flex items-start justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-2xl font-[550] tracking-[-0.03em] mb-1 text-ink">Managed Agents</h1>
-          <p className="text-[14px] text-ink-muted">View and add AI agents to the Checkpost firewall.</p>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--app-muted)] mb-3">Security</p>
+          <h1 className="font-serif text-4xl sm:text-5xl text-[var(--app-ink)] tracking-tight">Agent Registry</h1>
+          <p className="text-sm text-[var(--app-muted)] mt-2">
+            Manage, monitor, and govern your connected AI models.
+            {user?.email && (
+              <span className="ml-2 font-mono text-[10px] bg-[var(--app-soft)] border border-[var(--app-hairline)] px-2 py-0.5 rounded-md text-[var(--app-muted)]">
+                {user.email}
+              </span>
+            )}
+          </p>
         </div>
-        <button className="px-4 py-2 bg-ink text-white font-medium rounded-lg hover:bg-black transition-colors text-[14px]">
-          + Add Agent
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="shrink-0 mt-2 px-5 py-2.5 bg-[var(--app-ink)] text-[var(--app-canvas)] text-sm font-semibold rounded-xl hover:opacity-80 transition-opacity shadow-sm"
+        >
+          Register New Agent
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Agent Card 1 */}
-        <div className="bg-white p-6 rounded-2xl border border-border-card shadow-sm flex flex-col gap-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-lime-100 border border-lime-300 flex items-center justify-center text-lime-700 font-bold">
-                CS
-              </div>
-              <div className="flex flex-col">
-                <span className="font-[550] text-ink text-[15px]">Customer Support Bot</span>
-                <span className="text-[12px] text-ink-muted">LangChain / OpenAI</span>
-              </div>
-            </div>
-            <span className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]" title="Active"></span>
-          </div>
-          <div className="text-[13px] text-ink-muted">
-            Attached Policy: <span className="font-mono text-ink bg-surface-raised px-1 py-0.5 rounded">strict_db_read_only.yaml</span>
-          </div>
-          <div className="border-t border-border-card pt-4 mt-2 flex gap-4">
-            <div className="flex flex-col">
-              <span className="text-[11px] font-medium text-ink-muted uppercase tracking-wider">Calls (24h)</span>
-              <span className="font-[550] text-ink text-[14px]">1,240</span>
-            </div>
-            <div className="flex flex-col">
-              <span className="text-[11px] font-medium text-ink-muted uppercase tracking-wider">Blocked</span>
-              <span className="font-[550] text-red-500 text-[14px]">12</span>
-            </div>
-          </div>
+      {/* Agent Grid */}
+      {loading ? (
+        <div className="flex justify-center py-20 text-[var(--app-muted)]">Loading agents...</div>
+      ) : agents.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-20 bg-[var(--app-soft)] rounded-2xl border border-[var(--app-hairline)] border-dashed">
+          <p className="text-[var(--app-muted)] mb-4">No agents registered yet for your account.</p>
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="px-4 py-2 bg-[var(--app-ink)] text-[var(--app-canvas)] text-sm font-medium rounded-xl hover:opacity-80"
+          >
+            Register your first agent
+          </button>
         </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {agents.map((agent, i) => (
+            <MotionCard
+              key={agent.id}
+              index={i}
+              className="bg-[var(--app-soft)] rounded-2xl border-2 border-[var(--app-hairline)] p-5 card-elevate card-depth flex flex-col"
+            >
+              <div className="flex items-start justify-between mb-5">
+                {/* Logo */}
+                <div className="w-11 h-11 rounded-xl bg-[var(--app-canvas)] border border-[var(--app-hairline)] p-2 flex items-center justify-center shadow-sm overflow-hidden">
+                  <img
+                    src={agent.logo}
+                    alt={agent.provider}
+                    className="w-full h-full object-contain"
+                    onError={(e) => (e.currentTarget.style.display = 'none')}
+                  />
+                </div>
+                {/* Menu */}
+                <div className="relative">
+                  <button
+                    onClick={() => setActiveMenu(activeMenu === agent.id ? null : agent.id)}
+                    className="text-[var(--app-muted)] hover:text-[var(--app-ink)] transition-colors p-1 rounded-md hover:bg-[var(--app-canvas)]"
+                  >
+                    <MoreVertical className="w-4 h-4" />
+                  </button>
+                  {activeMenu === agent.id && (
+                    <div className="absolute right-0 mt-1 w-36 bg-[var(--app-canvas)] border border-[var(--app-hairline)] rounded-xl shadow-lg overflow-hidden z-10 animate-fade-down">
+                      <button
+                        onClick={() => handleDeleteAgent(agent.id)}
+                        className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors font-medium"
+                      >
+                        Delete Agent
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
 
-        {/* Agent Card 2 */}
-        <div className="bg-white p-6 rounded-2xl border border-border-card shadow-sm flex flex-col gap-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-blue-100 border border-blue-300 flex items-center justify-center text-blue-700 font-bold">
-                DS
+              <div className="flex-1">
+                <h3 className="text-base font-semibold text-[var(--app-ink)] tracking-tight leading-snug">{agent.name}</h3>
+                <p className="text-xs text-[var(--app-muted)] font-medium mt-0.5 mb-4">{agent.provider}</p>
+
+                <div className="mb-4">
+                  <div className="flex justify-between text-xs mb-1.5">
+                    <span className="text-[var(--app-muted)] font-medium">Usage</span>
+                    <span className="text-[var(--app-ink)] font-semibold">{agent.calls} reqs</span>
+                  </div>
+                  <div className="w-full bg-[var(--app-hairline)] rounded-full h-1.5 overflow-hidden">
+                    <div
+                      className={`h-1.5 rounded-full transition-all ${agent.status === 'Compromised' ? 'bg-red-500' : 'bg-[var(--app-ink)]'}`}
+                      style={{ width: `${agent.progress}%` }}
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between text-xs font-medium">
+                  <span className="text-[var(--app-muted)]">Risk Profile</span>
+                  <span className={riskColor(agent.risk)}>{agent.risk} Risk</span>
+                </div>
               </div>
-              <div className="flex flex-col">
-                <span className="font-[550] text-ink text-[15px]">Data Scraper Bot</span>
-                <span className="text-[12px] text-ink-muted">Custom Python SDK</span>
+
+              <div className="pt-4 mt-4 border-t border-[var(--app-hairline)] flex items-center justify-between">
+                <span className="text-[10px] font-mono text-[var(--app-muted)] uppercase tracking-wider truncate mr-2" title={agent.id}>{agent.id}</span>
+                <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider ring-1 ring-inset ${statusStyles(agent.status)}`}>
+                  {agent.status}
+                </span>
               </div>
-            </div>
-            <span className="w-2 h-2 rounded-full bg-yellow-500 shadow-[0_0_8px_rgba(234,179,8,0.6)]" title="Paused (Loop detected)"></span>
-          </div>
-          <div className="text-[13px] text-ink-muted">
-            Attached Policy: <span className="font-mono text-ink bg-surface-raised px-1 py-0.5 rounded">network_egress_allow.yaml</span>
-          </div>
-          <div className="border-t border-border-card pt-4 mt-2 flex gap-4">
-            <div className="flex flex-col">
-              <span className="text-[11px] font-medium text-ink-muted uppercase tracking-wider">Calls (24h)</span>
-              <span className="font-[550] text-ink text-[14px]">8,901</span>
-            </div>
-            <div className="flex flex-col">
-              <span className="text-[11px] font-medium text-ink-muted uppercase tracking-wider">Blocked</span>
-              <span className="font-[550] text-red-500 text-[14px]">45</span>
-            </div>
-          </div>
+            </MotionCard>
+          ))}
         </div>
-
+      )}
       </div>
-    </div>
+
+      {/* Register Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/20 backdrop-blur-sm animate-fade-in">
+          <div className="bg-[var(--app-canvas)] rounded-2xl shadow-xl border border-[var(--app-hairline)] w-full max-w-md overflow-hidden animate-fade-up">
+            <div className="px-6 py-4 border-b border-[var(--app-hairline)] flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-[var(--app-ink)]">Register New Agent</h2>
+              <button onClick={closeModal} className="text-[var(--app-muted)] hover:text-[var(--app-ink)] transition-colors">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleAddAgent} className="p-6 space-y-5">
+
+              {/* Provider Dropdown */}
+              <div>
+                <label className="block text-sm font-medium text-[var(--app-ink)] mb-1.5">AI Model / Provider</label>
+                <div className="relative">
+                  <button
+                    type="button"
+                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                    className="w-full flex items-center gap-3 px-4 py-2.5 border border-[var(--app-hairline)] rounded-xl text-sm text-left bg-transparent text-[var(--app-ink)] hover:bg-[var(--app-soft)] transition-colors"
+                  >
+                    <div className="w-6 h-6 rounded-md bg-[var(--app-soft)] border border-[var(--app-hairline)] flex items-center justify-center overflow-hidden shrink-0 p-0.5">
+                      <img src={selectedPreset.logo} alt={selectedPreset.provider} className="w-full h-full object-contain" onError={(e) => (e.currentTarget.style.display = 'none')} />
+                    </div>
+                    <span className="flex-1 font-medium">{selectedPreset.label}</span>
+                    <span className="text-[var(--app-muted)] text-xs">{selectedPreset.provider}</span>
+                    <ChevronDown className={`w-4 h-4 text-[var(--app-muted)] transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
+                  </button>
+
+                  {isDropdownOpen && (
+                    <div className="absolute left-0 right-0 mt-1 bg-[var(--app-canvas)] border border-[var(--app-hairline)] rounded-xl shadow-xl z-20 max-h-60 overflow-y-auto">
+                      {PROVIDERS.map((preset) => (
+                        <button
+                          key={preset.label}
+                          type="button"
+                          onClick={() => { setSelectedPreset(preset); setIsDropdownOpen(false); }}
+                          className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm text-left transition-colors hover:bg-[var(--app-soft)] ${selectedPreset.label === preset.label ? 'bg-[var(--app-soft)]' : ''}`}
+                        >
+                          <div className="w-6 h-6 rounded-md bg-[var(--app-soft)] border border-[var(--app-hairline)] flex items-center justify-center overflow-hidden shrink-0 p-0.5">
+                            <img src={preset.logo} alt={preset.provider} className="w-full h-full object-contain" onError={(e) => (e.currentTarget.style.display = 'none')} />
+                          </div>
+                          <span className="flex-1 font-medium text-[var(--app-ink)]">{preset.label}</span>
+                          <span className="text-[var(--app-muted)] text-xs">{preset.provider}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Custom Name */}
+              <div>
+                <label className="block text-sm font-medium text-[var(--app-ink)] mb-1.5">
+                  Custom Agent Name <span className="text-[var(--app-muted)] font-normal">(optional)</span>
+                </label>
+                <input
+                  type="text"
+                  value={customName}
+                  onChange={(e) => setCustomName(e.target.value)}
+                  placeholder={`e.g. ${selectedPreset.label} — Sales Bot`}
+                  className="w-full px-4 py-2.5 border border-[var(--app-hairline)] rounded-xl focus:ring-1 focus:ring-[var(--app-ink)] focus:border-[var(--app-ink)] text-sm bg-transparent text-[var(--app-ink)] placeholder:text-[var(--app-muted)]"
+                />
+                <p className="text-xs text-[var(--app-muted)] mt-1.5">
+                  Will be registered as: <span className="font-semibold text-[var(--app-ink)]">{agentName}</span>
+                </p>
+              </div>
+
+              {/* Provider API Key */}
+              <div>
+                <label className="block text-sm font-medium text-[var(--app-ink)] mb-1.5">
+                  Provider API Key <span className="text-[var(--app-muted)] font-normal">(required)</span>
+                </label>
+                <div className="relative">
+                  <input
+                    type="password"
+                    placeholder={`e.g. sk-...`}
+                    required
+                    className="w-full px-4 py-2.5 border border-[var(--app-hairline)] rounded-xl focus:ring-1 focus:ring-[var(--app-ink)] focus:border-[var(--app-ink)] text-sm bg-transparent text-[var(--app-ink)] placeholder:text-[var(--app-muted)]"
+                  />
+                </div>
+                <p className="text-[10px] text-[var(--app-muted)] mt-1.5">
+                  Your key is encrypted in transit and securely stored in our zero-trust vault.
+                </p>
+              </div>
+
+              {/* Live preview */}
+              <div className="flex items-center gap-3 p-3 rounded-xl bg-[var(--app-soft)] border border-[var(--app-hairline)]">
+                <div className="w-10 h-10 rounded-xl bg-[var(--app-canvas)] border border-[var(--app-hairline)] flex items-center justify-center p-2 shadow-sm overflow-hidden shrink-0">
+                  <img src={selectedPreset.logo} alt={selectedPreset.provider} className="w-full h-full object-contain" onError={(e) => (e.currentTarget.style.display = 'none')} />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold text-[var(--app-ink)] truncate">{agentName}</p>
+                  <p className="text-xs text-[var(--app-muted)]">{selectedPreset.provider} · Monitor Only mode</p>
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-3 pt-1">
+                <button type="button" onClick={closeModal} className="px-4 py-2 text-sm font-medium text-[var(--app-ink)] bg-transparent border border-[var(--app-hairline)] rounded-xl hover:bg-[var(--app-soft)] transition-colors">
+                  Cancel
+                </button>
+                <button type="submit" className="px-4 py-2 text-sm font-medium text-[var(--app-canvas)] bg-[var(--app-ink)] rounded-xl hover:opacity-80 transition-opacity shadow-sm">
+                  Register Agent
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </>
   );
 }

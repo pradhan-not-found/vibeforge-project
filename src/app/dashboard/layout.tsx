@@ -69,8 +69,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <aside className={`fixed inset-y-0 left-0 z-50 w-64 transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:relative lg:translate-x-0 transition-transform duration-200 ease-in-out border-r border-[var(--app-hairline)] bg-[var(--app-canvas)] flex flex-col`}>
         <div className="py-5 px-4">
           <div className="flex items-center gap-2.5">
-            <div className="size-10 flex items-center justify-center bg-[var(--app-info)] text-white rounded-xl shrink-0">
-              <Shield className="size-5" />
+            <div className="size-10 flex items-center justify-center bg-white border border-gray-200 rounded-xl shrink-0 overflow-hidden shadow-sm">
+              <img src="/icon.png" alt="Checkpost Logo" className="w-full h-full object-cover" />
             </div>
             
             <div className="flex flex-col leading-[1.1]">
@@ -150,8 +150,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <Menu className="size-5" />
             </button>
             <div className="lg:hidden flex items-center gap-2">
-              <div className="size-6 bg-[var(--app-info)] text-white rounded-md flex items-center justify-center">
-                <Shield className="size-3" />
+              <div className="size-6 bg-white border border-gray-200 rounded-md flex items-center justify-center overflow-hidden shadow-sm">
+                <img src="/icon.png" alt="Checkpost Logo" className="w-full h-full object-cover" />
               </div>
               <span className="text-base font-semibold text-[var(--app-ink)]">Checkpost</span>
             </div>
