@@ -74,8 +74,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <AuthProvider>
-      <div className="flex h-screen bg-[var(--app-canvas)] overflow-hidden font-sans">
-        
+      <div className="flex h-screen w-full bg-[var(--app-canvas)] text-[var(--app-ink)] antialiased overflow-hidden font-sans">
+        <style dangerouslySetInnerHTML={{ __html: `
+          .sidebar-scroll::-webkit-scrollbar {
+            display: none;
+          }
+          .sidebar-scroll {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+          }
+        `}} />
         {/* Mobile Navigation Toggle */}
         <button
           onClick={() => setIsMobileMenuOpen(true)}
@@ -93,7 +101,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         )}
 
         {/* Sidebar */}
-        <aside className={`fixed inset-y-0 left-0 z-50 w-64 transform ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 transition-transform duration-200 ease-in-out border-r border-[var(--app-hairline)] bg-[var(--app-canvas)] flex flex-col`}>
+        <aside className={`fixed inset-y-0 left-0 z-50 w-64 shrink-0 transform ${isMobileMenuOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full'} md:relative md:translate-x-0 transition-transform duration-200 ease-in-out border-r border-[var(--app-hairline)] bg-[var(--app-canvas)] flex flex-col`}>
           <div className="py-5 px-6 border-b border-[var(--app-hairline)] mb-4 flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <img src="/icon.png" alt="Checkpost Logo" className="w-8 h-8 rounded-md" />
@@ -119,7 +127,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </button>
           </div>
 
-          <div className="flex-1 overflow-y-auto px-3 space-y-6">
+          <div className="flex-1 overflow-y-auto overflow-x-hidden sidebar-scroll px-3 space-y-6">
             {navSections.map((section) => (
               <div key={section.label}>
                 <span className="block text-[11px] font-semibold text-[var(--app-muted)] uppercase tracking-wider mb-2 px-3">

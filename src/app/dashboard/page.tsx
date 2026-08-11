@@ -189,7 +189,7 @@ export default function Page() {
     <div className="p-4 sm:p-6 lg:p-8 max-w-6xl mx-auto">
       
       {/* Greeting section */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 lg:mb-8">
+      <div className="flex flex-row items-center justify-between gap-4 mb-6 lg:mb-8">
         <div className="flex items-center gap-3">
           <div className="size-8 rounded-full bg-[var(--app-ink)] flex items-center justify-center overflow-hidden shrink-0 border border-[var(--app-hairline)]">
             {user?.avatar ? (

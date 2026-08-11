@@ -76,12 +76,49 @@ export default function LandingPage() {
       </svg>
       <header
         id="site-header"
-        className="site-header fixed top-0 left-0 right-0 z-[201] flex justify-center bg-transparent border-b border-transparent transition-all duration-300 ease-in-out"
+        className="site-header fixed top-0 left-0 right-0 z-[201] flex justify-center bg-transparent border-b border-transparent transition-all duration-300 ease-in-out text-white"
       >
-        <div className="w-full max-w-[1440px] mx-auto px-[20px] min-[476px]:px-[32px] md:px-[20px] py-[16px] flex items-center justify-between">
+        <style dangerouslySetInnerHTML={{ __html: `
+          .site-header.scrolled {
+            background-color: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom-color: rgba(0, 0, 0, 0.1);
+            color: black;
+          }
+          .site-header.scrolled .nav-link {
+            color: rgba(0, 0, 0, 0.6);
+          }
+          .site-header.scrolled .nav-link:hover {
+            color: black;
+          }
+          .site-header.scrolled .cta-btn-dark {
+            background-color: #111;
+            color: white;
+          }
+          .site-header:not(.scrolled) .cta-btn-dark {
+            background-color: white;
+            color: black;
+          }
+        `}} />
+        <script dangerouslySetInnerHTML={{ __html: `
+          if (typeof window !== 'undefined') {
+            window.addEventListener('scroll', () => {
+              const header = document.getElementById('site-header');
+              if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+              } else {
+                header.classList.remove('scrolled');
+              }
+            });
+            // Initial check
+            if (window.scrollY > 50) document.getElementById('site-header').classList.add('scrolled');
+          }
+        `}} />
+        <div className="w-full max-w-[1440px] mx-auto px-[16px] sm:px-[20px] min-[476px]:px-[32px] md:px-[20px] py-[16px] flex items-center justify-between gap-2">
           <a className="shrink-0 flex items-center" aria-label="Home" href="/">
             <span
-              className="text-black text-3xl md:text-4xl"
+              className="text-inherit text-2xl sm:text-3xl md:text-4xl transition-colors duration-300"
               style={{
                 fontFamily: "var(--font-geist-pixel-grid, monospace)",
                 fontWeight: "bold",
@@ -93,27 +130,27 @@ export default function LandingPage() {
 
           <nav className="hidden min-[1000px]:flex items-center gap-[24px]">
             <a
-              className="text-[15px] font-[500] text-ink-muted hover:text-ink transition-colors"
+              className="nav-link text-[15px] font-[500] text-inherit/80 hover:text-inherit transition-colors"
               href="/login"
             >
               Log in
             </a>
             <a
-              className="cta-btn-dark px-[16px] py-[8px] rounded-[8px] text-[14px] font-[500] text-on-dark hover:opacity-90 transition-opacity"
+              className="cta-btn-dark px-[16px] py-[8px] rounded-[8px] text-[14px] font-[500] hover:opacity-90 transition-all"
               href="/signup"
             >
               Sign up
             </a>
           </nav>
-          <div className="flex items-center min-[1000px]:hidden gap-3">
+          <div className="flex items-center min-[1000px]:hidden gap-2 sm:gap-3">
             <a
-              className="text-[14px] font-[500] text-ink-muted hover:text-ink transition-colors px-2 py-1"
+              className="nav-link text-[13px] sm:text-[14px] font-[500] text-inherit/80 hover:text-inherit transition-colors px-2 py-1"
               href="/login"
             >
               Log in
             </a>
             <a
-              className="cta-btn-dark px-[12px] py-[8px] rounded-[6px] text-[14px] font-[500] text-on-dark hover:opacity-90 transition-opacity flex items-center justify-center"
+              className="cta-btn-dark px-[12px] py-[8px] rounded-[6px] text-[13px] sm:text-[14px] font-[500] hover:opacity-90 transition-all flex items-center justify-center shrink-0"
               href="/signup"
             >
               Sign up
