@@ -95,10 +95,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                       <Link 
                         key={item.path} 
                         href={item.path}
-                        className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-all font-medium tracking-tight ${
+                        className={`flex items-center gap-[10px] px-[12px] py-[8px] rounded-[8px] transition-all text-[14px] font-[500] ${
                           isActive 
-                            ? 'bg-[var(--app-ink)] text-[var(--app-canvas)] hover:bg-[var(--app-ink)]' 
-                            : 'text-[var(--app-muted)] hover:bg-[var(--app-soft)] hover:text-[var(--app-ink)]'
+                            ? 'cta-btn-dark text-on-dark shadow-sm' 
+                            : 'text-[var(--app-muted)] hover:bg-[rgba(38,35,35,0.04)] hover:text-[var(--app-ink)]'
                         }`}
                       >
                         <item.icon className="size-4" />
