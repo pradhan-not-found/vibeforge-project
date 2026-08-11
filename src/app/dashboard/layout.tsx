@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Shield, ShieldAlert, BookOpen, Settings, Menu, X } from 'lucide-react';
+import { usePathname, useRouter } from 'next/navigation';
+import { LayoutDashboard, Shield, ShieldAlert, BookOpen, Settings, Menu, X, LogOut, MoreVertical } from 'lucide-react';
 import { auth } from '@/lib/firebase';
-import { onAuthStateChanged } from 'firebase/auth';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { AuthProvider } from '@/context/AuthContext';
 
 const navSections = [
@@ -39,6 +39,8 @@ const navSections = [
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [user, setUser] = useState<{name: string, email: string, avatar: string | null}>({
     name: 'Admin User',
     email: 'admin@checkpost.app',
@@ -60,14 +62,40 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   const gradientClass = "from-cyan-500/[0.06] via-transparent to-blue-500/[0.05] dark:from-cyan-900/10 dark:to-blue-950/10";
 
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      router.push('/login');
+    } catch (err) {
+      console.error('Failed to log out', err);
+    }
+  };
+
   return (
     <AuthProvider>
-      <div className="flex h-screen w-full bg-[var(--app-canvas)] text-[var(--app-ink)] antialiased overflow-hidden">
+      <div className="flex h-screen bg-[var(--app-canvas)] overflow-hidden font-sans">
         
-        {/* Permanent Sidebar */}
-        <aside className="w-64 h-full border-r border-[var(--app-hairline)] bg-[var(--app-canvas)] flex flex-col shrink-0 z-20">
+        {/* Mobile Navigation Toggle */}
+        <button
+          onClick={() => setIsMobileMenuOpen(true)}
+          className="md:hidden fixed top-4 right-4 z-40 p-2 rounded-lg bg-[var(--app-soft)] text-[var(--app-ink)] border border-[var(--app-hairline)]"
+        >
+          <Menu className="w-5 h-5" />
+        </button>
+
+        {/* Mobile Sidebar Overlay */}
+        {isMobileMenuOpen && (
+          <div 
+            className="md:hidden fixed inset-0 bg-black/20 backdrop-blur-sm z-50 transition-opacity"
+            onClick={() => setIsMobileMenuOpen(false)}
+          />
+        )}
+
+        {/* Sidebar */}
+        <aside className={`fixed inset-y-0 left-0 z-50 w-64 transform ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 transition-transform duration-200 ease-in-out border-r border-[var(--app-hairline)] bg-[var(--app-canvas)] flex flex-col`}>
           <div className="py-5 px-6 border-b border-[var(--app-hairline)] mb-4 flex items-center justify-between">
             <div className="flex items-center gap-2.5">
+              <img src="/icon.png" alt="Checkpost Logo" className="w-8 h-8 rounded-md" />
               <div className="flex flex-col leading-[1.1]">
                 <span 
                   className="text-[26px] text-[var(--app-ink)] tracking-tight"
@@ -80,12 +108,20 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 </span>
               </div>
             </div>
+            
+            {/* Mobile Close Button */}
+            <button
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="md:hidden p-1 rounded-md text-[var(--app-muted)] hover:bg-[var(--app-soft)] hover:text-[var(--app-ink)] transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
           </div>
 
-          <div className="flex-1 overflow-y-auto px-4 gap-5 flex flex-col">
+          <div className="flex-1 overflow-y-auto px-3 space-y-6">
             {navSections.map((section) => (
-              <div key={section.label} className="flex flex-col">
-                <span className="text-[10px] font-semibold tracking-wider text-[var(--app-muted)] px-2 py-1 mb-1">
+              <div key={section.label}>
+                <span className="block text-[11px] font-semibold text-[var(--app-muted)] uppercase tracking-wider mb-2 px-3">
                   {section.label}
                 </span>
                 <nav className="flex flex-col gap-0.5">
@@ -97,6 +133,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                       <Link 
                         key={item.path} 
                         href={item.path}
+                        onClick={() => setIsMobileMenuOpen(false)}
                         className={`flex items-center gap-[10px] px-[12px] py-[8px] rounded-[8px] transition-all text-[14px] font-[500] ${
                           isActive 
                             ? 'cta-btn-dark text-on-dark shadow-sm' 
@@ -113,22 +150,39 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             ))}
           </div>
 
-          <div className="p-4 pb-4 px-4">
-            <div className="group flex items-center gap-3 rounded-xl p-2.5 border border-[var(--app-hairline)] bg-[var(--app-soft)] w-full">
-              <div className="size-9 rounded-full bg-[var(--app-ink)] flex items-center justify-center shrink-0 overflow-hidden">
-                {user.avatar ? (
-                  <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
-                ) : (
-                  <span className="text-xs font-semibold text-[var(--app-canvas)]">
-                    {user.name.substring(0, 2).toUpperCase()}
-                  </span>
-                )}
+          <div className="p-4 pb-4 px-4 relative">
+            {isProfileOpen && (
+              <div className="absolute bottom-full left-4 right-4 mb-2 bg-[var(--app-canvas)] border border-[var(--app-hairline)] rounded-xl shadow-lg overflow-hidden py-1 z-50">
+                <button
+                  onClick={handleLogout}
+                  className="w-full flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
+                >
+                  <LogOut className="size-4" />
+                  Sign Out
+                </button>
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-[var(--app-ink)] truncate">{user.name}</p>
-                <p className="text-[11px] text-[var(--app-muted)] truncate">{user.email}</p>
+            )}
+            <button 
+              onClick={() => setIsProfileOpen(!isProfileOpen)}
+              className="group flex items-center justify-between gap-3 rounded-xl p-2.5 border border-[var(--app-hairline)] bg-[var(--app-soft)] hover:bg-[var(--app-canvas)] w-full text-left transition-colors"
+            >
+              <div className="flex items-center gap-3 overflow-hidden">
+                <div className="size-9 rounded-full bg-[var(--app-ink)] flex items-center justify-center shrink-0 overflow-hidden border border-[var(--app-hairline)] shadow-sm">
+                  {user.avatar ? (
+                    <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-xs font-semibold text-[var(--app-canvas)]">
+                      {user.name.substring(0, 2).toUpperCase()}
+                    </span>
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-[var(--app-ink)] truncate">{user.name}</p>
+                  <p className="text-[11px] text-[var(--app-muted)] truncate">{user.email}</p>
+                </div>
               </div>
-            </div>
+              <MoreVertical className="size-4 text-[var(--app-muted)] shrink-0" />
+            </button>
           </div>
         </aside>
 
