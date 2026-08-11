@@ -1,43 +1,109 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { auth } from '@/lib/firebase';
+import { onAuthStateChanged } from 'firebase/auth';
+import { MessageSquare, Cpu, TrendingUp, Zap, RefreshCw } from 'lucide-react';
+
 export default function DashboardOverview() {
+  const [userName, setUserName] = useState('User');
+  const [avatar, setAvatar] = useState<string | null>(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUserName(user.displayName?.split(' ')[0] || 'User');
+        setAvatar(user.photoURL);
+      }
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good morning';
+    if (hour < 18) return 'Good afternoon';
+    return 'Good evening';
+  };
+
   return (
-    <div className="flex flex-col gap-8 max-w-[1100px] w-full" style={{ fontFamily: 'var(--font-tt-neoris, sans-serif)' }}>
+    <div className="flex flex-col gap-8 w-full" style={{ fontFamily: 'var(--font-tt-neoris, sans-serif)' }}>
       {/* Header */}
-      <div className="flex justify-between items-end">
-        <div>
-          <h1 className="text-[28px] font-medium tracking-[0.01em] mb-2 text-[#1A1A1A]" style={{ fontFamily: 'var(--font-geist-pixel-grid, monospace)' }}>
-            Overview
+      <div className="flex items-center justify-between bg-[#111111] p-6 rounded-[16px] border border-[#222222]">
+        <div className="flex items-center gap-4">
+          <div className="w-10 h-10 rounded-full overflow-hidden border border-[#333333] bg-[#222222] flex items-center justify-center shrink-0">
+            {avatar ? (
+              <img src={avatar} alt={userName} className="w-full h-full object-cover" />
+            ) : (
+              <span className="text-white font-medium text-sm">{userName.substring(0, 2).toUpperCase()}</span>
+            )}
+          </div>
+          <h1 className="text-[22px] font-medium text-white tracking-tight">
+            {getGreeting()}, {userName}
           </h1>
-          <p className="text-[15px] font-[430] text-[rgba(38,35,35,0.5)] tracking-[0.15px]">
-            Monitor your autonomous agent activity and firewall interventions.
-          </p>
         </div>
-        <div className="flex gap-3">
-          <button className="px-4 py-2 bg-white border border-[#E5E5E5] rounded-[8px] text-[13px] font-medium text-[#1A1A1A] shadow-[0_1px_2px_rgba(0,0,0,0.04)] hover:bg-[#FAFAF7] transition-colors">
-            Export Logs
-          </button>
-          <button className="px-4 py-2 bg-[#1A1A1A] border border-transparent rounded-[8px] text-[13px] font-medium text-white shadow-[0_2px_4px_rgba(0,0,0,0.15)] hover:bg-[#2A2A2A] transition-colors">
-            New Policy
-          </button>
-        </div>
+        <button className="w-10 h-10 rounded-full bg-[#1A1A1A] border border-[#2A2A2A] flex items-center justify-center text-[#888888] hover:text-white hover:bg-[#222222] transition-colors">
+          <RefreshCw className="w-4 h-4" />
+        </button>
       </div>
 
-      {/* KPI Cards */}
+      {/* Dark KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {[
-          { label: 'Active Agents', value: '142', change: '+12%', color: '#1A1A1A' },
-          { label: 'Intercepted Actions (24h)', value: '8,492', change: '+2.4%', color: '#e05252' },
-          { label: 'Infinite Loops Prevented', value: '18', change: '-4', color: '#e05252' },
-          { label: 'Budget Saved (Est.)', value: '$4,204', change: '+$840', color: '#10b981' }
+          { 
+            label: 'TOTAL REQUESTS', 
+            value: '1,918', 
+            subtext: 'No active sessions', 
+            icon: MessageSquare,
+            sparkline: "M0 20 L20 20 L30 20 L40 20 L50 20 L60 20 L70 20 L80 18 L90 20 L100 20 L110 5 L120 20 L130 20 L140 20 L150 20 L160 20"
+          },
+          { 
+            label: 'TOTAL TOKENS', 
+            value: '12028.3k', 
+            subtext: 'Input + output combined', 
+            icon: Cpu,
+            sparkline: "M0 20 L20 20 L40 20 L60 20 L80 20 L100 20 L110 20 L120 4 L130 20 L140 20 L150 20 L160 20"
+          },
+          { 
+            label: 'ESTIMATED COST', 
+            value: '$5.08', 
+            subtext: 'Based on model pricing', 
+            icon: TrendingUp,
+            sparkline: "M0 20 L20 20 L30 20 L40 18 L50 19 L60 17 L70 19 L80 18 L90 20 L100 20 L110 8 L120 20 L130 20 L140 20 L150 20 L160 20"
+          },
+          { 
+            label: 'ACTIVE PROVIDERS', 
+            value: '8', 
+            subtext: 'Top: claude-sonnet-4-6', 
+            icon: Zap,
+            sparkline: "M0 20 L20 20 L30 20 L40 20 L50 20 L60 20 L70 20 L80 20 L90 20 L100 20 L110 20 L120 20 L130 20 L140 20 L150 20 L160 20"
+          }
         ].map((stat, i) => (
-          <div key={i} className="bg-white p-5 rounded-[12px] border border-[#E5E5E5] shadow-[0_1px_3px_rgba(0,0,0,0.03)] flex flex-col gap-2 relative overflow-hidden group">
-            <span className="text-[13px] font-medium text-[rgba(38,35,35,0.5)] uppercase tracking-wider">{stat.label}</span>
-            <div className="flex items-end justify-between mt-1">
-              <span className="text-3xl font-medium tracking-tight" style={{ color: stat.color, fontFamily: 'var(--font-geist-pixel-grid, monospace)' }}>{stat.value}</span>
-              <span className="text-[12px] font-medium bg-[#FAFAF7] px-2 py-1 rounded-[4px] text-[rgba(38,35,35,0.7)] border border-[#E5E5E5]">
-                {stat.change}
-              </span>
+          <div key={i} className="bg-[#1A1A1A] p-5 rounded-[12px] border border-[#2A2A2A] flex flex-col relative overflow-hidden h-[160px]">
+            <div className="flex items-center justify-between mb-4">
+              <span className="text-[11px] font-medium text-[#777777] uppercase tracking-wider">{stat.label}</span>
+              <stat.icon className="w-4 h-4 text-[#777777]" />
             </div>
-            <div className="absolute bottom-0 left-0 h-1 bg-[#1A1A1A] transition-all duration-300 w-0 group-hover:w-full" style={{ opacity: 0.1 }}></div>
+            
+            <div className="flex flex-col">
+              <span className="text-[28px] font-medium text-white leading-none mb-1">{stat.value}</span>
+              <span className="text-[11px] text-[#666666]">{stat.subtext}</span>
+            </div>
+
+            {/* Sparkline */}
+            <div className="absolute bottom-4 left-5 right-5 h-6">
+              <svg width="100%" height="100%" viewBox="0 0 160 24" preserveAspectRatio="none" className="overflow-visible">
+                <path 
+                  d={stat.sparkline} 
+                  fill="none" 
+                  stroke="#CCCCCC" 
+                  strokeWidth="1.5" 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  vectorEffect="non-scaling-stroke"
+                />
+              </svg>
+            </div>
           </div>
         ))}
       </div>
