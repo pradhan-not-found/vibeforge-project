@@ -235,17 +235,27 @@ function DesktopLeftContent() {
 
 /* ── Footer Text ── */
 function FooterText({ light = false }: { light?: boolean }) {
+  const color = light ? 'rgba(255,255,255,0.55)' : 'rgba(120,100,90,0.7)';
   return (
     <p style={{
-      fontFamily: '"EB Garamond", Georgia, serif',
-      fontSize: '15px',
+      fontFamily: 'var(--font-neoris, Georgia, serif)',
+      fontSize: '13px',
       fontWeight: 400,
       fontStyle: 'italic',
-      color: light ? 'rgba(255,255,255,0.6)' : 'rgba(38,35,35,0.35)',
-      lineHeight: '1.4',
+      color,
+      lineHeight: '1.5',
       textAlign: 'center',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: '5px',
+      flexWrap: 'wrap',
     }}>
-      Made with ❤️ by Fantastic 4
+      <span>Made with</span>
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="#c0605a" xmlns="http://www.w3.org/2000/svg" style={{ display: 'inline', flexShrink: 0, marginBottom: '-1px' }} aria-label="love">
+        <path d="M12 21.593c-5.63-5.539-11-10.297-11-14.402 0-3.791 3.068-5.191 5.281-5.191 1.312 0 4.151.501 5.719 4.457 1.59-3.968 4.464-4.447 5.726-4.447 2.54 0 5.274 1.621 5.274 5.181 0 4.069-5.136 8.625-11 14.402z"/>
+      </svg>
+      <span>by Fantastic 4</span>
     </p>
   );
 }
