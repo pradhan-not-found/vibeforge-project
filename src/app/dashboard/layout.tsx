@@ -7,6 +7,7 @@ import { LayoutDashboard, BookOpen, Settings, Menu, X, LogOut, MoreVertical, Use
 import { auth } from '@/lib/firebase';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { AuthProvider } from '@/context/AuthContext';
+import { DatabaseProvider } from '@/context/DatabaseContext';
 
 const navSections = [
   {
@@ -77,7 +78,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <AuthProvider>
-      <div className="flex absolute inset-0 bg-[var(--app-canvas)] text-[var(--app-ink)] antialiased overflow-hidden font-sans">
+      <DatabaseProvider>
+        <div className="flex absolute inset-0 bg-[var(--app-canvas)] text-[var(--app-ink)] antialiased overflow-hidden font-sans">
 
         {/* Mobile Navigation Toggle */}
         <button
@@ -220,7 +222,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             {children}
           </div>
         </main>
-      </div>
+        </div>
+      </DatabaseProvider>
     </AuthProvider>
   );
 }

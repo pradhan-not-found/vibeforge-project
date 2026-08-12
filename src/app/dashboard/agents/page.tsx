@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { MoreVertical, X, ChevronDown, Plus , Eye, EyeOff } from 'lucide-react';
 import { MotionCard } from '@/components/MotionCard';
 import { useAuth } from '@/context/AuthContext';
+import { useDatabase } from '@/context/DatabaseContext';
 
 // ─── Provider presets ────────────────────────────────────────────────────────
 const PROVIDERS = [
@@ -157,7 +158,6 @@ export default function Page() {
   const [keyRevealed, setKeyRevealed] = useState(false);
   const [agentToDelete, setAgentToDelete] = useState<string | null>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   
   // Test Modal State
@@ -167,82 +167,56 @@ export default function Page() {
   const [testStatus, setTestStatus] = useState<'idle'|'loading'|'success'|'error'>('idle');
 
   const { user } = useAuth();
-
-  useEffect(() => {
-    if (user) fetchAgents();
-  }, [user]);
+  const { dbData, loading } = useDatabase();
 
   const agentName = customName.trim() || selectedPreset.label;
 
-  // ── Fetch ONLY this user's agents ──────────────────────────────────────────
-  const fetchAgents = async () => {
-    if (!user?.email) return;
-    try {
-      setLoading(true);
-      
-      let mappedAgents: any[] = [];
-
-
-      // Fetch local DB agents and policy profiles
-      try {
-        const localRes = await fetch('/api/db');
-        if (localRes.ok) {
-          const localData = await localRes.json();
-          
-          if (localData.policyProfiles) {
-            setPolicyProfiles(localData.policyProfiles);
-          }
-
-          if (localData.agents) {
-            const localMapped = Object.entries(localData.agents)
-              .filter(([_, info]: [string, any]) => info.owner === user.email)
-              .map(([id, info]: [string, any]) => {
-                const { provider, logo } = loadAgentMeta(id) || guessLogo(info.name);
-                
-                const agentTraces = (localData.traces || []).filter((t: any) => t.agentId === id);
-                const agentBlocked = (localData.queue || []).filter((q: any) => q.agentId === id);
-                const totalCalls = agentTraces.length + agentBlocked.length;
-
-                const policyId = info.policyId || 'default';
-                const policy = localData.policyProfiles?.[policyId] || localData.policyProfiles?.['default'] || { maxTokens: 100000, maxSpend: 50 };
-
-                const maxTokens = policy.maxTokens;
-                const maxSpend = policy.maxSpend;
-                const tokenProgress = Math.min(100, Math.round(((info.totalTokens || 0) / maxTokens) * 100));
-                const spendProgress = Math.min(100, Math.round(((info.totalSpend || 0) / maxSpend) * 100));
-                let progress = Math.max(tokenProgress, spendProgress);
-                
-                let status = 'Active';
-                if (info.blockedCount > 0) status = 'Warning';
-                if (progress >= 100) status = 'Compromised';
-
-                return {
-                  id,
-                  name: info.name,
-                  owner: user.email,
-                  risk_score: info.blockedCount > 0 ? 50 : 0,
-                  provider,
-                  logo,
-                  status,
-                  calls: totalCalls.toString(),
-                  risk: info.blockedCount > 0 ? 'Medium' : 'Low',
-                  progress,
-                };
-              });
-            mappedAgents = [...mappedAgents, ...localMapped];
-          }
-        }
-      } catch (err) {
-        console.error('Error fetching local agents:', err);
-      }
-
-      setAgents(mappedAgents.reverse());
-    } catch (err) {
-      console.error('Overall Error fetching agents:', err);
-    } finally {
-      setLoading(false);
+  useEffect(() => {
+    if (!user?.email || !dbData) return;
+    
+    if (dbData.policyProfiles) {
+      setPolicyProfiles(dbData.policyProfiles);
     }
-  };
+
+    if (dbData.agents) {
+      const localMapped = Object.entries(dbData.agents)
+        .filter(([_, info]: [string, any]) => info.owner === user.email)
+        .map(([id, info]: [string, any]) => {
+          const { provider, logo } = loadAgentMeta(id) || guessLogo(info.name);
+          
+          const agentTraces = (dbData.traces || []).filter((t: any) => t.agentId === id);
+          const agentBlocked = (dbData.queue || []).filter((q: any) => q.agentId === id);
+          const totalCalls = agentTraces.length + agentBlocked.length;
+
+          const policyId = info.policyId || 'default';
+          const policy = dbData.policyProfiles?.[policyId] || dbData.policyProfiles?.['default'] || { maxTokens: 100000, maxSpend: 50 };
+
+          const maxTokens = policy.maxTokens;
+          const maxSpend = policy.maxSpend;
+          const tokenProgress = Math.min(100, Math.round(((info.totalTokens || 0) / maxTokens) * 100));
+          const spendProgress = Math.min(100, Math.round(((info.totalSpend || 0) / maxSpend) * 100));
+          let progress = Math.max(tokenProgress, spendProgress);
+          
+          let status = 'Active';
+          if (info.blockedCount > 0) status = 'Warning';
+          if (progress >= 100) status = 'Compromised';
+
+          return {
+            id,
+            name: info.name,
+            owner: user.email,
+            risk_score: info.blockedCount > 0 ? 50 : 0,
+            provider,
+            logo,
+            status,
+            calls: totalCalls.toString(),
+            risk: info.blockedCount > 0 ? 'Medium' : 'Low',
+            progress,
+          };
+        });
+      setAgents(localMapped.reverse());
+    }
+  }, [user, dbData]);
 
   // ── Register agent ─────────────────────────────────────────────────────────
   const handleAddAgent = async (e: React.FormEvent) => {
@@ -270,7 +244,6 @@ export default function Page() {
 
       saveAgentMeta(data.id, selectedPreset.logo, selectedPreset.provider);
 
-      fetchAgents();
       closeModal();
       
       // Show the generated API key to the user
@@ -371,7 +344,9 @@ export default function Page() {
 
       {/* Agent Grid */}
       {loading ? (
-        <div className="flex justify-center py-20 text-[var(--app-muted)]">Loading agents...</div>
+        <div className="flex items-center justify-center p-12 text-[var(--app-muted)]">
+          <div className="w-5 h-5 border-2 border-[var(--app-muted)] border-t-transparent rounded-full animate-spin" />
+        </div>
       ) : agents.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 bg-[var(--app-soft)] rounded-2xl border border-[var(--app-hairline)] border-dashed">
           <p className="text-[var(--app-muted)] mb-4">No agents registered yet for your account.</p>

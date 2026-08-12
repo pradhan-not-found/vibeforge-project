@@ -6,6 +6,8 @@ import {
   FileText, ClipboardList, CreditCard, Ban, Gauge, BookLock, Network, EyeOff, Server, Edit, Trash
 } from 'lucide-react';
 import { MotionCard } from '@/components/MotionCard';
+import { useAuth } from '@/context/AuthContext';
+import { useDatabase } from '@/context/DatabaseContext';
 
 // ─── Icon system ──────────────────────────────────────────────────────────────
 const ICON_MAP: Record<string, { el: React.ReactNode; bg: string; fg: string }> = {
@@ -135,6 +137,8 @@ function getAgentLogo(name: string) {
 }
 
 export default function PoliciesPage() {
+  const { user } = useAuth();
+  const { dbData, loading } = useDatabase();
   const [profiles, setProfiles] = useState<Record<string, PolicyProfile>>({});
   const [agents, setAgents] = useState<any[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -150,35 +154,25 @@ export default function PoliciesPage() {
   const [loopLimit, setLoopLimit] = useState(5);
   const [selectedRules, setSelectedRules] = useState<string[]>([]);
   const [assignedAgents, setAssignedAgents] = useState<string[]>([]);
-  const [openCategory, setOpenCategory] = useState<string | null>(null);
   const [agentMetas, setAgentMetas] = useState<Record<string, {logo: string, provider: string}>>({});
 
   useEffect(() => {
-    fetchDb();
     try {
       const stored = localStorage.getItem('tw_agent_logos');
       if (stored) setAgentMetas(JSON.parse(stored));
     } catch (e) {}
   }, []);
 
-  const fetchDb = async () => {
-    try {
-      setLoading(true);
-      const res = await fetch('/api/db');
-      const data = await res.json();
-      if (data.policyProfiles) {
-        setProfiles(data.policyProfiles);
-      }
-      if (data.agents) {
-        const mapped = Object.entries(data.agents).map(([id, info]: [any, any]) => ({ id, ...info }));
+  useEffect(() => {
+    if (dbData) {
+      if (dbData.policyProfiles) setProfiles(dbData.policyProfiles);
+      if (dbData.agents) {
+        const mapped = Object.entries(dbData.agents).map(([id, info]: [any, any]) => ({ id, ...info }));
         setAgents(mapped);
       }
-    } catch (err) {
-      console.error('Failed to fetch profiles', err);
-    } finally {
       setLoading(false);
     }
-  };
+  }, [dbData]);
 
   const openNewModal = () => {
     setEditingId(null);
@@ -217,12 +211,10 @@ export default function PoliciesPage() {
       [id]: { name, description, maxSpend: Number(maxSpend), maxTokens: Number(maxTokens), loopLimit: Number(loopLimit), rules: selectedRules }
     };
     
-    // Compute agent policy changes
     const agentUpdates: Record<string, string> = {};
     for (const aId of assignedAgents) {
       agentUpdates[aId] = id;
     }
-    // Remove unassigned agents
     for (const a of agents) {
       if ((a.policyId === id || (id === 'default' && !a.policyId)) && !assignedAgents.includes(a.id)) {
         agentUpdates[a.id] = 'default';
@@ -235,8 +227,6 @@ export default function PoliciesPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'update_policy_and_agents', policyProfiles: updatedProfiles, agentUpdates })
       });
-      setProfiles(updatedProfiles);
-      fetchDb(); // refresh agents list
       setIsModalOpen(false);
       alert('Policy Profile successfully saved and applied to agents!');
     } catch (err) {
@@ -266,6 +256,7 @@ export default function PoliciesPage() {
       setProfiles(updatedProfiles);
     } catch (err) {
       console.error('Failed to delete profile', err);
+      alert('Failed to delete policy profile.');
     }
   };
 

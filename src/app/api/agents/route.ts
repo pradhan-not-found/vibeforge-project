@@ -47,8 +47,9 @@ export async function POST(req: Request) {
       proxy_url: `https://api.checkpost.app/v1/${newId}/chat`,
       proxy_api_key
     });
-  } catch (error) {
-    return NextResponse.json({ error: 'Failed to create agent' }, { status: 500 });
+  } catch (error: any) {
+    console.error('Agent Creation Error:', error);
+    return NextResponse.json({ error: error.message || 'Failed to create agent', stack: error.stack }, { status: 500 });
   }
 }
 

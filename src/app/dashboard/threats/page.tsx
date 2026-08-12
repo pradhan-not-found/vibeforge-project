@@ -1,6 +1,7 @@
 "use client";
 import { ShieldAlert, AlertTriangle, XCircle, Search, Filter } from 'lucide-react';
 import { MotionCard } from '@/components/MotionCard';
+import { useDatabase } from '@/context/DatabaseContext';
 
 import React, { useState, useEffect } from 'react';
 
@@ -33,6 +34,7 @@ function severityStyles(severity: string) {
 }
 
 export default function Page() {
+  const { dbData } = useDatabase();
   const [threats, setThreats] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -40,7 +42,7 @@ export default function Page() {
     fetchLogs();
     const interval = setInterval(fetchLogs, 800);
     return () => clearInterval(interval);
-  }, []);
+  }, [dbData]);
 
   const fetchLogs = async () => {
     try {
@@ -72,24 +74,18 @@ export default function Page() {
       let queueThreats: any[] = [];
       
       // Fetch local db queue
-      try {
-        const res2 = await fetch('/api/db');
-        if (res2.ok) {
-          const dbData = await res2.json();
-          queueThreats = (dbData.queue || []).map((q: any) => ({
-            id: q.id,
-            agent: q.agentName,
-            logo: guessLogo(dbData.agents?.[q.agentId]?.provider || q.agentName || q.agentId).logo,
-            type: `Policy Violation`,
-            severity: 'High',
-            action: 'Blocked',
-            time: new Date(q.time).toLocaleString(),
-            timestampMs: new Date(q.time).getTime(),
-            payload: q.prompt || q.action || `Triggered: ${q.policy}`
-          }));
-        }
-      } catch (e) {
-        // Silently ignore if db is down
+      if (dbData) {
+        queueThreats = (dbData.queue || []).map((q: any) => ({
+          id: q.id,
+          agent: q.agentName,
+          logo: guessLogo(dbData.agents?.[q.agentId]?.provider || q.agentName || q.agentId).logo,
+          type: `Policy Violation`,
+          severity: 'High',
+          action: 'Blocked',
+          time: new Date(q.time).toLocaleString(),
+          timestampMs: new Date(q.time).getTime(),
+          payload: q.prompt || q.action || `Triggered: ${q.policy}`
+        }));
       }
 
       const allThreats = [...mapped, ...queueThreats].sort((a, b) => b.timestampMs - a.timestampMs);

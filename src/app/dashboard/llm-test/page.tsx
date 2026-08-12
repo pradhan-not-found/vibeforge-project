@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Send, Bot, Zap, ChevronDown } from 'lucide-react';
 import { MotionCard } from '@/components/MotionCard';
 import { useAuth } from '@/context/AuthContext';
+import { useDatabase } from '@/context/DatabaseContext';
 
 export default function LLMTestPage() {
   const [prompt, setPrompt] = useState('');
@@ -15,36 +16,33 @@ export default function LLMTestPage() {
   const [agentId, setAgentId] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
+  const { dbData } = useDatabase();
+
   useEffect(() => {
-    fetch('/api/db')
-      .then(res => res.json())
-      .then(data => {
-        if (data.agents) {
-          const loadedAgents = Object.entries(data.agents).map(([id, info]: [string, any]) => {
-            const pLower = (info.provider || info.name).toLowerCase();
-            let provider = info.provider || 'Custom';
-            let logo = '/ai-logos/openai.svg';
-            if (pLower.includes('gemini') || pLower.includes('google')) { logo = '/ai-logos/gemini.svg'; }
-            else if (pLower.includes('claude') || pLower.includes('anthropic')) { logo = '/ai-logos/claude.png'; }
-            else if (pLower.includes('groq')) { logo = '/ai-logos/groq.png'; }
-            else if (pLower.includes('gpt') || pLower.includes('openai')) { logo = '/ai-logos/openai.svg'; }
-            else if (pLower.includes('meta') || pLower.includes('llama')) { logo = '/ai-logos/meta.svg'; }
-            else if (pLower.includes('mistral')) { logo = '/ai-logos/mistral.svg'; }
-            else if (pLower.includes('deepseek')) { logo = '/ai-logos/deepseek.svg'; }
-            
-            return {
-              id,
-              label: info.name,
-              provider,
-              logo
-            };
-          });
-          setAgents(loadedAgents);
-          if (loadedAgents.length > 0) setAgentId(loadedAgents[0].id);
-        }
-      })
-      .catch(err => console.error(err));
-  }, []);
+    if (dbData?.agents) {
+      const loadedAgents = Object.entries(dbData.agents).map(([id, info]: [string, any]) => {
+        const pLower = (info.provider || info.name).toLowerCase();
+        let provider = info.provider || 'Custom';
+        let logo = '/ai-logos/openai.svg';
+        if (pLower.includes('gemini') || pLower.includes('google')) { logo = '/ai-logos/gemini.svg'; }
+        else if (pLower.includes('claude') || pLower.includes('anthropic')) { logo = '/ai-logos/claude.png'; }
+        else if (pLower.includes('groq')) { logo = '/ai-logos/groq.png'; }
+        else if (pLower.includes('gpt') || pLower.includes('openai')) { logo = '/ai-logos/openai.svg'; }
+        else if (pLower.includes('meta') || pLower.includes('llama')) { logo = '/ai-logos/meta.svg'; }
+        else if (pLower.includes('mistral')) { logo = '/ai-logos/mistral.svg'; }
+        else if (pLower.includes('deepseek')) { logo = '/ai-logos/deepseek.svg'; }
+        
+        return {
+          id,
+          label: info.name,
+          provider,
+          logo
+        };
+      });
+      setAgents(loadedAgents);
+      if (loadedAgents.length > 0 && !agentId) setAgentId(loadedAgents[0].id);
+    }
+  }, [dbData]);
 
   const selectedAgent = agents.find(a => a.id === agentId) || agents[0] || { id: 'default', label: 'Loading...', provider: 'System', logo: '/ai-logos/openai.svg' };
 

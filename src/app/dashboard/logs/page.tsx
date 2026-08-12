@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Download, Search, CheckCircle2, ShieldAlert, Clock, GitMerge, Activity, AlertCircle, Database, Server, ChevronDown } from 'lucide-react';
 import { MotionCard } from '@/components/MotionCard';
 import { useAuth } from '@/context/AuthContext';
+import { useDatabase } from '@/context/DatabaseContext';
 
 function guessLogo(name: string): { provider: string; logo: string } {
   const n = (name || '').toLowerCase();
@@ -34,35 +35,17 @@ function resultStyles(result: string) {
 
 export default function Page() {
   const { user } = useAuth();
-  const [db, setDb] = useState<any>({ traces: [], agents: {}, queue: [] });
+  const { dbData } = useDatabase();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTraceId, setSelectedTraceId] = useState<string>('');
 
-  const fetchDb = async () => {
-    try {
-      const res = await fetch('/api/db');
-      if (res.ok) {
-        const data = await res.json();
-        setDb(data);
-      }
-    } catch (err) {
-      console.error('Failed to fetch DB', err);
-    }
-  };
-
-  useEffect(() => {
-    fetchDb();
-    const interval = setInterval(fetchDb, 800);
-    return () => clearInterval(interval);
-  }, []);
-
   // Compute active agents for this user context
-  const userAgents = Object.entries(db.agents || {})
+  const userAgents = Object.entries(dbData?.agents || {})
     .filter(([_, a]: [string, any]) => a.owner === user?.email)
     .reduce((acc: any, [id, a]) => { acc[id] = a; return acc; }, {});
 
   // Map backend traces and queue to the original log format
-  const traceLogs = (db.traces || [])
+  const traceLogs = (dbData?.traces || [])
     .filter((t: any) => userAgents[t.agentId])
     .map((t: any) => ({
       ...t,
@@ -79,7 +62,7 @@ export default function Page() {
       user: 'system_api'
     }));
 
-  const queueLogs = (db.queue || [])
+  const queueLogs = (dbData?.queue || [])
     .filter((q: any) => userAgents[q.agentId])
     .map((q: any) => ({
       ...q,
