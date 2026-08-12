@@ -310,7 +310,6 @@ export default function Page() {
         setTestResult(data.error);
         setTestStatus('error');
       }
-      fetchAgents(); // Refresh usage stats
     } catch (err: any) {
       setTestResult(err.message || 'Error communicating with agent');
       setTestStatus('error');

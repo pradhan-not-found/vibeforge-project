@@ -142,8 +142,8 @@ export default function PoliciesPage() {
   const [profiles, setProfiles] = useState<Record<string, PolicyProfile>>({});
   const [agents, setAgents] = useState<any[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [openCategory, setOpenCategory] = useState<string | null>(null);
   
   // Modal State
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -170,7 +170,6 @@ export default function PoliciesPage() {
         const mapped = Object.entries(dbData.agents).map(([id, info]: [any, any]) => ({ id, ...info }));
         setAgents(mapped);
       }
-      setLoading(false);
     }
   }, [dbData]);
 
