@@ -2554,7 +2554,7 @@ export default function LandingPage() {
             style={{ zIndex: 10 }}
           >
             <img
-              src="/decor/hero-pixels.png"
+              src="/footer/footer-bg.avif"
               alt=""
               aria-hidden="true"
               className="absolute bottom-0 left-0 w-full"
@@ -2562,7 +2562,6 @@ export default function LandingPage() {
                 height: "92px",
                 objectFit: "cover",
                 objectPosition: "bottom",
-                imageRendering: "pixelated",
                 pointerEvents: "none",
               }}
             />
