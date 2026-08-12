@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { auth } from '@/lib/firebase';
 import { GoogleAuthProvider, GithubAuthProvider, signInWithPopup } from 'firebase/auth';
+import HeroSlideshow from '@/app/components/HeroSlideshow';
 
 /* ──────────────────────────────────────────────────────────
    Auth Panel (shared between desktop right + mobile bottom)
@@ -195,78 +196,49 @@ function PixelScene({ children }: { children?: React.ReactNode }) {
 
 /* ── Desktop Left Panel Content ── */
 function DesktopLeftContent() {
+  const [activeSlide, setActiveSlide] = useState(0);
+  
+  const slideTexts = [
+    {
+      title: <>Block Destructive<br />Agent Actions</>,
+      desc: "Checkpost intercepts harmful queries like DROP TABLE before they reach your database, ensuring agent hallucinations never cause data loss."
+    },
+    {
+      title: <>Enforce Strict<br />Cost Governance</>,
+      desc: "Set strict budget ceilings and retry limits on API calls. Checkpost automatically halts agents that get stuck in costly infinite loops."
+    },
+    {
+      title: <>Human-in-the-Loop<br />Intercepts</>,
+      desc: "Flag high-risk financial actions for manual review. Your agents wait safely until an operator explicitly approves the request."
+    },
+    {
+      title: <>Enterprise-grade WAF<br />for AI Agents</>,
+      desc: "Monitor your autonomous agent activity and firewall interventions. Checkpost protects your systems by enforcing policies and intercepting threats."
+    }
+  ];
+
   return (
-    <div className="relative z-10 flex flex-col h-full justify-center items-center px-8 py-10">
-      <div className="max-w-[420px] text-center">
-        <h2 className="text-white text-[26px] font-medium leading-[1.2] tracking-[0.15px] mb-4"
-          style={{ fontFamily: 'var(--font-tt-neoris, sans-serif)', textShadow: '0 1px 6px rgba(0,0,0,0.2)' }}>
-          Enterprise-grade WAF<br />for AI Agents
-        </h2>
-        <p className="text-white/80 text-[14px] font-medium leading-[1.5] tracking-[0.14px]"
-          style={{ fontFamily: 'var(--font-tt-neoris, sans-serif)', textShadow: '0 1px 4px rgba(0,0,0,0.15)' }}>
-          Monitor your autonomous agent activity and firewall interventions.
-          Checkpost protects your systems by enforcing policies, intercepting destructive actions, and preventing infinite loops.
-        </p>
-      </div>
-
-      {/* Product UI mockup */}
-      <div className="mt-8 w-full max-w-[520px]">
-        <div className="rounded-[12px] overflow-hidden"
-          style={{
-            background: '#E7E7E3',
-            boxShadow: '0 24px 48px rgba(0,0,0,0.18), 0 8px 16px rgba(0,0,0,0.1)',
-            height: '280px',
-            position: 'relative',
-          }}>
-          {/* Column headers */}
-          <div className="absolute top-0 left-0 right-0 flex h-[36px] border-b border-black/5">
-            {['Intercept Request', 'Policy Evaluation', 'Execution State'].map((label) => (
-              <div key={label} className="flex-1 flex items-center px-3 border-r border-black/5 last:border-0">
-                <span style={{ fontSize: '9px', color: 'rgba(38,35,35,0.35)', fontFamily: 'var(--font-departure-mono, monospace)', letterSpacing: '0.5px', textTransform: 'uppercase' }}>{label}</span>
-              </div>
-            ))}
+    <div className="relative z-10 flex flex-col h-full items-center px-8 pt-[12vh] pb-10">
+      <div className="relative max-w-[500px] w-full min-h-[140px] mb-8">
+        {slideTexts.map((slide, idx) => (
+          <div 
+            key={idx}
+            className={`absolute top-0 left-0 w-full flex flex-col items-center text-center transition-opacity duration-700 ease-in-out ${activeSlide === idx ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}
+          >
+            <h2 className="text-white text-[28px] font-medium leading-[1.2] tracking-wide mb-4"
+              style={{ fontFamily: 'var(--font-tt-neoris, sans-serif)', textShadow: '0 1px 3px rgba(0,0,0,0.15)' }}>
+              {slide.title}
+            </h2>
+            <p className="text-white/95 text-[15px] font-medium leading-[1.5] max-w-[460px]"
+              style={{ fontFamily: 'var(--font-tt-neoris, sans-serif)', textShadow: '0 1px 3px rgba(0,0,0,0.15)' }}>
+              {slide.desc}
+            </p>
           </div>
-          {/* Dot grid */}
-          <div className="absolute inset-[36px_0_0_0]"
-            style={{ backgroundImage: 'radial-gradient(rgba(0,0,0,0.12) 1px, transparent 1px)', backgroundSize: '14px 14px', backgroundPosition: 'center' }} />
-          {/* Task cards */}
-          {[
-            { col: 0, top: 60, label: 'Initial Idea', sub: 'User task', color: '#e8f4e8' },
-            { col: 1, top: 50, label: 'Pick a Company Name', sub: 'User task', color: '#fff' },
-            { col: 1, top: 100, label: 'Setup Codebase', sub: 'Agent task', color: '#fff' },
-            { col: 1, top: 150, label: 'Incorporate LLC', sub: 'Agent task', color: '#fff', dim: true },
-            { col: 2, top: 50, label: 'Setup Social Presence', sub: 'Agent task', color: '#fff', dim: true },
-            { col: 2, top: 100, label: 'Buy Domain', sub: 'User task', color: '#fff', dim: true },
-            { col: 2, top: 150, label: 'Logo & Brand Spec', sub: 'Agent task', color: '#fff', dim: true },
-          ].map(({ col, top, label, sub, dim }) => (
-            <div key={label}
-              className="absolute rounded-[6px] flex items-center gap-[6px] px-[8px]"
-              style={{
-                left: `calc(${col * 33.33}% + 8px)`,
-                top: `${top}px`,
-                width: 'calc(33.33% - 16px)',
-                height: '36px',
-                background: 'white',
-                boxShadow: '0 1px 3px rgba(0,0,0,0.08), 0 0 0 0.5px rgba(0,0,0,0.06)',
-                opacity: dim ? 0.4 : 1,
-              }}>
-              <div className="shrink-0 w-[18px] h-[18px] rounded-[3px] bg-[#f0f0ed]" />
-              <div className="flex flex-col min-w-0">
-                <span style={{ fontSize: '8px', color: 'rgba(38,35,35,0.75)', fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', fontFamily: 'var(--font-tt-neoris, sans-serif)' }}>{label}</span>
-                <span style={{ fontSize: '7px', color: 'rgba(38,35,35,0.38)', fontFamily: 'var(--font-tt-neoris, sans-serif)' }}>{sub}</span>
-              </div>
-            </div>
-          ))}
-          {/* Inner shadow overlay */}
-          <div className="absolute inset-0 pointer-events-none rounded-[12px]" style={{ boxShadow: 'rgba(152,146,140,0.16) 2px 3px 4px 0px inset' }} />
-        </div>
+        ))}
       </div>
 
-      {/* Pagination dots */}
-      <div className="flex gap-[6px] mt-5">
-        {[0, 1, 2, 3].map((i) => (
-          <div key={i} className="h-[6px] w-[6px] rounded-full transition-all" style={{ background: i === 0 ? 'white' : 'rgba(255,255,255,0.3)' }} />
-        ))}
+      <div className="w-full flex justify-center scale-[0.85] origin-top flex-1 mt-4">
+        <HeroSlideshow onSlideChange={setActiveSlide} />
       </div>
     </div>
   );
@@ -311,7 +283,7 @@ export default function Signup() {
           Left 54% = pixel scene + carousel
           Right 46% = auth form
       ════════════════════════════════ */}
-      <div className="hidden min-[1000px]:flex min-h-screen">
+      <div className="hidden min-[1000px]:flex h-screen overflow-hidden">
 
         {/* Left panel */}
         <div className="w-[54%] p-[12px]">
@@ -324,6 +296,14 @@ export default function Signup() {
 
         {/* Right panel */}
         <div className="flex-1 flex flex-col relative">
+
+          <div className="absolute top-8 left-8 z-20">
+            <Link href="/" className="flex items-center gap-1.5 text-[13px] text-[var(--app-muted)] hover:text-[var(--app-ink)] transition-colors font-medium">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+              Back
+            </Link>
+          </div>
+
           {/* Centered auth content */}
           <div className="flex-1 flex flex-col items-center justify-center">
             {/* Logo */}
@@ -351,6 +331,11 @@ export default function Signup() {
 
         {/* Pixel art header */}
         <div className="relative w-full overflow-hidden" style={{ height: '260px', flexShrink: 0 }}>
+          <div className="absolute top-4 left-4 z-20">
+            <Link href="/" className="flex items-center justify-center w-8 h-8 rounded-full bg-black/20 backdrop-blur-md text-white hover:bg-black/40 transition-colors">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+            </Link>
+          </div>
           <PixelScene />
 
           {/* Bottom fade */}

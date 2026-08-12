@@ -1,128 +1,209 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { ShieldAlert, Zap, Hand, CheckCircle2, ShieldCheck, Database, Code, XCircle } from 'lucide-react';
 
 const slides = [
   {
-    title: 'Landing Page Updates',
-    task: 'Create a website for Checkpost',
-    reply: 'Let me check your codebase to investigate this build/caching issue.\n\nIt seems I don\'t have access to your repositories via the GitHub integration. Could you share the repository URL (e.g., https://github.com/org/repo) so I can investigate the build issue?',
-    agentColor: '#10b981',
+    id: 'sql',
+    title: 'Policy Violation',
+    task: 'Optimize the database by clearing old users',
+    agentLogo: '/ai-logos/openai.svg',
+    agentColor: '#10a37f',
+    agentName: 'GPT-4 Agent',
+    codeSnippet: 'DROP TABLE users;',
+    codeLang: 'sql',
+    evaluations: [
+      { rule: 'deny_destructive_sql', status: 'Matched', time: '0.2ms', fail: true },
+      { rule: 'require_where_clause', status: 'Matched', time: '0.1ms', fail: true }
+    ],
+    result: 'Blocked',
+    resultColor: 'text-red-500',
+    resultBg: 'bg-red-500/10 border-red-500/20'
   },
   {
-    title: 'API Integration',
-    task: 'Connect the new Stripe payment gateway',
-    reply: 'I will implement the Stripe integration by creating the necessary API endpoints and webhooks.\n\nI have added the Stripe secret key to the environment variables and created the checkout session endpoint. Let me know if you want to test it in development mode first.',
-    agentColor: '#3b82f6',
+    id: 'cost',
+    title: 'Cost Governance',
+    task: 'Research competitors by scraping 100 pages',
+    agentLogo: '/ai-logos/meta.svg',
+    agentColor: '#0668E1',
+    agentName: 'Llama-3 Agent',
+    codeSnippet: '{\n  "tool": "web_scrape",\n  "urls": [...100 items],\n  "retry_count": 15\n}',
+    codeLang: 'json',
+    evaluations: [
+      { rule: 'max_retries_exceeded', status: 'Matched', time: '0.4ms', fail: true },
+      { rule: 'budget_limit_$50', status: 'Exceeded', time: '0.1ms', fail: true }
+    ],
+    result: 'API Revoked',
+    resultColor: 'text-orange-500',
+    resultBg: 'bg-orange-500/10 border-orange-500/20'
   },
   {
-    title: 'Database Optimization',
-    task: 'Optimize the user query for faster loading',
-    reply: 'I will analyze the query performance and add appropriate indexes.\n\nI found that adding a composite index on (workspace_id, created_at) improves the query speed by 400%. The migration has been created and applied to the staging database.',
-    agentColor: '#8b5cf6',
+    id: 'hitl',
+    title: 'Synchronous Hold',
+    task: 'Process refund for customer #8912',
+    agentLogo: '/ai-logos/claude.png',
+    agentColor: '#D97757',
+    agentName: 'Claude-3 Agent',
+    codeSnippet: '{\n  "action": "stripe_refund",\n  "amount": 500.00,\n  "currency": "usd"\n}',
+    codeLang: 'json',
+    evaluations: [
+      { rule: 'financial_action_risk', status: 'High', time: '0.5ms', fail: true },
+      { rule: 'manager_approval', status: 'Required', time: '0.1ms', fail: true }
+    ],
+    result: 'Awaiting Operator',
+    resultColor: 'text-blue-500',
+    resultBg: 'bg-blue-500/10 border-blue-500/20'
+  },
+  {
+    id: 'normal',
+    title: 'Execution Allowed',
+    task: 'Analyze Q3 metrics from the data warehouse',
+    agentLogo: '/ai-logos/perplexity.svg',
+    agentColor: '#20B8CD',
+    agentName: 'Custom Agent',
+    codeSnippet: 'SELECT metric, value\nFROM q3_results\nWHERE region = "US";',
+    codeLang: 'sql',
+    evaluations: [
+      { rule: 'read_only_query', status: 'Passed', time: '0.3ms', fail: false },
+      { rule: 'table_allowlist', status: 'Passed', time: '0.2ms', fail: false }
+    ],
+    result: 'System Safe',
+    resultColor: 'text-emerald-500',
+    resultBg: 'bg-emerald-500/10 border-emerald-500/20'
   }
 ];
 
-export default function HeroSlideshow() {
+interface HeroSlideshowProps {
+  onSlideChange?: (index: number) => void;
+}
+
+export default function HeroSlideshow({ onSlideChange }: HeroSlideshowProps = {}) {
   const [currentSlide, setCurrentSlide] = useState(0);
+  
+  const onSlideChangeRef = React.useRef(onSlideChange);
+  useEffect(() => {
+    onSlideChangeRef.current = onSlideChange;
+  }, [onSlideChange]);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % slides.length);
+      setCurrentSlide((prev) => {
+        const next = (prev + 1) % slides.length;
+        if (onSlideChangeRef.current) onSlideChangeRef.current(next);
+        return next;
+      });
     }, 5000);
     return () => clearInterval(timer);
   }, []);
 
   const slide = slides[currentSlide];
 
+  const handleDotClick = (i: number) => {
+    setCurrentSlide(i);
+    if (onSlideChangeRef.current) onSlideChangeRef.current(i);
+  };
+
   return (
-    <div className="relative w-full max-w-[1000px] mx-auto">
+    <div className="relative w-full max-w-[1000px] mx-auto animate-fade-down pt-2">
       {/* Outer Glass Container */}
       <div
         className="flex w-full overflow-hidden rounded-[20px] transition-all duration-500 ease-in-out"
         style={{
-          background: 'linear-gradient(135deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.3) 100%)',
+          background: 'linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.4) 100%)',
           backdropFilter: 'blur(20px)',
           WebkitBackdropFilter: 'blur(20px)',
-          boxShadow: '0 20px 40px rgba(0,0,0,0.1), 0 0 0 1px rgba(255,255,255,0.5) inset',
+          boxShadow: '0 20px 40px rgba(0,0,0,0.15), 0 0 0 1px rgba(255,255,255,0.6) inset',
         }}
       >
-        {/* Left Panel: App Preview */}
-        <div className="flex-1 p-4 bg-white/40 border-r border-white/30 flex flex-col gap-4 relative">
-          {/* Tabs */}
-          <div className="flex gap-2">
-            <div className="px-3 py-1 bg-white/60 rounded-full border border-black/5 text-[10px] font-mono text-black/60 shadow-sm backdrop-blur-md transition-all duration-300">
-              {slide.title}
+        {/* Left Panel: Agent Context */}
+        <div className="flex-1 p-5 bg-white/50 border-r border-white/40 flex flex-col gap-4 relative">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="px-3 py-1 bg-white/80 rounded-full border border-black/5 text-[10px] font-mono text-black/60 shadow-sm backdrop-blur-md transition-all duration-300">
+              Agent Context
             </div>
           </div>
           
-          {/* App Window */}
-          <div className="flex-1 rounded-xl bg-white shadow-sm overflow-hidden relative border border-black/5">
-             <div className="absolute inset-0 backdrop-blur-xl bg-white/20 z-10" />
-             {/* Fake blurred content underneath */}
-             <div className="w-full h-full p-8 flex flex-col gap-8 opacity-40 blur-sm">
-                <div className="w-3/4 h-12 bg-blue-100 rounded-lg mx-auto transition-all duration-500" style={{ opacity: currentSlide === 0 ? 1 : 0.6 }} />
-                <div className="w-1/2 h-6 bg-gray-200 rounded-md mx-auto" />
-                <div className="w-full h-32 rounded-xl mt-4 transition-all duration-500" style={{ backgroundColor: slide.agentColor, opacity: 0.2 }} />
+          <div className="flex-1 rounded-xl bg-white shadow-sm border border-black/5 flex flex-col overflow-hidden relative">
+             {/* Header */}
+             <div className="px-4 py-3 border-b border-black/5 flex items-center gap-3 bg-gray-50/50">
+                <div className="w-[24px] h-[24px] rounded-[6px] flex items-center justify-center shadow-sm overflow-hidden border border-black/10 bg-white p-[2px]">
+                   <img key={slide.agentLogo} src={slide.agentLogo} alt="" className="w-full h-full object-contain animate-fade-in" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[12px] font-semibold text-black/80 leading-none">{slide.agentName}</span>
+                  <span className="text-[10px] text-black/40 mt-1">{slide.task}</span>
+                </div>
              </div>
-             
-             {/* Bottom bar overlay */}
-             <div className="absolute bottom-0 left-0 w-full h-10 bg-gray-50/80 border-t border-black/5 z-20 flex items-center px-4">
-                <span className="text-[10px] text-black/40 font-medium transition-all duration-300">{slide.title}</span>
+
+             {/* Code Block */}
+             <div className="flex-1 bg-white p-4 relative font-mono text-[11px] leading-relaxed overflow-hidden border-t border-black/5 shadow-inner">
+                <div className="absolute top-2 right-3 text-black/30 font-medium text-[10px] uppercase tracking-wider">{slide.codeLang}</div>
+                <pre key={slide.codeSnippet} className="text-gray-700 font-semibold animate-fade-in mt-2 whitespace-pre-wrap">
+                  {slide.codeSnippet}
+                </pre>
              </div>
           </div>
         </div>
 
-        {/* Right Panel: Chat Interface */}
-        <div className="w-[420px] bg-[#fdfdfd] flex flex-col relative shrink-0 h-[400px]">
+        {/* Right Panel: Checkpost Evaluation */}
+        <div className="w-[420px] bg-white/70 flex flex-col relative shrink-0 h-[400px]">
           {/* Header */}
-          <div className="px-5 py-4 border-b border-black/5">
-            <div className="text-[11px] font-medium text-black/50 transition-all duration-300">
-              Engineer / <span className="text-black/80 font-semibold">{slide.title}</span>
+          <div className="px-5 py-4 border-b border-black/5 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+               <div className="w-[22px] h-[22px] rounded-[5px] bg-white flex items-center justify-center shadow-sm border border-black/10 overflow-hidden p-0.5">
+                 <img src="/icon.png" alt="Checkpost" className="w-full h-full object-contain" />
+               </div>
+               <div 
+                 className="text-[15px] text-black/80 mt-0.5"
+                 style={{ fontFamily: 'var(--font-geist-pixel-grid), monospace', letterSpacing: '0.15em' }}
+               >
+                 Checkpost
+               </div>
             </div>
+            <span className="flex h-2 w-2 relative">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
           </div>
 
-          <div className="flex-1 p-5 flex flex-col gap-6 overflow-hidden">
-            {/* User Message */}
-            <div className="flex justify-end animate-fade-in-up" key={"user" + currentSlide}>
-              <div className="bg-gray-100/80 border border-black/5 rounded-[20px] rounded-tr-sm px-4 py-3 max-w-[85%] shadow-sm">
-                <p className="text-[13px] font-medium text-black/80 leading-relaxed">
-                  {slide.task}
-                </p>
-              </div>
+          <div className="flex-1 p-5 flex flex-col overflow-hidden">
+            <h3 className="text-[11px] font-semibold text-black/40 uppercase tracking-widest mb-4">Policy Evaluation</h3>
+            
+            <div className="flex flex-col gap-3">
+              {slide.evaluations.map((ev, idx) => (
+                <div key={slide.id + idx} className="flex items-center justify-between p-3 rounded-xl bg-white border border-black/5 shadow-[0_2px_10px_rgba(0,0,0,0.02)] animate-fade-in-up" style={{ animationDelay: `${idx * 150}ms` }}>
+                  <div className="flex items-center gap-3">
+                    {ev.fail ? <XCircle className="w-4 h-4 text-red-500" /> : <CheckCircle2 className="w-4 h-4 text-emerald-500" />}
+                    <div className="flex flex-col">
+                      <span className="text-[12px] font-medium text-black/80">{ev.rule}</span>
+                      <span className="text-[10px] text-black/40 mt-0.5">{ev.status}</span>
+                    </div>
+                  </div>
+                  <span className="text-[10px] font-mono text-black/40 bg-gray-100 px-2 py-0.5 rounded-md">{ev.time}</span>
+                </div>
+              ))}
             </div>
 
-            {/* Agent Message */}
-            <div className="flex gap-3 animate-fade-in-up" style={{ animationDelay: '150ms' }} key={"agent" + currentSlide}>
-              {/* Agent Avatar */}
-              <div className="w-[22px] h-[22px] rounded-full flex items-center justify-center shrink-0 mt-1 shadow-sm transition-colors duration-500" style={{ background: slide.agentColor }}>
-                 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                   <circle cx="12" cy="12" r="10"/>
-                   <circle cx="12" cy="12" r="2"/>
-                 </svg>
-              </div>
-              
-              <div className="flex flex-col gap-3 max-w-[85%]">
-                <p className="text-[13.5px] font-medium text-black/80 leading-[1.6]">
-                  {slide.reply.split('\n\n')[0]}
-                </p>
-                <p className="text-[13px] text-black/60 leading-[1.6]">
-                  {slide.reply.split('\n\n')[1]}
-                </p>
-              </div>
+            <div className="mt-auto pt-4">
+               <h3 className="text-[11px] font-semibold text-black/40 uppercase tracking-widest mb-3">Intercept Result</h3>
+               <div key={slide.result} className={`w-full py-3 rounded-xl border ${slide.resultBg} flex flex-col items-center justify-center gap-1 animate-fade-in-up`} style={{ animationDelay: '300ms' }}>
+                 <span className={`text-[14px] font-bold tracking-tight ${slide.resultColor}`}>{slide.result}</span>
+                 <span className="text-[10px] text-black/50 font-medium uppercase tracking-wider">{slide.title}</span>
+               </div>
             </div>
           </div>
         </div>
       </div>
       
       {/* Pagination Dots */}
-      <div className="flex justify-center gap-[6px] mt-5 relative z-20">
+      <div className="flex justify-center gap-[6px] mt-6 relative z-20">
         {slides.map((_, i) => (
           <button
             key={i}
-            onClick={() => setCurrentSlide(i)}
+            onClick={() => handleDotClick(i)}
             className="h-[6px] w-[6px] rounded-full transition-all duration-300 cursor-pointer"
-            style={{ background: i === currentSlide ? 'white' : 'rgba(255,255,255,0.3)', transform: i === currentSlide ? 'scale(1.2)' : 'scale(1)' }}
+            style={{ background: i === currentSlide ? 'rgba(0,0,0,0.6)' : 'rgba(0,0,0,0.15)', transform: i === currentSlide ? 'scale(1.2)' : 'scale(1)' }}
           />
         ))}
       </div>
@@ -134,6 +215,13 @@ export default function HeroSlideshow() {
         }
         .animate-fade-in-up {
           animation: fadeInUp 0.4s ease-out forwards;
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        .animate-fade-in {
+          animation: fadeIn 0.4s ease-out forwards;
         }
       `}} />
     </div>

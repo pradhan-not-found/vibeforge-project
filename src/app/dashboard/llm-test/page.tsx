@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Send, Bot, Zap, ChevronDown } from 'lucide-react';
 import { MotionCard } from '@/components/MotionCard';
 import { useAuth } from '@/context/AuthContext';
@@ -11,16 +11,42 @@ export default function LLMTestPage() {
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
   const [error, setError] = useState('');
-  const [agentId, setAgentId] = useState('gemini-flash');
-
+  const [agents, setAgents] = useState<{id: string; label: string; provider: string; logo: string}[]>([]);
+  const [agentId, setAgentId] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  const AGENTS = [
-    { id: 'gemini-flash', label: 'Gemini Web Researcher', provider: 'Google Generative AI', logo: '/ai-logos/gemini.svg' },
-    { id: 'groq-agent', label: 'Groq Data Scraper', provider: 'Llama 3.1 8B Instant via Groq', logo: '/ai-logos/groq.png' },
-  ];
-  
-  const selectedAgent = AGENTS.find(a => a.id === agentId) || AGENTS[0];
+  useEffect(() => {
+    fetch('/api/db')
+      .then(res => res.json())
+      .then(data => {
+        if (data.agents) {
+          const loadedAgents = Object.entries(data.agents).map(([id, info]: [string, any]) => {
+            const pLower = (info.provider || info.name).toLowerCase();
+            let provider = info.provider || 'Custom';
+            let logo = '/ai-logos/openai.svg';
+            if (pLower.includes('gemini') || pLower.includes('google')) { logo = '/ai-logos/gemini.svg'; }
+            else if (pLower.includes('claude') || pLower.includes('anthropic')) { logo = '/ai-logos/claude.png'; }
+            else if (pLower.includes('groq')) { logo = '/ai-logos/groq.png'; }
+            else if (pLower.includes('gpt') || pLower.includes('openai')) { logo = '/ai-logos/openai.svg'; }
+            else if (pLower.includes('meta') || pLower.includes('llama')) { logo = '/ai-logos/meta.svg'; }
+            else if (pLower.includes('mistral')) { logo = '/ai-logos/mistral.svg'; }
+            else if (pLower.includes('deepseek')) { logo = '/ai-logos/deepseek.svg'; }
+            
+            return {
+              id,
+              label: info.name,
+              provider,
+              logo
+            };
+          });
+          setAgents(loadedAgents);
+          if (loadedAgents.length > 0) setAgentId(loadedAgents[0].id);
+        }
+      })
+      .catch(err => console.error(err));
+  }, []);
+
+  const selectedAgent = agents.find(a => a.id === agentId) || agents[0] || { id: 'default', label: 'Loading...', provider: 'System', logo: '/ai-logos/openai.svg' };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -93,7 +119,7 @@ export default function LLMTestPage() {
 
               {isDropdownOpen && (
                 <div className="absolute left-0 right-0 mt-1 bg-[var(--app-canvas)] border border-[var(--app-hairline)] rounded-xl shadow-xl z-20 max-h-60 overflow-y-auto">
-                  {AGENTS.map((preset) => (
+                  {agents.map((preset) => (
                     <button
                       key={preset.id}
                       type="button"

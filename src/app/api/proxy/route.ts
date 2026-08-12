@@ -2,28 +2,29 @@ import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import Groq from 'groq-sdk';
 import { getDb, saveDb, updateAgentUsage, incrementAgentBlocked } from '@/lib/db';
-import { v4 as uuidv4 } from 'uuid';
 
 export async function POST(req: Request) {
   try {
     const reqBody = await req.json();
-    const { prompt, agentId = 'gemini-flash' } = reqBody;
+    const { prompt, agentId, userId = 'admin' } = reqBody;
 
     if (!prompt) {
       return NextResponse.json({ error: 'Prompt is required' }, { status: 400 });
     }
 
-    const db = getDb();
+    const db = await getDb();
     const agent = db.agents[agentId];
-    const policies = db.policies;
 
     if (!agent) {
       return NextResponse.json({ error: 'Unknown agent ID' }, { status: 400 });
     }
+    
+    const policyId = agent.policyId || 'default';
+    const policy = db.policyProfiles?.[policyId] || db.policyProfiles?.['default'] || { maxTokens: 100000, maxSpend: 50 };
 
     // 1. BLAST RADIUS CHECK
-    if (agent.totalSpend >= policies.maxSpend || agent.totalTokens >= policies.maxTokens) {
-      const reason = agent.totalSpend >= policies.maxSpend ? 'Max Spend Exceeded' : 'Max Tokens Exceeded';
+    if (agent.totalSpend >= policy.maxSpend || agent.totalTokens >= policy.maxTokens) {
+      const reason = agent.totalSpend >= policy.maxSpend ? 'Max Spend Exceeded' : 'Max Tokens Exceeded';
       
       // Add to Approval Queue
       const queueItem = {
@@ -37,8 +38,8 @@ export async function POST(req: Request) {
       };
       
       db.queue.unshift(queueItem); // Add to front
-      saveDb(db);
-      incrementAgentBlocked(agentId);
+      await saveDb(db);
+      await incrementAgentBlocked(agentId);
 
       return NextResponse.json({ 
         status: 'blocked', 
@@ -53,25 +54,51 @@ export async function POST(req: Request) {
     let success = false;
     let errorContext = '';
     let cost = 0;
+    let durationMs = 0;
 
     try {
-      if (agentId === 'gemini-flash') {
-        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
-        const model = genAI.getGenerativeModel({ model: 'gemini-3.5-flash' });
-        const result = await model.generateContent(prompt);
-        const response = await result.response;
+      const provider = (agent.provider || '').toLowerCase();
+      const apiKey = agent.provider_api_key;
+
+      if ((provider.includes('gemini') || provider.includes('google')) && apiKey) {
+        const genAI = new GoogleGenerativeAI(apiKey);
+        let response;
+        try {
+          const model = genAI.getGenerativeModel({ model: 'gemini-flash-latest' });
+          const result = await model.generateContent(prompt);
+          response = await result.response;
+        } catch (err: any) {
+          if (err.status === 404 || (err.message && err.message.includes('404'))) {
+            try {
+              const fallbackModel = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+              const result = await fallbackModel.generateContent(prompt);
+              response = await result.response;
+            } catch (err2: any) {
+              const finalFallback = genAI.getGenerativeModel({ model: 'gemini-pro-latest' });
+              const result = await finalFallback.generateContent(prompt);
+              response = await result.response;
+            }
+          } else {
+            throw err;
+          }
+        }
         text = response.text();
         totalTokens = response.usageMetadata?.totalTokenCount || Math.ceil(text.length / 4) + Math.ceil(prompt.length / 4);
         cost = (totalTokens / 1000000) * 0.35; // Gemini Flash pricing
-      } else if (agentId === 'groq-agent') {
-        const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+      } else if (provider.includes('groq') && apiKey) {
+        const groq = new Groq({ apiKey });
         const chatCompletion = await groq.chat.completions.create({
           messages: [{ role: 'user', content: prompt }],
           model: 'llama-3.1-8b-instant',
         });
         text = chatCompletion.choices[0]?.message?.content || '';
         totalTokens = chatCompletion.usage?.total_tokens || Math.ceil(text.length / 4) + Math.ceil(prompt.length / 4);
-        cost = (totalTokens / 1000000) * 0.05; // Groq Llama3 8B pricing approx
+        cost = (totalTokens / 1000000) * 0.05; // Groq pricing
+      } else {
+        // Fallback for Custom/Unsupported models OR missing API keys
+        text = `Simulated response from ${agent.provider || 'Custom'} agent: Received your prompt "${prompt}". (Note: No valid API key provided for this provider, so response is simulated).`;
+        totalTokens = Math.ceil(text.length / 4) + Math.ceil(prompt.length / 4);
+        cost = (totalTokens / 1000000) * 0.1; 
       }
       
       success = true;
@@ -81,14 +108,14 @@ export async function POST(req: Request) {
       console.error('LLM Error:', err);
     }
 
-    const durationMs = Date.now() - startTime;
+    durationMs = Date.now() - startTime;
 
     if (success) {
-      updateAgentUsage(agentId, totalTokens, cost);
+      await updateAgentUsage(agentId, totalTokens, cost);
     }
 
     // 3. LOG TRACE FOR OBSERVABILITY
-    const newDb = getDb(); // get fresh DB to avoid race conditions
+    const newDb = await getDb(); // get fresh DB to avoid race conditions
     newDb.traces.unshift({
       id: crypto.randomUUID(),
       agentId,
@@ -103,7 +130,7 @@ export async function POST(req: Request) {
     });
     
     if (newDb.traces.length > 50) newDb.traces = newDb.traces.slice(0, 50);
-    saveDb(newDb);
+    await saveDb(newDb);
 
     if (!success) {
       return NextResponse.json({ status: 'error', error: errorContext }, { status: 500 });

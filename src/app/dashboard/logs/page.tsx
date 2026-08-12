@@ -1,7 +1,8 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import { Download, Search, CheckCircle2, ShieldAlert, Clock, GitMerge, Activity, AlertCircle, Database, Server } from 'lucide-react';
+import { Download, Search, CheckCircle2, ShieldAlert, Clock, GitMerge, Activity, AlertCircle, Database, Server, ChevronDown } from 'lucide-react';
 import { MotionCard } from '@/components/MotionCard';
+import { useAuth } from '@/context/AuthContext';
 
 function guessLogo(name: string): { provider: string; logo: string } {
   const n = (name || '').toLowerCase();
@@ -32,7 +33,8 @@ function resultStyles(result: string) {
 }
 
 export default function Page() {
-  const [db, setDb] = useState<any>({ traces: [] });
+  const { user } = useAuth();
+  const [db, setDb] = useState<any>({ traces: [], agents: {}, queue: [] });
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTraceId, setSelectedTraceId] = useState<string>('');
 
@@ -42,9 +44,6 @@ export default function Page() {
       if (res.ok) {
         const data = await res.json();
         setDb(data);
-        if (data.traces?.length > 0 && !selectedTraceId) {
-          setSelectedTraceId(data.traces[0].id);
-        }
       }
     } catch (err) {
       console.error('Failed to fetch DB', err);
@@ -57,39 +56,57 @@ export default function Page() {
     return () => clearInterval(interval);
   }, []);
 
-  const selectedTrace = db.traces?.find((t: any) => t.id === selectedTraceId);
+  // Compute active agents for this user context
+  const userAgents = Object.entries(db.agents || {})
+    .filter(([_, a]: [string, any]) => a.owner === user?.email)
+    .reduce((acc: any, [id, a]) => { acc[id] = a; return acc; }, {});
 
   // Map backend traces and queue to the original log format
-  const traceLogs = (db.traces || []).map((t: any) => ({
-    id: t.id,
-    agent: t.agentName,
-    logo: guessLogo(t.agentId).logo,
-    action: 'PROMPT',
-    resource: t.response ? t.response.substring(0, 50) + (t.response.length > 50 ? '...' : '') : 'Error execution',
-    result: t.success ? 'Success' : 'Failure',
-    reasoning: t.errorContext || `Used ${t.tokensUsed} tokens`,
-    risk_score: t.success ? 0.1 : 0.9,
-    time: new Date(t.timestamp).toLocaleString(),
-    timestampMs: new Date(t.timestamp).getTime(),
-    user: 'system_api'
-  }));
+  const traceLogs = (db.traces || [])
+    .filter((t: any) => userAgents[t.agentId])
+    .map((t: any) => ({
+      ...t,
+      id: t.id,
+      agent: t.agentName,
+      logo: guessLogo(userAgents[t.agentId]?.provider || t.agentName || t.agentId).logo,
+      action: 'PROMPT',
+      resource: t.response ? t.response.substring(0, 50) + (t.response.length > 50 ? '...' : '') : 'Error execution',
+      result: t.success ? 'Success' : 'Failure',
+      reasoning: t.errorContext || `Used ${t.tokensUsed} tokens`,
+      risk_score: t.success ? 0.1 : 0.9,
+      time: new Date(t.timestamp).toLocaleString(),
+      timestampMs: new Date(t.timestamp).getTime(),
+      user: 'system_api'
+    }));
 
-  const queueLogs = (db.queue || []).map((q: any) => ({
-    id: q.id,
-    agent: q.agentName,
-    logo: guessLogo(q.agentId).logo,
-    action: q.action || 'BLOCKED_ACTION',
-    resource: q.prompt ? q.prompt.substring(0, 50) + (q.prompt.length > 50 ? '...' : '') : 'N/A',
-    result: 'Blocked by Policy',
-    reasoning: `Triggered: ${q.policy}`,
-    risk_score: 1.0,
-    time: new Date(q.time).toLocaleString(),
-    timestampMs: new Date(q.time).getTime(),
-    user: 'system_firewall'
-  }));
+  const queueLogs = (db.queue || [])
+    .filter((q: any) => userAgents[q.agentId])
+    .map((q: any) => ({
+      ...q,
+      id: q.id,
+      agent: q.agentName,
+      logo: guessLogo(userAgents[q.agentId]?.provider || q.agentName || q.agentId).logo,
+      action: q.action || 'BLOCKED_ACTION',
+      resource: q.prompt ? q.prompt.substring(0, 50) + (q.prompt.length > 50 ? '...' : '') : 'N/A',
+      result: 'Blocked by Policy',
+      reasoning: `Triggered: ${q.policy}`,
+      risk_score: 1.0,
+      time: new Date(q.time).toLocaleString(),
+      timestampMs: new Date(q.time).getTime(),
+      user: 'system_firewall'
+    }));
 
   const logs = [...traceLogs, ...queueLogs].sort((a, b) => b.timestampMs - a.timestampMs);
 
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  useEffect(() => {
+    if (traceLogs.length > 0 && !selectedTraceId) {
+      setSelectedTraceId(traceLogs[0].id);
+    }
+  }, [traceLogs.length, selectedTraceId]);
+
+  const selectedTrace = traceLogs.find((t: any) => t.id === selectedTraceId);
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto animate-fade-down flex flex-col min-h-screen">
       {/* Header */}
@@ -100,20 +117,44 @@ export default function Page() {
           <p className="text-sm text-[var(--app-muted)] mt-2">Immutable record of every AI agent action and evaluation.</p>
         </div>
         <div className="flex flex-col items-end gap-2 mt-2 shrink-0">
-          <div className="flex items-center gap-2">
-            <select 
-              value={selectedTraceId} 
-              onChange={(e) => setSelectedTraceId(e.target.value)}
-              className="px-4 py-2 bg-[var(--app-canvas)] border border-[var(--app-hairline)] rounded-xl text-sm text-[var(--app-ink)] focus:outline-none focus:ring-2 focus:ring-[var(--app-ink)]/10 shadow-sm min-w-[200px]"
-            >
-              <option value="" disabled>Select a trace...</option>
-              {db.traces?.map((trace: any) => (
-                <option key={trace.id} value={trace.id}>
-                  Trace: {new Date(trace.timestamp).toLocaleTimeString()} - {trace.success ? 'SUCC' : 'FAIL'}
-                </option>
-              ))}
-              {db.traces?.length === 0 && <option value="">No traces found</option>}
-            </select>
+          <div className="flex items-center gap-2 relative">
+            <div className="relative min-w-[240px]">
+              <button 
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className="w-full flex items-center justify-between gap-3 px-4 py-2 bg-[var(--app-canvas)] border border-[var(--app-hairline)] rounded-xl text-sm text-[var(--app-ink)] hover:bg-[var(--app-soft)] transition-colors"
+              >
+                <span className="truncate text-left flex-1">
+                  {selectedTrace ? `Trace: ${new Date(selectedTrace.timestamp).toLocaleTimeString()} - ${selectedTrace.success ? 'SUCC' : 'FAIL'}` : 'Select a trace...'}
+                </span>
+                <ChevronDown className="w-4 h-4 text-[var(--app-muted)] shrink-0" />
+              </button>
+              
+              {isDropdownOpen && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setIsDropdownOpen(false)} />
+                  <div className="absolute right-0 top-full mt-2 w-[300px] max-h-[300px] overflow-y-auto bg-[var(--app-canvas)] border border-[var(--app-hairline)] rounded-xl shadow-xl z-50 py-1">
+                    {traceLogs.map((trace: any) => (
+                      <button
+                        key={trace.id}
+                        onClick={() => { setSelectedTraceId(trace.id); setIsDropdownOpen(false); }}
+                        className={`w-full text-left px-4 py-2.5 text-sm hover:bg-[var(--app-soft)] transition-colors ${selectedTraceId === trace.id ? 'bg-[var(--app-soft)] font-semibold' : ''}`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <span>{new Date(trace.timestamp).toLocaleTimeString()}</span>
+                          <span className={trace.success ? 'text-emerald-600 font-medium' : 'text-red-600 font-medium'}>
+                            {trace.success ? 'SUCC' : 'FAIL'}
+                          </span>
+                        </div>
+                        <div className="text-[11px] text-[var(--app-muted)] truncate mt-0.5">
+                          {trace.agentName || trace.agentId}
+                        </div>
+                      </button>
+                    ))}
+                    {traceLogs.length === 0 && <div className="px-4 py-3 text-sm text-[var(--app-muted)] text-center">No traces found</div>}
+                  </div>
+                </>
+              )}
+            </div>
             <button onClick={fetchDb} className="cta-btn-dark text-on-dark shadow-sm flex items-center justify-center gap-[10px] px-[16px] py-[10px] text-[14px] font-[500] rounded-[8px] transition-all">
               <Clock className="w-4 h-4" /> Refresh
             </button>

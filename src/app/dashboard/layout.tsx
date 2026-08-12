@@ -96,7 +96,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         )}
 
         {/* Sidebar */}
-        <aside className={`fixed inset-y-0 left-0 z-50 w-64 shrink-0 transition-transform duration-200 ease-in-out border-r border-[var(--app-hairline)] bg-[var(--app-canvas)] flex flex-col ${isMobileMenuOpen ? 'translate-x-0 shadow-2xl' : 'max-lg:-translate-x-full lg:translate-x-0'}`}>
+        <aside className={`fixed inset-y-0 left-0 z-50 w-64 shrink-0 transition-transform duration-200 ease-in-out border-r border-[var(--app-hairline)] bg-white flex flex-col ${isMobileMenuOpen ? 'translate-x-0 shadow-2xl' : 'max-lg:-translate-x-full lg:translate-x-0'}`}>
           <div className="py-5 px-6 border-b border-[var(--app-hairline)] mb-4 flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <img src="/icon.png" alt="Checkpost Logo" className="w-8 h-8 rounded-md" />
@@ -122,36 +122,38 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </button>
           </div>
 
-          <div className="flex-1 overflow-y-auto overflow-x-hidden sidebar-scroll px-3 space-y-6">
-            {navSections.map((section) => (
-              <div key={section.label}>
-                <span className="block text-[11px] font-semibold text-[var(--app-muted)] uppercase tracking-wider mb-2 px-3">
-                  {section.label}
-                </span>
-                <nav className="flex flex-col gap-0.5">
-                  {section.items.map((item) => {
-                    const isActive = item.path === '/dashboard' 
-                    ? pathname === '/dashboard' 
-                    : (pathname === item.path || pathname.startsWith(item.path + '/'));
-                    return (
-                      <Link 
-                        key={item.path} 
-                        href={item.path}
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        className={`flex items-center gap-[10px] px-[12px] py-[8px] rounded-[8px] transition-all text-[14px] font-[500] ${
-                          isActive 
-                            ? 'cta-btn-dark text-on-dark shadow-sm' 
-                            : 'text-[var(--app-muted)] hover:bg-[rgba(38,35,35,0.04)] hover:text-[var(--app-ink)]'
-                        }`}
-                      >
-                        <item.icon className="size-4" />
-                        <span>{item.title}</span>
-                      </Link>
-                    );
-                  })}
-                </nav>
-              </div>
-            ))}
+          <div className="flex-1 overflow-y-auto overflow-x-hidden sidebar-scroll">
+            <div className="px-3 space-y-6">
+              {navSections.map((section) => (
+                <div key={section.label}>
+                  <span className="block text-[11px] font-semibold text-[var(--app-muted)] uppercase tracking-wider mb-2 px-3">
+                    {section.label}
+                  </span>
+                  <nav className="flex flex-col gap-0.5">
+                    {section.items.map((item) => {
+                      const isActive = item.path === '/dashboard' 
+                      ? pathname === '/dashboard' 
+                      : (pathname === item.path || pathname.startsWith(item.path + '/'));
+                      return (
+                        <Link 
+                          key={item.path} 
+                          href={item.path}
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className={`flex items-center gap-[10px] px-[12px] py-[8px] rounded-[8px] transition-all text-[14px] font-[500] ${
+                            isActive 
+                              ? 'cta-btn-dark bg-black !text-white font-semibold shadow-sm' 
+                              : 'text-[var(--app-muted)] hover:bg-[rgba(38,35,35,0.04)] hover:text-[var(--app-ink)]'
+                          }`}
+                        >
+                          <item.icon className="size-4" />
+                          <span>{item.title}</span>
+                        </Link>
+                      );
+                    })}
+                  </nav>
+                </div>
+              ))}
+            </div>
           </div>
 
           <div className="p-4 pb-4 px-4 relative">
@@ -211,10 +213,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
         {/* Main Content Area */}
         <main className="flex-1 h-full overflow-y-auto overflow-x-hidden relative bg-[var(--app-canvas)] flex flex-col lg:pl-64">
-          {/* Ambient accent backdrop tone */}
-          <div className={`absolute inset-0 bg-gradient-to-br ${gradientClass} pointer-events-none z-0`} />
           {/* Fine noise texture overlay */}
-          <div className="absolute inset-0 opacity-[0.015] dark:opacity-[0.025] pointer-events-none z-0 mix-blend-overlay" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }} />
+          <div className="fixed inset-0 opacity-[0.015] dark:opacity-[0.025] pointer-events-none z-0 mix-blend-overlay" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }} />
 
           <div className="relative z-10 w-full flex-1">
             {children}

@@ -10,7 +10,7 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: 'Missing userId' }, { status: 400 });
     }
 
-    const db = getDb();
+    const db = await getDb();
     const userSettings = db.userSettings?.[userId] || {};
 
     return NextResponse.json(userSettings);
@@ -27,7 +27,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Missing userId or settings' }, { status: 400 });
     }
 
-    const db = getDb();
+    const db = await getDb();
     if (!db.userSettings) db.userSettings = {};
     
     db.userSettings[userId] = {
@@ -35,7 +35,7 @@ export async function POST(req: Request) {
       ...settings,
     };
 
-    saveDb(db);
+    await saveDb(db);
 
     return NextResponse.json({ success: true, settings: db.userSettings[userId] });
   } catch (error) {

@@ -66,7 +66,7 @@ export default function Page() {
             }));
         }
       } catch (err) {
-        // Silently ignore if backend is down
+        console.error("Failed to fetch audit logs:", err);
       }
         
       let queueThreats: any[] = [];
@@ -79,7 +79,7 @@ export default function Page() {
           queueThreats = (dbData.queue || []).map((q: any) => ({
             id: q.id,
             agent: q.agentName,
-            logo: guessLogo(q.agentId).logo,
+            logo: guessLogo(dbData.agents?.[q.agentId]?.provider || q.agentName || q.agentId).logo,
             type: `Policy Violation`,
             severity: 'High',
             action: 'Blocked',

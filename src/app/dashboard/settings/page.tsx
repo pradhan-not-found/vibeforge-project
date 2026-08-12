@@ -21,9 +21,17 @@ export default function Page() {
   const [groqKey, setGroqKey] = useState('');
   const [openaiKey, setOpenaiKey] = useState('');
   const [isSaving, setIsSaving] = useState(false);
+  
+  const [geminiRevealed, setGeminiRevealed] = useState(false);
+  const [groqRevealed, setGroqRevealed] = useState(false);
+  const [openaiRevealed, setOpenaiRevealed] = useState(false);
+
+  const [userAgents, setUserAgents] = useState<any[]>([]);
+  const [revealedAgentKeys, setRevealedAgentKeys] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     if (user?.email) {
+      // Load Settings
       fetch(`/api/settings?userId=${encodeURIComponent(user.email)}`)
         .then(res => res.json())
         .then(data => {
@@ -32,6 +40,24 @@ export default function Page() {
           if (data.openAiApiKey) setOpenaiKey(data.openAiApiKey);
         })
         .catch(err => console.error("Failed to load settings:", err));
+
+      // Load Agents
+      fetch(`/api/db`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.agents) {
+            const agentsList = Object.entries(data.agents)
+              .filter(([_, info]: [string, any]) => info.owner === user.email)
+              .map(([id, info]: [string, any]) => ({
+                 id,
+                 name: info.name,
+                 provider: info.provider || 'Custom',
+                 proxy_api_key: info.proxy_api_key || `cp_live_${id}`
+              }));
+            setUserAgents(agentsList);
+          }
+        })
+        .catch(err => console.error("Failed to load db for settings:", err));
     }
   }, [user]);
 
@@ -239,54 +265,108 @@ export default function Page() {
           index={1.5}
           className="bg-[var(--app-soft)] rounded-2xl border-2 border-[var(--app-hairline)] p-6 card-elevate card-depth"
         >
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-[var(--app-canvas)] border border-[var(--app-hairline)] flex items-center justify-center text-[var(--app-muted)] shadow-sm">
-                <Key className="w-4 h-4" />
-              </div>
-              <h2 className="font-sans text-xl text-[var(--app-ink)] tracking-tight">LLM Provider Keys</h2>
+          <div className="flex items-center gap-2.5 mb-5">
+            <div className="w-8 h-8 rounded-lg bg-[var(--app-canvas)] border border-[var(--app-hairline)] flex items-center justify-center text-[var(--app-muted)] shadow-sm">
+              <Key className="w-4 h-4" />
             </div>
-            <button
-              onClick={handleSaveProviderKeys}
-              disabled={isSaving}
-              className="flex items-center justify-center gap-2 rounded-lg bg-[var(--app-ink)] px-4 py-2 text-sm font-semibold text-[var(--app-canvas)] shadow-sm transition-all hover:bg-[var(--app-ink)]/90 disabled:opacity-50"
-            >
-              {isSaving ? 'Saving...' : 'Save Keys'}
-            </button>
+            <h2 className="font-sans text-xl text-[var(--app-ink)] tracking-tight">LLM Provider Keys</h2>
           </div>
           <div className="flex flex-col gap-4">
-            <p className="text-sm text-[var(--app-muted)]">Configure your provider API keys to allow your agents to execute prompts.</p>
+            <p className="text-sm text-[var(--app-muted)]">Configure your provider API keys to allow your agents to execute prompts. Only showing providers currently used by your agents.</p>
+            
+            {userAgents.length === 0 && (
+              <div className="text-sm text-[var(--app-muted)] p-4 bg-[var(--app-canvas)] border border-[var(--app-hairline)] rounded-xl text-center">
+                You haven't created any agents yet. Add an agent to see provider requirements here.
+              </div>
+            )}
+            
+            {userAgents.some(a => a.provider.toLowerCase().includes('openai')) && (
+            <div className="flex items-center justify-between gap-4 rounded-xl bg-[var(--app-canvas)] border border-[var(--app-hairline)] px-4 py-3">
+              <div className="flex-1">
+                <p className="text-xs text-[var(--app-muted)] font-medium mb-1">OpenAI API Key</p>
+                <div className="flex items-center gap-1.5">
+                  <input
+                    type={openaiRevealed ? "text" : "password"}
+                    value={openaiKey}
+                    onChange={(e) => setOpenaiKey(e.target.value)}
+                    placeholder="sk-proj-..."
+                    className="w-full bg-transparent text-sm font-mono text-[var(--app-ink)] focus:outline-none placeholder:text-[var(--app-muted)]"
+                  />
+                  <button 
+                    onClick={() => setOpenaiRevealed(!openaiRevealed)} 
+                    className="p-1.5 rounded-md text-[var(--app-muted)] hover:bg-[var(--app-soft)] hover:text-[var(--app-ink)] transition-colors shrink-0"
+                  >
+                    {openaiRevealed ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                  </button>
+                </div>
+              </div>
+            </div>
+            )}
             
             {/* Gemini */}
-            <div className="flex flex-col gap-2">
-              <label className="text-xs font-semibold uppercase tracking-wider text-[var(--app-muted)]">Google Gemini API Key</label>
-              <div className="relative">
-                <input
-                  type="password"
-                  value={geminiKey}
-                  onChange={(e) => setGeminiKey(e.target.value)}
-                  placeholder="AIzaSy..."
-                  className="w-full bg-[var(--app-canvas)] border border-[var(--app-hairline)] text-[var(--app-ink)] text-sm font-medium rounded-xl pl-4 pr-10 py-3 focus:outline-none focus:ring-2 focus:ring-[var(--app-ink)]/10 shadow-sm transition-all"
-                />
+            {userAgents.some(a => a.provider.toLowerCase().includes('gemini') || a.provider.toLowerCase().includes('google')) && (
+            <div className="flex items-center justify-between gap-4 rounded-xl bg-[var(--app-canvas)] border border-[var(--app-hairline)] px-4 py-3">
+              <div className="flex-1">
+                <p className="text-xs text-[var(--app-muted)] font-medium mb-1">Google Gemini API Key</p>
+                <div className="flex items-center gap-1.5">
+                  <input
+                    type={geminiRevealed ? "text" : "password"}
+                    value={geminiKey}
+                    onChange={(e) => setGeminiKey(e.target.value)}
+                    placeholder="AIzaSy..."
+                    className="w-full bg-transparent text-sm font-mono text-[var(--app-ink)] focus:outline-none placeholder:text-[var(--app-muted)]"
+                  />
+                  <button 
+                    onClick={() => setGeminiRevealed(!geminiRevealed)} 
+                    className="p-1.5 rounded-md text-[var(--app-muted)] hover:bg-[var(--app-soft)] hover:text-[var(--app-ink)] transition-colors shrink-0"
+                  >
+                    {geminiRevealed ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                  </button>
+                </div>
               </div>
             </div>
+            )}
 
             {/* Groq */}
-            <div className="flex flex-col gap-2">
-              <label className="text-xs font-semibold uppercase tracking-wider text-[var(--app-muted)]">Groq API Key</label>
-              <div className="relative">
-                <input
-                  type="password"
-                  value={groqKey}
-                  onChange={(e) => setGroqKey(e.target.value)}
-                  placeholder="gsk_..."
-                  className="w-full bg-[var(--app-canvas)] border border-[var(--app-hairline)] text-[var(--app-ink)] text-sm font-medium rounded-xl pl-4 pr-10 py-3 focus:outline-none focus:ring-2 focus:ring-[var(--app-ink)]/10 shadow-sm transition-all"
-                />
+            {userAgents.some(a => a.provider.toLowerCase().includes('groq')) && (
+            <div className="flex items-center justify-between gap-4 rounded-xl bg-[var(--app-canvas)] border border-[var(--app-hairline)] px-4 py-3">
+              <div className="flex-1">
+                <p className="text-xs text-[var(--app-muted)] font-medium mb-1">Groq API Key</p>
+                <div className="flex items-center gap-1.5">
+                  <input
+                    type={groqRevealed ? "text" : "password"}
+                    value={groqKey}
+                    onChange={(e) => setGroqKey(e.target.value)}
+                    placeholder="gsk_..."
+                    className="w-full bg-transparent text-sm font-mono text-[var(--app-ink)] focus:outline-none placeholder:text-[var(--app-muted)]"
+                  />
+                  <button 
+                    onClick={() => setGroqRevealed(!groqRevealed)} 
+                    className="p-1.5 rounded-md text-[var(--app-muted)] hover:bg-[var(--app-soft)] hover:text-[var(--app-ink)] transition-colors shrink-0"
+                  >
+                    {groqRevealed ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                  </button>
+                </div>
               </div>
             </div>
+            )}
+            {userAgents.length > 0 && (
+              <button 
+                onClick={handleSaveProviderKeys}
+                disabled={isSaving}
+                className="w-full mt-1 py-2.5 text-sm font-semibold text-[var(--app-ink)] bg-[var(--app-canvas)] border border-[var(--app-hairline)] rounded-xl hover:bg-[var(--app-soft)] transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                {isSaving && (
+                  <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-[var(--app-ink)]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                )}
+                {isSaving ? 'Saving...' : 'Save Keys'}
+              </button>
+            )}
           </div>
         </MotionCard>
-
         {/* API Key Section */}
         <MotionCard
           index={2}
@@ -298,48 +378,44 @@ export default function Page() {
             </div>
             <h2 className="font-sans text-xl text-[var(--app-ink)] tracking-tight">API Keys</h2>
           </div>
-          <div className="flex items-center justify-between gap-4 rounded-xl bg-[var(--app-canvas)] border border-[var(--app-hairline)] px-4 py-3 mb-3">
-            <div>
-              <p className="text-xs text-[var(--app-muted)] font-medium mb-0.5">Proxy Gateway Key</p>
-              <div className="flex items-center gap-1.5">
-                <p className="text-sm font-mono text-[var(--app-ink)] h-5 flex items-center min-w-[220px]">
-                  {isGeneratingKey 
-                    ? <span className="text-[var(--app-muted)] animate-pulse font-sans font-medium text-xs">Generating{generationDots}</span>
-                    : (apiKeyRevealed ? apiKey : 'cp_live_••••••••••••••••••••••••')
-                  }
-                </p>
-                {!isGeneratingKey && (
-                  <button 
-                    onClick={() => setApiKeyRevealed(!apiKeyRevealed)} 
-                    className="p-1.5 rounded-md text-[var(--app-muted)] hover:bg-[var(--app-soft)] hover:text-[var(--app-ink)] transition-colors"
-                  >
-                    {apiKeyRevealed ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-                  </button>
-                )}
+          
+          <div className="flex flex-col gap-3">
+            {userAgents.length === 0 ? (
+              <div className="text-sm text-[var(--app-muted)] p-4 bg-[var(--app-canvas)] border border-[var(--app-hairline)] rounded-xl text-center">
+                You haven't created any agents yet. Add an agent to generate Proxy Gateway Keys.
               </div>
-            </div>
-            <button 
-              onClick={handleCopy}
-              disabled={isGeneratingKey}
-              className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors border disabled:opacity-50 disabled:cursor-not-allowed ${copied ? 'bg-green-50 text-green-700 border-green-200' : 'bg-[var(--app-canvas)] text-[var(--app-muted)] border-[var(--app-hairline)] hover:text-[var(--app-ink)] hover:bg-[var(--app-soft)]'}`}
-            >
-              {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />} 
-              {copied ? 'Copied' : 'Copy'}
-            </button>
-          </div>
-          <button 
-            onClick={handleRegenerate}
-            disabled={isGeneratingKey}
-            className="w-full mt-1 py-2.5 text-sm font-semibold text-[var(--app-ink)] bg-[var(--app-canvas)] border border-[var(--app-hairline)] rounded-xl hover:bg-[var(--app-soft)] transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-          >
-            {isGeneratingKey && (
-              <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-[var(--app-ink)]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
+            ) : (
+              userAgents.map(agent => (
+                <div key={agent.id} className="flex items-center justify-between gap-4 rounded-xl bg-[var(--app-canvas)] border border-[var(--app-hairline)] px-4 py-3">
+                  <div>
+                    <p className="text-xs text-[var(--app-muted)] font-medium mb-0.5">{agent.name} Proxy Key</p>
+                    <div className="flex items-center gap-1.5">
+                      <p className="text-sm font-mono text-[var(--app-ink)] h-5 flex items-center min-w-[220px]">
+                        {revealedAgentKeys[agent.id] ? agent.proxy_api_key : 'cp_live_' + '•'.repeat(24)}
+                      </p>
+                      <button 
+                        onClick={() => setRevealedAgentKeys(prev => ({...prev, [agent.id]: !prev[agent.id]}))} 
+                        className="p-1.5 rounded-md text-[var(--app-muted)] hover:bg-[var(--app-soft)] hover:text-[var(--app-ink)] transition-colors"
+                      >
+                        {revealedAgentKeys[agent.id] ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                      </button>
+                    </div>
+                  </div>
+                  <button 
+                    onClick={() => {
+                      navigator.clipboard.writeText(agent.proxy_api_key);
+                      setCopied(true);
+                      setTimeout(() => setCopied(false), 2000);
+                    }}
+                    className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors border ${copied ? 'bg-green-50 text-green-700 border-green-200' : 'bg-[var(--app-canvas)] text-[var(--app-muted)] border-[var(--app-hairline)] hover:text-[var(--app-ink)] hover:bg-[var(--app-soft)]'}`}
+                  >
+                    {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />} 
+                    {copied ? 'Copied' : 'Copy'}
+                  </button>
+                </div>
+              ))
             )}
-            Regenerate Key
-          </button>
+          </div>
         </MotionCard>
 
         {/* Danger Zone */}
@@ -367,5 +443,3 @@ export default function Page() {
     </div>
   );
 }
-
-

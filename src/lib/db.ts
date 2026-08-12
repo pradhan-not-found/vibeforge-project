@@ -1,23 +1,22 @@
-import fs from 'fs';
-import path from 'path';
-
-const dbPath = path.join(process.cwd(), 'data', 'db.json');
-
-// Ensure data dir exists
-const dataDir = path.dirname(dbPath);
-if (!fs.existsSync(dataDir)) {
-  fs.mkdirSync(dataDir, { recursive: true });
-}
+import { db as firestoreDb } from './firebase';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 export type DatabaseSchema = {
-  policies: {
+  policyProfiles: Record<string, {
+    name: string;
+    description: string;
     maxSpend: number;
     maxTokens: number;
-    loopLimit?: number;
-  };
+    loopLimit: number;
+    rules: string[];
+  }>;
   agents: Record<string, {
     name: string;
     owner?: string;
+    provider?: string;
+    provider_api_key?: string;
+    proxy_api_key?: string;
+    policyId?: string;
     totalTokens: number;
     totalSpend: number;
     blockedCount: number;
@@ -51,68 +50,67 @@ export type DatabaseSchema = {
 };
 
 const defaultSchema: DatabaseSchema = {
-  policies: {
-    maxSpend: 50,
-    maxTokens: 100000,
-    loopLimit: 5,
+  policyProfiles: {
+    'default': {
+      name: 'Default Policy',
+      description: 'Standard limits for all agents',
+      maxSpend: 50,
+      maxTokens: 100000,
+      loopLimit: 5,
+      rules: []
+    }
   },
-  agents: {
-    'gemini-flash': {
-      name: 'Gemini Web Researcher',
-      owner: 'admin',
-      totalTokens: 0,
-      totalSpend: 0,
-      blockedCount: 0,
-    },
-    'groq-agent': {
-      name: 'Groq Data Scraper',
-      owner: 'admin',
-      totalTokens: 0,
-      totalSpend: 0,
-      blockedCount: 0,
-    },
-  },
+  agents: {},
   userSettings: {},
   queue: [],
   traces: [],
 };
 
-// Initialize DB if it doesn't exist
-if (!fs.existsSync(dbPath)) {
-  fs.writeFileSync(dbPath, JSON.stringify(defaultSchema, null, 2));
-}
-
-export function getDb(): DatabaseSchema {
+export async function getDb(): Promise<DatabaseSchema> {
   try {
-    const data = fs.readFileSync(dbPath, 'utf8');
-    return JSON.parse(data) as DatabaseSchema;
+    const docRef = doc(firestoreDb, 'database', 'global');
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      const data = docSnap.data() as DatabaseSchema;
+      // Ensure required fields exist in case of old schema
+      if (!data.policyProfiles) data.policyProfiles = defaultSchema.policyProfiles;
+      if (!data.agents) data.agents = defaultSchema.agents;
+      if (!data.userSettings) data.userSettings = defaultSchema.userSettings;
+      if (!data.queue) data.queue = defaultSchema.queue;
+      if (!data.traces) data.traces = defaultSchema.traces;
+      return data;
+    } else {
+      await setDoc(docRef, defaultSchema);
+      return defaultSchema;
+    }
   } catch (error) {
-    console.error('Failed to read db.json, returning default schema.', error);
+    console.error('Failed to read from Firestore, returning default schema.', error);
     return defaultSchema;
   }
 }
 
-export function saveDb(data: DatabaseSchema) {
+export async function saveDb(data: DatabaseSchema): Promise<void> {
   try {
-    fs.writeFileSync(dbPath, JSON.stringify(data, null, 2));
+    const docRef = doc(firestoreDb, 'database', 'global');
+    await setDoc(docRef, data);
   } catch (error) {
-    console.error('Failed to write db.json', error);
+    console.error('Failed to write to Firestore', error);
   }
 }
 
-export function updateAgentUsage(agentId: string, tokens: number, cost: number) {
-  const db = getDb();
+export async function updateAgentUsage(agentId: string, tokens: number, cost: number): Promise<void> {
+  const db = await getDb();
   if (db.agents[agentId]) {
     db.agents[agentId].totalTokens += tokens;
     db.agents[agentId].totalSpend += cost;
-    saveDb(db);
+    await saveDb(db);
   }
 }
 
-export function incrementAgentBlocked(agentId: string) {
-  const db = getDb();
+export async function incrementAgentBlocked(agentId: string): Promise<void> {
+  const db = await getDb();
   if (db.agents[agentId]) {
     db.agents[agentId].blockedCount += 1;
-    saveDb(db);
+    await saveDb(db);
   }
 }
