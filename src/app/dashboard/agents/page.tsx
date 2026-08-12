@@ -55,9 +55,9 @@ const PROVIDERS = [
   { label: 'Maincode Copilot',    provider: 'Maincode',     logo: '/ai-logos/maincode.png'    },
   { label: 'OpenClaw',            provider: 'OpenClaw',     logo: '/ai-logos/openclaw.jpeg'   },
   { label: 'OpenCode Copilot',    provider: 'OpenCode',     logo: '/ai-logos/opencode.svg'    },
-  { label: 'Cohere Command R',    provider: 'Cohere',       logo: '/ai-logos/openai.svg'      },
-  { label: 'AWS Bedrock',         provider: 'AWS',          logo: '/ai-logos/openai.svg'         },
-  { label: 'Azure OpenAI',        provider: 'Azure',        logo: '/ai-logos/openai.svg'       },
+  { label: 'Cohere Command R',    provider: 'Cohere',       logo: '/ai-logos/cohere.svg'      },
+  { label: 'AWS Bedrock',         provider: 'AWS',          logo: '/ai-logos/aws.svg'         },
+  { label: 'Azure OpenAI',        provider: 'Azure',        logo: '/ai-logos/azure.svg'       },
   { label: 'Replicate',           provider: 'Replicate',    logo: '/ai-logos/replicate.svg'   },
   // Custom
   { label: 'Custom Agent',        provider: 'Custom',       logo: '/ai-logos/openai.svg'      },
@@ -110,9 +110,9 @@ function guessLogo(name: string): { provider: string; logo: string } {
   if (n.includes('openclaw'))                                                                 return { provider: 'OpenClaw',    logo: '/ai-logos/openclaw.jpeg'   };
   if (n.includes('opencode'))                                                                 return { provider: 'OpenCode',    logo: '/ai-logos/opencode.svg'    };
   if (n.includes('amp'))                                                                      return { provider: 'AMP',         logo: '/ai-logos/amp-logo.svg'    };
-  if (n.includes('cohere'))                                                                   return { provider: 'Cohere',      logo: '/ai-logos/openai.svg'      };
-  if (n.includes('aws') || n.includes('bedrock') || n.includes('amazon'))                     return { provider: 'AWS',         logo: '/ai-logos/openai.svg'         };
-  if (n.includes('azure'))                                                                    return { provider: 'Azure',       logo: '/ai-logos/openai.svg'       };
+  if (n.includes('cohere'))                                                                   return { provider: 'Cohere',      logo: '/ai-logos/cohere.svg'      };
+  if (n.includes('aws') || n.includes('bedrock') || n.includes('amazon'))                     return { provider: 'AWS',         logo: '/ai-logos/aws.svg'         };
+  if (n.includes('azure'))                                                                    return { provider: 'Azure',       logo: '/ai-logos/azure.svg'       };
   if (n.includes('replicate'))                                                                return { provider: 'Replicate',   logo: '/ai-logos/replicate.svg'   };
   return { provider: 'Custom', logo: '/ai-logos/openai.svg' };
 }
@@ -469,7 +469,7 @@ export default function Page() {
               </button>
             </div>
 
-            <form onSubmit={handleAddAgent} className="p-6 space-y-5">
+            <form onSubmit={handleAddAgent} className="p-8 space-y-7 overflow-y-auto max-h-[75vh]">
 
               {/* Provider Dropdown */}
               <div>
@@ -584,8 +584,8 @@ export default function Page() {
               </div>
 
               {/* Live preview */}
-              <div className="flex items-center gap-3 p-3 rounded-xl bg-[var(--app-soft)] border border-[var(--app-hairline)]">
-                <div className="w-10 h-10 rounded-xl bg-[var(--app-canvas)] border border-[var(--app-hairline)] flex items-center justify-center p-2 shadow-sm overflow-hidden shrink-0">
+              <div className="flex items-center gap-4 p-4 mt-2 rounded-xl bg-[var(--app-soft)] border border-[var(--app-hairline)]">
+                <div className="w-12 h-12 rounded-xl bg-[var(--app-canvas)] border border-[var(--app-hairline)] flex items-center justify-center p-2.5 shadow-sm overflow-hidden shrink-0">
                   <img src={selectedPreset.logo} alt={selectedPreset.provider} className="w-full h-full object-contain" onError={(e) => (e.currentTarget.style.display = 'none')} />
                 </div>
                 <div className="min-w-0">
@@ -594,8 +594,8 @@ export default function Page() {
                 </div>
               </div>
 
-              <div className="flex justify-end gap-3 pt-1">
-                <button type="button" onClick={closeModal} className="px-4 py-2 text-sm font-medium text-[var(--app-ink)] bg-transparent border border-[var(--app-hairline)] rounded-xl hover:bg-[var(--app-soft)] transition-colors">
+              <div className="flex justify-end gap-3 pt-4 border-t border-[var(--app-hairline)] mt-4">
+                <button type="button" onClick={closeModal} className="px-5 py-2.5 text-sm font-medium text-[var(--app-ink)] bg-transparent border border-[var(--app-hairline)] rounded-xl hover:bg-[var(--app-soft)] transition-colors">
                   Cancel
                 </button>
                 <button type="submit" className="cta-btn-dark text-on-dark shadow-sm flex items-center justify-center gap-[10px] px-[16px] py-[10px] text-[14px] font-[500] rounded-[8px] transition-all">
