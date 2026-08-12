@@ -248,13 +248,18 @@ export default function Page() {
   const handleAddAgent = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!user?.email) {
+      alert('Error: User session not found. Please refresh the page or log in again.');
+      return;
+    }
+
     try {
       const res = await fetch('/api/agents', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: agentName,
-          user_id: user?.email,
+          user_id: user.email,
           provider: selectedPreset.provider,
           policyId: selectedPolicyId,
           provider_api_key: providerApiKey,
