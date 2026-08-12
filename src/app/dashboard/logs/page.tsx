@@ -138,9 +138,6 @@ export default function Page() {
                 </>
               )}
             </div>
-            <button onClick={fetchDb} className="cta-btn-dark text-on-dark shadow-sm flex items-center justify-center gap-[10px] px-[16px] py-[10px] text-[14px] font-[500] rounded-[8px] transition-all">
-              <Clock className="w-4 h-4" /> Refresh
-            </button>
           </div>
         </div>
       </div>
