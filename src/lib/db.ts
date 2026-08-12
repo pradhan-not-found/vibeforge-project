@@ -13,6 +13,7 @@ export type DatabaseSchema = {
   policies: {
     maxSpend: number;
     maxTokens: number;
+    loopLimit?: number;
   };
   agents: Record<string, {
     name: string;
@@ -47,6 +48,7 @@ const defaultSchema: DatabaseSchema = {
   policies: {
     maxSpend: 50,
     maxTokens: 100000,
+    loopLimit: 5,
   },
   agents: {
     'gemini-flash': {

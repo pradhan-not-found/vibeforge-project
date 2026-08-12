@@ -53,14 +53,14 @@ export default function Page() {
 
   useEffect(() => {
     fetchDb();
-    const interval = setInterval(fetchDb, 5000);
+    const interval = setInterval(fetchDb, 800);
     return () => clearInterval(interval);
   }, []);
 
   const selectedTrace = db.traces?.find((t: any) => t.id === selectedTraceId);
 
-  // Map backend traces to the original log format
-  const logs = (db.traces || []).map((t: any) => ({
+  // Map backend traces and queue to the original log format
+  const traceLogs = (db.traces || []).map((t: any) => ({
     id: t.id,
     agent: t.agentName,
     logo: guessLogo(t.agentId).logo,
@@ -70,8 +70,25 @@ export default function Page() {
     reasoning: t.errorContext || `Used ${t.tokensUsed} tokens`,
     risk_score: t.success ? 0.1 : 0.9,
     time: new Date(t.timestamp).toLocaleString(),
+    timestampMs: new Date(t.timestamp).getTime(),
     user: 'system_api'
   }));
+
+  const queueLogs = (db.queue || []).map((q: any) => ({
+    id: q.id,
+    agent: q.agentName,
+    logo: guessLogo(q.agentId).logo,
+    action: q.action || 'BLOCKED_ACTION',
+    resource: q.prompt ? q.prompt.substring(0, 50) + (q.prompt.length > 50 ? '...' : '') : 'N/A',
+    result: 'Blocked by Policy',
+    reasoning: `Triggered: ${q.policy}`,
+    risk_score: 1.0,
+    time: new Date(q.time).toLocaleString(),
+    timestampMs: new Date(q.time).getTime(),
+    user: 'system_firewall'
+  }));
+
+  const logs = [...traceLogs, ...queueLogs].sort((a, b) => b.timestampMs - a.timestampMs);
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto animate-fade-down flex flex-col min-h-screen">
@@ -114,56 +131,100 @@ export default function Page() {
             </div>
           </div>
           
-          <div className="flex-1 p-8 flex items-center justify-center bg-[var(--app-soft)] overflow-x-auto relative min-h-[300px]">
+          <div 
+            className="flex-1 p-8 flex items-center justify-center overflow-x-auto relative min-h-[300px]"
+            style={{
+              backgroundColor: 'var(--app-canvas)',
+              backgroundImage: 'radial-gradient(rgba(156, 163, 175, 0.4) 1px, transparent 1px)',
+              backgroundSize: '24px 24px',
+              backgroundPosition: 'center'
+            }}
+          >
+            <style>{`
+              @keyframes flow-line {
+                from { background-position: 24px 0; }
+                to { background-position: 0 0; }
+              }
+              .animate-flow-line {
+                background: linear-gradient(to right, #9ca3af 50%, transparent 50%);
+                background-size: 12px 100%;
+                animation: flow-line 0.8s linear infinite;
+              }
+              .animate-flow-line-success {
+                background: linear-gradient(to right, #10b981 50%, transparent 50%);
+                background-size: 12px 100%;
+                animation: flow-line 0.8s linear infinite;
+              }
+              .animate-flow-line-error {
+                background: linear-gradient(to right, #ef4444 50%, transparent 50%);
+                background-size: 12px 100%;
+                animation: flow-line 0.8s linear infinite;
+              }
+            `}</style>
+            
             {!selectedTrace ? (
-              <div className="text-[var(--app-muted)] font-medium">Run a prompt in the Test LLM tab to generate a trace.</div>
+              <div className="text-[var(--app-muted)] font-medium bg-[var(--app-canvas)] px-4 py-2 rounded-lg border border-[var(--app-hairline)] shadow-sm relative z-10">
+                Run a prompt in the Test LLM tab to generate a trace.
+              </div>
             ) : (
-              <div className="flex items-start justify-center gap-2 relative mt-4">
+              <div className="flex items-start justify-center relative mt-4 pt-6">
                 
                 {/* Node 1: User Request */}
-                <div className="relative z-10 flex flex-col items-center gap-3 w-[120px] sm:w-[140px]">
-                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center shadow-sm bg-[var(--app-canvas)] border border-[var(--app-hairline)] relative">
-                    <Server className="w-5 h-5 sm:w-6 sm:h-6 text-[var(--app-ink)]" />
+                <div className="relative z-10 flex flex-col items-center gap-2 w-[120px]">
+                  <div className="relative w-16 h-16 bg-[var(--app-canvas)] border border-[var(--app-hairline)] rounded-xl shadow-[0_2px_8px_rgb(0,0,0,0.04)] flex items-center justify-center group transition-transform hover:-translate-y-1">
+                    <Server className="w-8 h-8 text-red-500" />
+                    {/* Output port */}
+                    <div className="absolute -right-1.5 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full border-[1.5px] border-[var(--app-canvas)] bg-gray-400"></div>
                   </div>
                   <div className="text-center">
-                    <div className="text-[12px] font-semibold text-[var(--app-ink)]">User Request</div>
+                    <div className="text-[13px] font-semibold text-[var(--app-ink)] whitespace-nowrap">User Request</div>
+                    <div className="text-[11px] text-[var(--app-muted)] whitespace-nowrap">Trigger</div>
                   </div>
                 </div>
 
                 {/* Connecting Line 1 */}
-                <div className="flex-1 min-w-[20px] sm:min-w-[40px] max-w-[80px] h-12 sm:h-14 flex items-center justify-center">
-                  <div className="w-full border-t-2 border-dashed border-[var(--app-hairline)]"></div>
+                <div className="w-[40px] sm:w-[60px] relative flex items-center justify-center h-16">
+                  <div className="w-full h-[2px] animate-flow-line"></div>
                 </div>
 
                 {/* Node 2: Firewall Check */}
-                <div className="relative z-10 flex flex-col items-center gap-3 w-[120px] sm:w-[140px]">
-                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center shadow-sm bg-emerald-50 border border-emerald-200 ring-2 ring-emerald-500/20 dark:bg-emerald-900/20 dark:border-emerald-700/50">
-                    <ShieldAlert className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-600 dark:text-emerald-400" />
+                <div className="relative z-10 flex flex-col items-center gap-2 w-[120px]">
+                  <div className="relative w-16 h-16 bg-[var(--app-canvas)] border border-[var(--app-hairline)] rounded-xl shadow-[0_2px_8px_rgb(0,0,0,0.04)] flex items-center justify-center group transition-transform hover:-translate-y-1">
+                    {/* Input port */}
+                    <div className="absolute -left-1.5 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full border-[1.5px] border-[var(--app-canvas)] bg-gray-400"></div>
+                    <ShieldAlert className="w-8 h-8 text-[var(--app-ink)]" />
+                    {/* Output port */}
+                    <div className="absolute -right-1.5 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full border-[1.5px] border-[var(--app-canvas)] bg-gray-400"></div>
                   </div>
                   <div className="text-center">
-                    <div className="text-[12px] font-semibold text-[var(--app-ink)]">Blast Radius</div>
-                    <div className="text-[10px] text-[var(--app-muted)]">Checks passed</div>
+                    <div className="text-[13px] font-semibold text-[var(--app-ink)] whitespace-nowrap">Blast Radius</div>
+                    <div className="text-[11px] text-[var(--app-muted)] whitespace-nowrap">Checks passed</div>
                   </div>
                 </div>
 
                 {/* Connecting Line 2 */}
-                <div className="flex-1 min-w-[20px] sm:min-w-[40px] max-w-[80px] h-12 sm:h-14 flex items-center justify-center">
-                  <div className={`w-full border-t-2 border-dashed ${selectedTrace.success ? 'border-emerald-500/50' : 'border-red-500/50'}`}></div>
+                <div className="w-[40px] sm:w-[60px] relative flex items-center justify-center h-16">
+                  <div className={`w-full h-[2px] ${selectedTrace.success ? 'animate-flow-line' : 'animate-flow-line-error'}`}></div>
                 </div>
 
                 {/* Node 3: Agent */}
-                <div className="relative z-10 flex flex-col items-center gap-3 w-[120px] sm:w-[140px]">
-                  {!selectedTrace.success && (
-                    <div className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center shadow-md z-20 animate-pulse">
-                      <AlertCircle className="w-3 h-3" />
-                    </div>
-                  )}
-                  <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center shadow-sm border ${selectedTrace.success ? 'bg-emerald-50 border-emerald-200 ring-2 ring-emerald-500/20 dark:bg-emerald-900/20 dark:border-emerald-700/50' : 'bg-red-50 border-red-200 ring-2 ring-red-500/20 dark:bg-red-900/20 dark:border-red-700/50'}`}>
-                    {selectedTrace.success ? <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-600 dark:text-emerald-400" /> : <AlertCircle className="w-5 h-5 sm:w-6 sm:h-6 text-red-600 dark:text-red-400" />}
+                <div className="relative z-10 flex flex-col items-center gap-2 w-[120px]">
+                  <div className={`relative w-16 h-16 bg-[var(--app-canvas)] border rounded-xl shadow-[0_2px_8px_rgb(0,0,0,0.04)] flex items-center justify-center group transition-transform hover:-translate-y-1 ${selectedTrace.success ? 'border-[var(--app-hairline)]' : 'border-red-400 ring-2 ring-red-500/20'}`}>
+                    {/* Input port */}
+                    <div className="absolute -left-1.5 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full border-[1.5px] border-[var(--app-canvas)] bg-gray-400"></div>
+                    
+                    <img 
+                      src={guessLogo(selectedTrace.agentName || selectedTrace.agentId).logo} 
+                      alt="Agent" 
+                      className="w-8 h-8 object-contain" 
+                    />
+                    
+                    {/* Status Indicator (replacing output port) */}
+                    <div className={`absolute -top-1.5 -right-1.5 w-3.5 h-3.5 rounded-full border-2 border-[var(--app-canvas)] shadow-sm ${selectedTrace.success ? 'bg-emerald-500' : 'bg-red-500 animate-pulse'}`}></div>
                   </div>
                   <div className="text-center">
-                    <div className={`text-[12px] font-semibold ${selectedTrace.success ? 'text-[var(--app-ink)]' : 'text-red-600 dark:text-red-400'}`}>{selectedTrace.agentName}</div>
-                    <div className="text-[10px] text-[var(--app-muted)]">Duration: {selectedTrace.durationMs}ms</div>
+                    <div className={`text-[13px] font-semibold whitespace-nowrap ${selectedTrace.success ? 'text-[var(--app-ink)]' : 'text-red-600 dark:text-red-400'}`}>{selectedTrace.agentName || 'Agent'}</div>
+                    <div className="text-[11px] text-[var(--app-muted)] whitespace-nowrap">Duration: {selectedTrace.durationMs}ms</div>
                   </div>
                 </div>
 
@@ -181,43 +242,63 @@ export default function Page() {
           
           <div className="flex-1 overflow-y-auto p-5 flex flex-col gap-6">
             {selectedTrace ? (
-              <div className="flex flex-col gap-5 animate-in fade-in slide-in-from-right-4 duration-300">
-                <div className="flex flex-col gap-1">
-                  <h3 className="text-[16px] font-bold text-[var(--app-ink)]">{selectedTrace.agentName}</h3>
-                  <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-semibold w-max mt-1 border ${selectedTrace.success ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20' : 'bg-red-500/10 text-red-600 border-red-500/20'}`}>
-                    {selectedTrace.success ? <CheckCircle2 className="w-3 h-3" /> : <AlertCircle className="w-3 h-3" />}
-                    {selectedTrace.success ? 'Completed Successfully' : 'Failure Detected'}
+              <div className="flex flex-col gap-6 animate-in fade-in slide-in-from-right-4 duration-300">
+                
+                {/* Header info */}
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 rounded-xl bg-[var(--app-canvas)] border border-[var(--app-hairline)] flex items-center justify-center p-2 shadow-sm shrink-0">
+                    <img src={guessLogo(selectedTrace.agentName || selectedTrace.agentId).logo} alt="Agent" className="w-full h-full object-contain" />
                   </div>
-                </div>
-
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center gap-2 text-[12px] font-semibold text-[var(--app-muted)] uppercase tracking-wider">
-                    <Database className="w-3.5 h-3.5" />
-                    Agent Metrics
-                  </div>
-                  <div className="bg-[var(--app-soft)] p-3 rounded-xl border border-[var(--app-hairline)] text-[13px] text-[var(--app-ink)] leading-relaxed flex flex-col gap-1">
-                    <div><strong>Tokens Used:</strong> {selectedTrace.tokensUsed}</div>
-                    <div><strong>Estimated Cost:</strong> ${selectedTrace.cost.toFixed(6)}</div>
-                  </div>
-                </div>
-
-                {selectedTrace.response && (
-                  <div className="flex flex-col gap-2">
-                    <div className="flex items-center gap-2 text-[12px] font-semibold text-[var(--app-muted)] uppercase tracking-wider">
-                      Response Output
+                  <div>
+                    <h3 className="text-[16px] font-semibold text-[var(--app-ink)] tracking-tight">{selectedTrace.agentName}</h3>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <div className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider ring-1 ring-inset ${selectedTrace.success ? 'bg-emerald-50 text-emerald-700 ring-emerald-600/20' : 'bg-red-50 text-red-700 ring-red-600/20'}`}>
+                        {selectedTrace.success ? <CheckCircle2 className="w-3 h-3" /> : <AlertCircle className="w-3 h-3" />}
+                        {selectedTrace.success ? 'Successful' : 'Failed'}
+                      </div>
+                      <span className="text-[11px] text-[var(--app-muted)] font-medium bg-[var(--app-soft)] px-2 py-0.5 rounded-md border border-[var(--app-hairline)]">
+                        {selectedTrace.durationMs}ms
+                      </span>
                     </div>
-                    <div className="bg-[#1A1A1A] p-3 rounded-xl border border-[#333333] shadow-inner text-[12px] text-gray-300 leading-relaxed overflow-x-auto max-h-[250px]">
+                  </div>
+                </div>
+
+                {/* Metrics */}
+                <div className="flex flex-col gap-3">
+                  <h4 className="text-[12px] font-bold text-[var(--app-muted)] uppercase tracking-wider flex items-center gap-2">
+                    <Database className="w-3.5 h-3.5" /> Usage Metrics
+                  </h4>
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center justify-between gap-4 rounded-xl bg-[var(--app-canvas)] border border-[var(--app-hairline)] px-4 py-3">
+                      <span className="text-[13px] text-[var(--app-muted)] font-medium">Tokens Used</span>
+                      <span className="text-[13px] font-medium text-[var(--app-ink)]">{selectedTrace.tokensUsed}</span>
+                    </div>
+                    <div className="flex items-center justify-between gap-4 rounded-xl bg-[var(--app-canvas)] border border-[var(--app-hairline)] px-4 py-3">
+                      <span className="text-[13px] text-[var(--app-muted)] font-medium">Estimated Cost</span>
+                      <span className="text-[13px] font-medium text-[var(--app-ink)]">${selectedTrace.cost.toFixed(6)}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Output */}
+                {selectedTrace.response && (
+                  <div className="flex flex-col gap-3">
+                    <h4 className="text-[12px] font-bold text-[var(--app-muted)] uppercase tracking-wider flex items-center gap-2">
+                      Response Payload
+                    </h4>
+                    <div className="rounded-xl bg-[var(--app-canvas)] border border-[var(--app-hairline)] px-4 py-3 text-[13px] text-[var(--app-ink)] leading-relaxed overflow-x-auto max-h-[300px]">
                       {selectedTrace.response}
                     </div>
                   </div>
                 )}
 
+                {/* Error Trace */}
                 {!selectedTrace.success && selectedTrace.errorContext && (
-                  <div className="flex flex-col gap-2">
-                    <div className="flex items-center gap-2 text-[12px] font-semibold text-[var(--app-muted)] uppercase tracking-wider">
+                  <div className="flex flex-col gap-3">
+                    <h4 className="text-[12px] font-bold text-red-600 uppercase tracking-wider flex items-center gap-2">
                       Error Trace
-                    </div>
-                    <div className="bg-red-950/20 p-4 rounded-xl border border-red-900/30 text-[13px] text-red-400 leading-relaxed overflow-x-auto">
+                    </h4>
+                    <div className="rounded-xl bg-red-50/50 border border-red-200 px-4 py-3 text-[13px] text-red-700 leading-relaxed overflow-x-auto">
                       {selectedTrace.errorContext}
                     </div>
                   </div>

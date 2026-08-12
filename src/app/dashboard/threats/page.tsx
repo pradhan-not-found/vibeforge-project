@@ -38,29 +38,64 @@ export default function Page() {
 
   useEffect(() => {
     fetchLogs();
+    const interval = setInterval(fetchLogs, 800);
+    return () => clearInterval(interval);
   }, []);
 
   const fetchLogs = async () => {
     try {
-      const res = await fetch('http://localhost:8000/api/audit-logs');
-      if (res.ok) {
-        const data = await res.json();
-        const mapped = data
-          .filter((item: any) => item.decision.includes('Blocked') || item.risk_score >= 80)
-          .map((item: any) => ({
-            id: item.id,
-            agent: item.agent_name || item.agent_id || 'Unknown Agent',
-            logo: guessLogo(item.agent_provider || item.agent_name || item.agent_id || '').logo,
-            type: item.risk_score >= 90 ? 'Prompt Injection' : 'Data Exfiltration',
-            severity: item.risk_score >= 90 ? 'Critical' : item.risk_score >= 70 ? 'High' : 'Medium',
-            action: item.decision === 'Allowed' ? 'Flagged' : 'Blocked',
-            time: new Date(item.created_at).toLocaleString(),
-            payload: item.action_text || item.reasoning
-          }));
-        setThreats(mapped);
+      let mapped: any[] = [];
+      
+      // Fetch backend audit logs
+      try {
+        const res = await fetch('http://localhost:8000/api/audit-logs');
+        if (res.ok) {
+          const data = await res.json();
+          mapped = data
+            .filter((item: any) => item.decision.includes('Blocked') || item.risk_score >= 80)
+            .map((item: any) => ({
+              id: item.id,
+              agent: item.agent_name || item.agent_id || 'Unknown Agent',
+              logo: guessLogo(item.agent_provider || item.agent_name || item.agent_id || '').logo,
+              type: item.risk_score >= 90 ? 'Prompt Injection' : 'Data Exfiltration',
+              severity: item.risk_score >= 90 ? 'Critical' : item.risk_score >= 70 ? 'High' : 'Medium',
+              action: item.decision === 'Allowed' ? 'Flagged' : 'Blocked',
+              time: new Date(item.created_at).toLocaleString(),
+              timestampMs: new Date(item.created_at).getTime(),
+              payload: item.action_text || item.reasoning
+            }));
+        }
+      } catch (err) {
+        // Silently ignore if backend is down
       }
+        
+      let queueThreats: any[] = [];
+      
+      // Fetch local db queue
+      try {
+        const res2 = await fetch('/api/db');
+        if (res2.ok) {
+          const dbData = await res2.json();
+          queueThreats = (dbData.queue || []).map((q: any) => ({
+            id: q.id,
+            agent: q.agentName,
+            logo: guessLogo(q.agentId).logo,
+            type: `Policy Violation`,
+            severity: 'High',
+            action: 'Blocked',
+            time: new Date(q.time).toLocaleString(),
+            timestampMs: new Date(q.time).getTime(),
+            payload: q.prompt || q.action || `Triggered: ${q.policy}`
+          }));
+        }
+      } catch (e) {
+        // Silently ignore if db is down
+      }
+
+      const allThreats = [...mapped, ...queueThreats].sort((a, b) => b.timestampMs - a.timestampMs);
+      setThreats(allThreats);
     } catch (err) {
-      console.error('Failed to fetch threat logs', err);
+      // Overall catch
     }
   };
 
@@ -90,25 +125,24 @@ export default function Page() {
           <MotionCard
             key={threat.id}
             index={i}
-            className="bg-[var(--app-soft)] rounded-2xl border-2 border-[var(--app-hairline)] p-5 card-elevate card-depth"
+            className="bg-[var(--app-soft)] rounded-2xl border-2 border-[var(--app-hairline)] p-5 card-elevate card-depth transition-all"
           >
             <div className="flex items-start gap-4">
-              {/* Severity icon */}
-              <div className={`shrink-0 w-10 h-10 rounded-xl flex items-center justify-center ring-1 ring-inset ${severityStyles(threat.severity)}`}>
-                <ShieldAlert className="w-5 h-5" />
+              {/* Agent Logo (formerly ShieldAlert) */}
+              <div className="shrink-0 w-12 h-12 rounded-xl bg-[var(--app-canvas)] border border-[var(--app-hairline)] flex items-center justify-center p-2.5 shadow-sm">
+                <img src={threat.logo} alt={threat.agent} className="w-full h-full object-contain" />
               </div>
 
               <div className="flex-1 min-w-0">
                 <div className="flex items-center flex-wrap gap-2 mb-1.5">
-                  <img src={threat.logo} alt={threat.agent} className="w-4 h-4 object-contain" />
-                  <span className="text-sm font-semibold text-[var(--app-ink)]">{threat.agent}</span>
+                  <span className="text-base font-semibold text-[var(--app-ink)]">{threat.agent}</span>
                   <span className="text-[var(--app-muted)]">·</span>
-                  <span className="text-sm text-[var(--app-muted)]">{threat.type}</span>
+                  <span className="text-sm font-medium text-[var(--app-muted)]">{threat.type}</span>
                   <span className={`ml-auto inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider ring-1 ring-inset ${severityStyles(threat.severity)}`}>
                     {threat.severity}
                   </span>
                 </div>
-                <p className="text-xs font-mono text-[var(--app-muted)] truncate mb-3 max-w-2xl">{threat.payload}</p>
+                <p className="text-sm font-mono text-[var(--app-muted)] truncate mb-3 max-w-2xl">{threat.payload}</p>
                 <div className="flex items-center gap-3">
                   <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium border ${
                     threat.action === 'Blocked'

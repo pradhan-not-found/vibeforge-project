@@ -7,11 +7,21 @@ import { useAuth } from '@/context/AuthContext';
 export default function Page() {
   const { user } = useAuth();
   const [copied, setCopied] = useState(false);
+  const [threatAlerts, setThreatAlerts] = useState('Email + Slack');
+  const [weeklyDigest, setWeeklyDigest] = useState(true);
+  const [apiKey, setApiKey] = useState('cp_live_••••••••••••••••••1a2b');
 
   const handleCopy = () => {
-    navigator.clipboard.writeText('tw_live_a8f9c2d4e5b61a2b');
+    navigator.clipboard.writeText(apiKey);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleRegenerate = () => {
+    const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    let newKey = 'cp_live_';
+    for (let i = 0; i < 24; i++) newKey += chars.charAt(Math.floor(Math.random() * chars.length));
+    setApiKey(newKey);
   };
 
   const SETTINGS_SECTIONS = [
@@ -19,17 +29,9 @@ export default function Page() {
       title: 'Workspace',
       icon: <User className="w-4 h-4" />,
       fields: [
-        { label: 'Workspace Name', value: user?.workspaceName || 'Trustworthy HQ', type: 'text' },
-        { label: 'Owner Email', value: user?.email || 'admin@trustworthy.ai', type: 'email' },
+        { label: 'Workspace Name', value: (user as any)?.workspaceName || 'Checkpost Workspace', type: 'text' },
+        { label: 'Owner Email', value: user?.email || 'admin@checkpost.app', type: 'email' },
         { label: 'Plan', value: 'Pro — 10 agents, 5M tokens/mo', type: 'badge' },
-      ],
-    },
-    {
-      title: 'Notifications',
-      icon: <Bell className="w-4 h-4" />,
-      fields: [
-        { label: 'Threat Alerts', value: 'Email + Slack', type: 'text' },
-        { label: 'Weekly Digest', value: 'Enabled', type: 'badge' },
       ],
     },
   ];
@@ -74,6 +76,48 @@ export default function Page() {
           </MotionCard>
         ))}
 
+        {/* Notifications */}
+        <MotionCard
+          index={1}
+          className="bg-[var(--app-soft)] rounded-2xl border-2 border-[var(--app-hairline)] p-6 card-elevate card-depth"
+        >
+          <div className="flex items-center gap-2.5 mb-5">
+            <div className="w-8 h-8 rounded-lg bg-[var(--app-canvas)] border border-[var(--app-hairline)] flex items-center justify-center text-[var(--app-muted)] shadow-sm">
+              <Bell className="w-4 h-4" />
+            </div>
+            <h2 className="font-sans text-xl text-[var(--app-ink)] tracking-tight">Notifications</h2>
+          </div>
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center justify-between gap-4 rounded-xl bg-[var(--app-canvas)] border border-[var(--app-hairline)] px-4 py-3">
+              <span className="text-sm text-[var(--app-muted)] font-medium">Threat Alerts</span>
+              <div className="relative">
+                <select 
+                  value={threatAlerts} 
+                  onChange={(e) => setThreatAlerts(e.target.value)}
+                  className="appearance-none bg-[var(--app-soft)] border border-[var(--app-hairline)] text-[var(--app-ink)] text-sm font-medium rounded-lg px-3 py-1.5 pr-8 focus:outline-none focus:ring-2 focus:ring-[var(--app-ink)]/20 cursor-pointer transition-shadow"
+                >
+                  <option value="Email + Slack">Email + Slack</option>
+                  <option value="Email Only">Email Only</option>
+                  <option value="Slack Only">Slack Only</option>
+                  <option value="None">None</option>
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-[var(--app-muted)]">
+                  <svg className="w-3.5 h-3.5 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center justify-between gap-4 rounded-xl bg-[var(--app-canvas)] border border-[var(--app-hairline)] px-4 py-3">
+              <span className="text-sm text-[var(--app-muted)] font-medium">Weekly Digest</span>
+              <button 
+                onClick={() => setWeeklyDigest(!weeklyDigest)}
+                className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${weeklyDigest ? 'bg-emerald-500' : 'bg-gray-300 dark:bg-gray-700'}`}
+              >
+                <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${weeklyDigest ? 'translate-x-4' : 'translate-x-1'}`} />
+              </button>
+            </div>
+          </div>
+        </MotionCard>
+
         {/* API Key Section */}
         <MotionCard
           index={2}
@@ -88,7 +132,7 @@ export default function Page() {
           <div className="flex items-center justify-between gap-4 rounded-xl bg-[var(--app-canvas)] border border-[var(--app-hairline)] px-4 py-3 mb-3">
             <div>
               <p className="text-xs text-[var(--app-muted)] font-medium mb-0.5">Proxy Gateway Key</p>
-              <p className="text-sm font-mono text-[var(--app-ink)]">tw_live_••••••••••••••••••1a2b</p>
+              <p className="text-sm font-mono text-[var(--app-ink)]">{apiKey}</p>
             </div>
             <button 
               onClick={handleCopy}
@@ -98,7 +142,10 @@ export default function Page() {
               {copied ? 'Copied' : 'Copy'}
             </button>
           </div>
-          <button className="w-full mt-1 py-2.5 text-sm font-semibold text-[var(--app-ink)] bg-[var(--app-canvas)] border border-[var(--app-hairline)] rounded-xl hover:bg-[var(--app-soft)] transition-colors shadow-sm">
+          <button 
+            onClick={handleRegenerate}
+            className="w-full mt-1 py-2.5 text-sm font-semibold text-[var(--app-ink)] bg-[var(--app-canvas)] border border-[var(--app-hairline)] rounded-xl hover:bg-[var(--app-soft)] transition-colors shadow-sm"
+          >
             Regenerate Key
           </button>
         </MotionCard>

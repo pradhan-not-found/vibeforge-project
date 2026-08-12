@@ -103,13 +103,48 @@ export default function Page() {
   const [selectedIcon, setSelectedIcon] = useState('shield');
   const [openCategory, setOpenCategory] = useState<string | null>(null);
   const [selectedTemplates, setSelectedTemplates] = useState<string[]>([]);
+  const [maxSpend, setMaxSpend] = useState(50);
+  const [maxTokens, setMaxTokens] = useState(100000);
+  const [loopLimit, setLoopLimit] = useState(5);
   const { user } = useAuth();
 
   useEffect(() => {
     if (user?.email) {
       fetchPolicies();
     }
+    fetchDb();
   }, [user]);
+
+  const fetchDb = async () => {
+    try {
+      const res = await fetch('/api/db');
+      const data = await res.json();
+      if (data.policies) {
+        setMaxSpend(data.policies.maxSpend || 50);
+        setMaxTokens(data.policies.maxTokens || 100000);
+        setLoopLimit(data.policies.loopLimit || 5);
+      }
+    } catch (err) {
+      console.error('Failed to fetch DB policies', err);
+    }
+  };
+
+  const savePolicies = async () => {
+    try {
+      await fetch('/api/db', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'update_policies',
+          policies: { maxSpend: Number(maxSpend), maxTokens: Number(maxTokens), loopLimit: Number(loopLimit) }
+        })
+      });
+      alert('Rate limit policies saved successfully!');
+      fetchDb();
+    } catch (err) {
+      console.error('Failed to save policies', err);
+    }
+  };
 
   const fetchPolicies = async () => {
     try {
@@ -204,6 +239,64 @@ export default function Page() {
         >
           <Plus className="w-4 h-4" /> Create Policy
         </button>
+      </div>
+
+      {/* Rate Limits */}
+      <div className="flex flex-col gap-3 mb-8">
+        <div className="bg-[var(--app-soft)] rounded-2xl border-2 border-[var(--app-hairline)] p-5 card-elevate card-depth flex flex-col gap-5">
+           <div className="flex items-center justify-between border-b border-[var(--app-hairline)] pb-5">
+             <div className="flex items-center gap-3.5">
+               <div className="shrink-0 w-10 h-10 rounded-xl bg-[var(--app-canvas)] border border-[var(--app-hairline)] shadow-[0_2px_8px_rgb(0,0,0,0.04)] flex items-center justify-center">
+                 <CreditCard className="w-5 h-5 text-[var(--app-ink)]" />
+               </div>
+               <h3 className="text-[15px] font-semibold text-[var(--app-ink)]">Monetary & Token Caps</h3>
+             </div>
+             <button 
+               onClick={savePolicies} 
+               className="cta-btn-dark text-on-dark shadow-sm flex items-center justify-center px-[16px] py-[9px] text-[13px] font-[500] rounded-[8px] transition-all"
+             >
+                Save Caps
+             </button>
+           </div>
+           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-1">
+              <div className="flex flex-col gap-2">
+                <label className="text-[11px] font-bold text-[var(--app-muted)] uppercase tracking-wider">Max Spend</label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--app-muted)] font-medium">$</span>
+                  <input 
+                    type="number" 
+                    value={maxSpend} 
+                    onChange={(e) => setMaxSpend(Number(e.target.value))}
+                    className="w-full bg-transparent border border-[var(--app-hairline)] rounded-xl pl-7 pr-4 py-2.5 text-[14px] text-[var(--app-ink)] font-medium focus:outline-none focus:border-[var(--app-ink)] focus:ring-1 focus:ring-[var(--app-ink)] transition-all" 
+                  />
+                </div>
+                <p className="text-xs text-[var(--app-muted)]">Automatically pauses agent on excess API costs.</p>
+              </div>
+              <div className="flex flex-col gap-2">
+                <label className="text-[11px] font-bold text-[var(--app-muted)] uppercase tracking-wider">Max Tokens</label>
+                <input 
+                  type="number" 
+                  value={maxTokens}
+                  onChange={(e) => setMaxTokens(Number(e.target.value))} 
+                  className="w-full bg-transparent border border-[var(--app-hairline)] rounded-xl px-4 py-2.5 text-[14px] text-[var(--app-ink)] font-medium focus:outline-none focus:border-[var(--app-ink)] focus:ring-1 focus:ring-[var(--app-ink)] transition-all" 
+                />
+                <p className="text-xs text-[var(--app-muted)]">Hard-cap on context tokens used per run.</p>
+              </div>
+              <div className="flex flex-col gap-2">
+                <label className="text-[11px] font-bold text-[var(--app-muted)] uppercase tracking-wider">Loop Limit</label>
+                <select 
+                  value={loopLimit}
+                  onChange={(e) => setLoopLimit(Number(e.target.value))}
+                  className="w-full bg-transparent border border-[var(--app-hairline)] rounded-xl px-4 py-2.5 text-[14px] text-[var(--app-ink)] font-medium focus:outline-none focus:border-[var(--app-ink)] focus:ring-1 focus:ring-[var(--app-ink)] transition-all"
+                >
+                  <option value={3}>3 identical calls</option>
+                  <option value={5}>5 identical calls</option>
+                  <option value={10}>10 identical calls</option>
+                </select>
+                <p className="text-xs text-[var(--app-muted)]">Pause for review if agent stuck in a loop.</p>
+              </div>
+           </div>
+        </div>
       </div>
 
       {/* Policy Cards */}

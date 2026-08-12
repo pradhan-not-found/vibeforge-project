@@ -1,24 +1,98 @@
 {
   "policies": {
     "maxSpend": 50,
-    "maxTokens": 1
+    "maxTokens": 60000000000,
+    "loopLimit": 5
   },
   "agents": {
     "gemini-flash": {
       "name": "Gemini Web Researcher",
-      "totalTokens": 181,
-      "totalSpend": 0.00006335,
-      "blockedCount": 1
+      "totalTokens": 638,
+      "totalSpend": 0.00022329999999999998,
+      "blockedCount": 5
     },
     "groq-agent": {
       "name": "Groq Data Scraper",
-      "totalTokens": 53,
-      "totalSpend": 0.00000265,
+      "totalTokens": 104,
+      "totalSpend": 0.0000052,
       "blockedCount": 0
     }
   },
-  "queue": [],
+  "queue": [
+    {
+      "id": "a40d918d-eb9f-4dff-b2ff-f0eec94b523e",
+      "agentId": "gemini-flash",
+      "agentName": "Gemini Web Researcher",
+      "action": "execute_prompt",
+      "policy": "Max Tokens Exceeded",
+      "time": "2026-08-12T08:09:41.926Z",
+      "prompt": "jkjgku"
+    },
+    {
+      "id": "3ad0afff-91b3-4c9d-b945-b51e2fe42d0d",
+      "agentId": "gemini-flash",
+      "agentName": "Gemini Web Researcher",
+      "action": "execute_prompt",
+      "policy": "Max Tokens Exceeded",
+      "time": "2026-08-12T08:01:47.062Z",
+      "prompt": "supp"
+    },
+    {
+      "id": "8c9dbbf0-1550-4657-a046-03fee5f31a3b",
+      "agentId": "gemini-flash",
+      "agentName": "Gemini Web Researcher",
+      "action": "execute_prompt",
+      "policy": "Max Tokens Exceeded",
+      "time": "2026-08-12T07:57:14.916Z",
+      "prompt": "sup"
+    },
+    {
+      "id": "33ba2913-53bc-4fe1-98d4-58b98a1e69f2",
+      "agentId": "gemini-flash",
+      "agentName": "Gemini Web Researcher",
+      "action": "execute_prompt",
+      "policy": "Max Tokens Exceeded",
+      "time": "2026-08-12T07:56:39.791Z",
+      "prompt": "sup"
+    }
+  ],
   "traces": [
+    {
+      "id": "e6844e83-e78f-4a41-bf3c-dd34fe60b016",
+      "agentId": "groq-agent",
+      "agentName": "Groq Data Scraper",
+      "success": true,
+      "durationMs": 623,
+      "tokensUsed": 51,
+      "cost": 0.00000255,
+      "response": "1 + 1 = 2.",
+      "errorContext": "",
+      "timestamp": "2026-08-12T08:15:05.316Z"
+    },
+    {
+      "id": "465bf796-d26b-43db-bbf4-df2e4e499eec",
+      "agentId": "gemini-flash",
+      "agentName": "Gemini Web Researcher",
+      "success": true,
+      "durationMs": 3106,
+      "tokensUsed": 220,
+      "cost": 0.000077,
+      "response": "Yoooo! What's up? How's it going?",
+      "errorContext": "",
+      "timestamp": "2026-08-12T08:09:05.010Z"
+    },
+    {
+      "id": "5d03ba62-9f82-4215-9d07-dcc48542f162",
+      "agentId": "gemini-flash",
+      "agentName": "Gemini Web Researcher",
+      "success": true,
+      "durationMs": 1907,
+      "tokensUsed": 237,
+      "cost": 0.00008295,
+      "response": "Hellooooooooooooo! 👋 \n\nHow's it going? How can I help you today?",
+      "errorContext": "",
+      "timestamp": "2026-08-12T07:55:50.310Z"
+    },
     {
       "id": "20c7fe88-2087-40a0-b047-4e5d370a2e34",
       "agentId": "gemini-flash",

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Send, Bot, Zap } from 'lucide-react';
+import { Send, Bot, Zap, ChevronDown } from 'lucide-react';
 import { MotionCard } from '@/components/MotionCard';
 
 export default function LLMTestPage() {
@@ -10,6 +10,15 @@ export default function LLMTestPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [agentId, setAgentId] = useState('gemini-flash');
+
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const AGENTS = [
+    { id: 'gemini-flash', label: 'Gemini Web Researcher', provider: 'Google Generative AI', logo: '/ai-logos/gemini.svg' },
+    { id: 'groq-agent', label: 'Groq Data Scraper', provider: 'Llama 3.1 8B Instant via Groq', logo: '/ai-logos/groq.png' },
+  ];
+  
+  const selectedAgent = AGENTS.find(a => a.id === agentId) || AGENTS[0];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,20 +71,42 @@ export default function LLMTestPage() {
       >
         <form onSubmit={handleSubmit} className="flex flex-col gap-6">
           
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 relative">
             <label className="text-xs font-bold tracking-widest text-[var(--app-muted)] uppercase">
               Select Agent Identity
             </label>
             <div className="relative">
-              <select 
-                value={agentId} 
-                onChange={(e) => setAgentId(e.target.value)}
-                className="w-full bg-[var(--app-soft)] border border-[var(--app-hairline)] rounded-xl pl-10 pr-4 py-3 text-sm text-[var(--app-ink)] font-medium focus:outline-none focus:border-[var(--app-ink)] transition-all appearance-none"
+              <button
+                type="button"
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className="w-full flex items-center gap-3 px-4 py-3 border border-[var(--app-hairline)] rounded-xl text-sm text-left bg-[var(--app-soft)] text-[var(--app-ink)] hover:bg-[var(--app-canvas)] transition-colors focus:outline-none focus:border-[var(--app-ink)]"
               >
-                <option value="gemini-flash">Gemini Web Researcher (Google Generative AI)</option>
-                <option value="groq-agent">Groq Data Scraper (Llama 3.1 8B Instant via Groq SDK)</option>
-              </select>
-              <Bot className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--app-muted)]" />
+                <div className="w-6 h-6 rounded-md bg-[var(--app-canvas)] border border-[var(--app-hairline)] flex items-center justify-center overflow-hidden shrink-0 p-0.5">
+                  <img src={selectedAgent.logo} alt={selectedAgent.label} className="w-full h-full object-contain" onError={(e) => (e.currentTarget.style.display = 'none')} />
+                </div>
+                <span className="flex-1 font-medium">{selectedAgent.label}</span>
+                <span className="text-[var(--app-muted)] text-xs hidden sm:inline">{selectedAgent.provider}</span>
+                <ChevronDown className={`w-4 h-4 text-[var(--app-muted)] transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {isDropdownOpen && (
+                <div className="absolute left-0 right-0 mt-1 bg-[var(--app-canvas)] border border-[var(--app-hairline)] rounded-xl shadow-xl z-20 max-h-60 overflow-y-auto">
+                  {AGENTS.map((preset) => (
+                    <button
+                      key={preset.id}
+                      type="button"
+                      onClick={() => { setAgentId(preset.id); setIsDropdownOpen(false); }}
+                      className={`w-full flex items-center gap-3 px-4 py-3 text-sm text-left transition-colors hover:bg-[var(--app-soft)] ${selectedAgent.id === preset.id ? 'bg-[var(--app-soft)]' : ''}`}
+                    >
+                      <div className="w-6 h-6 rounded-md bg-[var(--app-canvas)] border border-[var(--app-hairline)] flex items-center justify-center overflow-hidden shrink-0 p-0.5">
+                        <img src={preset.logo} alt={preset.label} className="w-full h-full object-contain" onError={(e) => (e.currentTarget.style.display = 'none')} />
+                      </div>
+                      <span className="flex-1 font-medium text-[var(--app-ink)]">{preset.label}</span>
+                      <span className="text-[var(--app-muted)] text-xs hidden sm:inline">{preset.provider}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 

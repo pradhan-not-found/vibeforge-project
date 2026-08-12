@@ -97,8 +97,8 @@ export default function Page() {
 
   useEffect(() => {
     fetchMetrics();
-    // Refresh metrics every 5 seconds
-    const interval = setInterval(fetchMetrics, 5000);
+    // Refresh metrics every 800ms
+    const interval = setInterval(fetchMetrics, 800);
     return () => clearInterval(interval);
   }, []);
 

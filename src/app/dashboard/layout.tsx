@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { LayoutDashboard, Shield, ShieldAlert, BookOpen, Settings, Menu, X, LogOut, MoreVertical, User, Cloud, HelpCircle, Sparkles } from 'lucide-react';
+import { LayoutDashboard, BookOpen, Settings, Menu, X, LogOut, MoreVertical, User, Cloud, HelpCircle, Network, FlaskConical, ShieldCheck, AlertOctagon } from 'lucide-react';
 import { auth } from '@/lib/firebase';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { AuthProvider } from '@/context/AuthContext';
@@ -19,15 +19,15 @@ const navSections = [
   {
     label: "Assets",
     items: [
-      { title: "Agents", path: "/dashboard/agents", icon: LayoutDashboard },
-      { title: "Test LLM", path: "/dashboard/llm-test", icon: Sparkles },
+      { title: "Agents", path: "/dashboard/agents", icon: Network },
+      { title: "Test LLM", path: "/dashboard/llm-test", icon: FlaskConical },
     ],
   },
   {
     label: "Security",
     items: [
-      { title: "Policies", path: "/dashboard/policies", icon: Shield },
-      { title: "Threats", path: "/dashboard/threats", icon: ShieldAlert },
+      { title: "Policies", path: "/dashboard/policies", icon: ShieldCheck },
+      { title: "Threats", path: "/dashboard/threats", icon: AlertOctagon },
     ],
   },
   {
@@ -96,7 +96,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         )}
 
         {/* Sidebar */}
-        <aside className={`fixed inset-y-0 left-0 z-50 w-64 shrink-0 transition-transform duration-200 ease-in-out border-r border-[var(--app-hairline)] bg-[var(--app-canvas)] flex flex-col lg:relative lg:translate-x-0 ${isMobileMenuOpen ? 'translate-x-0 shadow-2xl' : 'max-lg:-translate-x-full'}`}>
+        <aside className={`fixed inset-y-0 left-0 z-50 w-64 shrink-0 transition-transform duration-200 ease-in-out border-r border-[var(--app-hairline)] bg-[var(--app-canvas)] flex flex-col ${isMobileMenuOpen ? 'translate-x-0 shadow-2xl' : 'max-lg:-translate-x-full lg:translate-x-0'}`}>
           <div className="py-5 px-6 border-b border-[var(--app-hairline)] mb-4 flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <img src="/icon.png" alt="Checkpost Logo" className="w-8 h-8 rounded-md" />
@@ -156,32 +156,29 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
           <div className="p-4 pb-4 px-4 relative">
             {isProfileOpen && (
-              <div className="absolute bottom-full left-4 right-4 mb-2 bg-[var(--app-canvas)] border border-[var(--app-hairline)] rounded-xl shadow-lg overflow-hidden py-1 z-50">
-                <Link href="/dashboard/profile" className="w-full flex items-center gap-3 px-4 py-2 text-sm font-medium text-[var(--app-ink)] hover:bg-[var(--app-soft)] transition-colors">
+              <div className="absolute bottom-full left-4 right-4 mb-2 bg-[var(--app-canvas)] border border-[var(--app-hairline)] rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] p-1.5 z-50 animate-fade-up origin-bottom">
+                <div className="px-2.5 py-2 mb-1 border-b border-[var(--app-hairline)]">
+                  <p className="text-xs font-semibold text-[var(--app-ink)] truncate">{user.name}</p>
+                  <p className="text-[10px] text-[var(--app-muted)] truncate">{user.email}</p>
+                </div>
+                
+                <Link href="/dashboard/profile" className="w-full flex items-center gap-2.5 px-2.5 py-2 text-[13px] font-medium text-[var(--app-ink)] hover:bg-[var(--app-soft)] rounded-lg transition-colors">
                   <User className="size-4 text-[var(--app-muted)]" />
                   Profile
                 </Link>
-                <Link href="/dashboard/settings" className="w-full flex items-center gap-3 px-4 py-2 text-sm font-medium text-[var(--app-ink)] hover:bg-[var(--app-soft)] transition-colors">
-                  <Settings className="size-4 text-[var(--app-muted)]" />
-                  Settings
-                </Link>
-                <Link href="/dashboard/account" className="w-full flex items-center gap-3 px-4 py-2 text-sm font-medium text-[var(--app-ink)] hover:bg-[var(--app-soft)] transition-colors">
-                  <Cloud className="size-4 text-[var(--app-muted)]" />
-                  Account
-                </Link>
                 
-                <div className="h-px bg-[var(--app-hairline)] my-1" />
+                <div className="h-px bg-[var(--app-hairline)] my-1.5 mx-1" />
                 
-                <Link href="/dashboard/help" className="w-full flex items-center gap-3 px-4 py-2 text-sm font-medium text-[var(--app-ink)] hover:bg-[var(--app-soft)] transition-colors">
+                <Link href="/dashboard/help" className="w-full flex items-center gap-2.5 px-2.5 py-2 text-[13px] font-medium text-[var(--app-ink)] hover:bg-[var(--app-soft)] rounded-lg transition-colors">
                   <HelpCircle className="size-4 text-[var(--app-muted)]" />
                   Help Center
                 </Link>
                 
-                <div className="h-px bg-[var(--app-hairline)] my-1" />
+                <div className="h-px bg-[var(--app-hairline)] my-1.5 mx-1" />
                 
                 <button
                   onClick={handleLogout}
-                  className="w-full flex items-center gap-3 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
+                  className="w-full flex items-center gap-2.5 px-2.5 py-2 text-[13px] font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-lg transition-colors"
                 >
                   <LogOut className="size-4" />
                   Log Out
@@ -213,7 +210,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </aside>
 
         {/* Main Content Area */}
-        <main className="flex-1 h-full overflow-y-auto relative bg-[var(--app-canvas)] flex flex-col">
+        <main className="flex-1 h-full overflow-y-auto relative bg-[var(--app-canvas)] flex flex-col lg:pl-64">
           {/* Ambient accent backdrop tone */}
           <div className={`absolute inset-0 bg-gradient-to-br ${gradientClass} pointer-events-none z-0`} />
           {/* Fine noise texture overlay */}

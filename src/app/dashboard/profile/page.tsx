@@ -1,7 +1,8 @@
 'use client';
 
+import Link from 'next/link';
 import { useState, useRef, useEffect } from "react";
-import { User, Pencil, Camera } from "lucide-react";
+import { User, Pencil, Camera, Settings, Lock } from "lucide-react";
 import { auth } from "@/lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 
@@ -121,19 +122,43 @@ export default function ProfilePage() {
 
       {/* Account Details */}
       <div>
-        <h2 className="text-[18px] font-medium text-[#1A1A1A] mb-4">Account Details</h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-[18px] font-medium text-[#1A1A1A]">Account Details</h2>
+          <Link href="/dashboard/settings" className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-medium text-[#1A1A1A] bg-[#FAFAF7] border border-[#E5E5E5] hover:bg-[#F0F0F0] transition-colors">
+            <Settings className="w-3.5 h-3.5" />
+            Workspace Settings
+          </Link>
+        </div>
         <div className="bg-white rounded-[24px] border border-[#E5E5E5] shadow-[0_2px_12px_rgba(0,0,0,0.03)] p-6 sm:p-8 flex flex-col gap-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div className="flex flex-col gap-2">
               <span className="text-[13px] font-medium text-[rgba(38,35,35,0.5)]">Email Address</span>
-              <div className="h-11 px-4 rounded-[10px] border border-[#E5E5E5] bg-[#FAFAF7] flex items-center text-[15px] text-[#1A1A1A]">
-                {profile.email}
+              <div className="h-11 px-4 rounded-[10px] border border-[#E5E5E5] bg-[#FAFAF7] flex items-center justify-between text-[15px] text-[rgba(38,35,35,0.5)] cursor-not-allowed">
+                <span>{profile.email}</span>
+                <Lock className="w-4 h-4 text-[rgba(38,35,35,0.3)]" />
               </div>
+              <p className="text-[11px] text-[rgba(38,35,35,0.4)] mt-0.5">Your email address cannot be changed.</p>
             </div>
             <div className="flex flex-col gap-2">
               <span className="text-[13px] font-medium text-[rgba(38,35,35,0.5)]">Role</span>
-              <div className="h-11 px-4 rounded-[10px] border border-[#E5E5E5] bg-[#FAFAF7] flex items-center text-[15px] text-[#1A1A1A]">
-                {profile.role}
+              <div className="relative">
+                <select
+                  value={profile.role}
+                  onChange={(e) => {
+                    const newRole = e.target.value;
+                    setProfile({ ...profile, role: newRole });
+                    // Optional: Call your backend here to save automatically
+                  }}
+                  className="w-full h-11 px-4 rounded-[10px] border border-[#E5E5E5] bg-[#FAFAF7] text-[15px] text-[#1A1A1A] appearance-none focus:outline-none focus:ring-2 focus:ring-[rgba(0,0,0,0.1)] cursor-pointer transition-shadow"
+                >
+                  <option value="Company Admin">Company Admin</option>
+                  <option value="Security Engineer">Security Engineer</option>
+                  <option value="Developer">Developer</option>
+                  <option value="Viewer">Viewer</option>
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-[#1A1A1A]">
+                  <svg className="w-4 h-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                </div>
               </div>
             </div>
           </div>

@@ -141,38 +141,92 @@ export default function Page() {
     if (!user?.email) return;
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:8000/api/agents?user_id=${user.email}`);
-      if (!response.ok) throw new Error('API error');
-      const data = await response.json();
-      if (data) {
-        const mappedAgents = data.map((item: any) => {
-          let risk = 'Unknown';
-          let progress = 0;
-          if (item.risk_score > 70) { risk = 'High'; progress = item.risk_score; }
-          else if (item.risk_score > 30) { risk = 'Medium'; progress = item.risk_score; }
-          else if (item.risk_score >= 0) { risk = 'Low'; progress = item.risk_score; }
+      
+      let mappedAgents: any[] = [];
+      
+      // Fetch backend agents
+      try {
+        const response = await fetch(`http://localhost:8000/api/agents?user_id=${user.email}`);
+        if (response.ok) {
+          const data = await response.json();
+          if (data && Array.isArray(data)) {
+            mappedAgents = data.map((item: any) => {
+              let risk = 'Unknown';
+              let progress = 0;
+              if (item.risk_score > 70) { risk = 'High'; progress = item.risk_score; }
+              else if (item.risk_score > 30) { risk = 'Medium'; progress = item.risk_score; }
+              else if (item.risk_score >= 0) { risk = 'Low'; progress = item.risk_score; }
 
-          // Try saved logo first, then fall back to name-based guess
-          const saved = loadAgentMeta(item.id);
-          const { provider, logo } = saved || guessLogo(item.name);
+              const saved = loadAgentMeta(item.id);
+              const { provider, logo } = saved || guessLogo(item.name);
 
-          return {
-            id: item.id,
-            name: item.name,
-            owner: item.owner,
-            risk_score: item.risk_score,
-            provider,
-            logo,
-            status: 'Active',
-            calls: '0',
-            risk,
-            progress,
-          };
-        });
-        setAgents(mappedAgents.reverse());
+              return {
+                id: item.id,
+                name: item.name,
+                owner: item.owner,
+                risk_score: item.risk_score,
+                provider,
+                logo,
+                status: 'Active',
+                calls: '0',
+                risk,
+                progress,
+              };
+            });
+          }
+        }
+      } catch (err) {
+        console.error('Error fetching remote agents:', err);
       }
+
+      // Fetch local DB agents
+      try {
+        const localRes = await fetch('/api/db');
+        if (localRes.ok) {
+          const localData = await localRes.json();
+          if (localData.agents) {
+            const localMapped = Object.entries(localData.agents).map(([id, info]: [string, any]) => {
+              const { provider, logo } = loadAgentMeta(id) || guessLogo(info.name);
+              
+              // Calculate total calls from traces and queue
+              const agentTraces = (localData.traces || []).filter((t: any) => t.agentId === id);
+              const agentBlocked = (localData.queue || []).filter((q: any) => q.agentId === id);
+              const totalCalls = agentTraces.length + agentBlocked.length;
+
+              // Calculate progress against caps
+              const maxTokens = localData.policies?.maxTokens || 100000;
+              const maxSpend = localData.policies?.maxSpend || 50;
+              const tokenProgress = Math.min(100, Math.round(((info.totalTokens || 0) / maxTokens) * 100));
+              const spendProgress = Math.min(100, Math.round(((info.totalSpend || 0) / maxSpend) * 100));
+              let progress = Math.max(tokenProgress, spendProgress);
+              
+              let status = 'Active';
+              if (info.blockedCount > 0) status = 'Warning';
+              if (progress >= 100) status = 'Compromised'; // Cap reached
+
+              return {
+                id,
+                name: info.name,
+                owner: user.email,
+                risk_score: info.blockedCount > 0 ? 50 : 0,
+                provider,
+                logo,
+                status,
+                calls: totalCalls.toString(),
+                risk: info.blockedCount > 0 ? 'Medium' : 'Low',
+                progress,
+              };
+            });
+            mappedAgents = [...mappedAgents, ...localMapped];
+          }
+        }
+      } catch (err) {
+        console.error('Error fetching local agents:', err);
+      }
+
+      setAgents(mappedAgents.reverse());
     } catch (err) {
-      console.error('Error fetching agents:', err);
+      console.error('Overall Error fetching agents:', err);
     } finally {
       setLoading(false);
     }
