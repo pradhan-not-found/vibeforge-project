@@ -55,9 +55,9 @@ const PROVIDERS = [
   { label: 'Maincode Copilot',    provider: 'Maincode',     logo: '/ai-logos/maincode.png'    },
   { label: 'OpenClaw',            provider: 'OpenClaw',     logo: '/ai-logos/openclaw.jpeg'   },
   { label: 'OpenCode Copilot',    provider: 'OpenCode',     logo: '/ai-logos/opencode.svg'    },
-  { label: 'Cohere Command R',    provider: 'Cohere',       logo: '/ai-logos/cohere.svg'      },
-  { label: 'AWS Bedrock',         provider: 'AWS',          logo: '/ai-logos/aws.svg'         },
-  { label: 'Azure OpenAI',        provider: 'Azure',        logo: '/ai-logos/azure.svg'       },
+  { label: 'Cohere Command R',    provider: 'Cohere',       logo: '/ai-logos/openai.svg'      },
+  { label: 'AWS Bedrock',         provider: 'AWS',          logo: '/ai-logos/openai.svg'         },
+  { label: 'Azure OpenAI',        provider: 'Azure',        logo: '/ai-logos/openai.svg'       },
   { label: 'Replicate',           provider: 'Replicate',    logo: '/ai-logos/replicate.svg'   },
   // Custom
   { label: 'Custom Agent',        provider: 'Custom',       logo: '/ai-logos/openai.svg'      },
@@ -110,9 +110,9 @@ function guessLogo(name: string): { provider: string; logo: string } {
   if (n.includes('openclaw'))                                                                 return { provider: 'OpenClaw',    logo: '/ai-logos/openclaw.jpeg'   };
   if (n.includes('opencode'))                                                                 return { provider: 'OpenCode',    logo: '/ai-logos/opencode.svg'    };
   if (n.includes('amp'))                                                                      return { provider: 'AMP',         logo: '/ai-logos/amp-logo.svg'    };
-  if (n.includes('cohere'))                                                                   return { provider: 'Cohere',      logo: '/ai-logos/cohere.svg'      };
-  if (n.includes('aws') || n.includes('bedrock') || n.includes('amazon'))                     return { provider: 'AWS',         logo: '/ai-logos/aws.svg'         };
-  if (n.includes('azure'))                                                                    return { provider: 'Azure',       logo: '/ai-logos/azure.svg'       };
+  if (n.includes('cohere'))                                                                   return { provider: 'Cohere',      logo: '/ai-logos/openai.svg'      };
+  if (n.includes('aws') || n.includes('bedrock') || n.includes('amazon'))                     return { provider: 'AWS',         logo: '/ai-logos/openai.svg'         };
+  if (n.includes('azure'))                                                                    return { provider: 'Azure',       logo: '/ai-logos/openai.svg'       };
   if (n.includes('replicate'))                                                                return { provider: 'Replicate',   logo: '/ai-logos/replicate.svg'   };
   return { provider: 'Custom', logo: '/ai-logos/openai.svg' };
 }
