@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import React from "react";
 import { Check } from "lucide-react";
+import Pricing from "@/components/Pricing";
 
 export default function LandingPage() {
   return (
@@ -1990,6 +1991,7 @@ export default function LandingPage() {
           </div>
         </div>
       </div>
+      <Pricing />
       <footer className="w-full footer-bg relative overflow-x-hidden">
         <picture className="pointer-events-none absolute inset-x-0 bottom-0 h-[75px]">
           <source srcSet="/footer/footer-bg.avif" type="image/avif" />
