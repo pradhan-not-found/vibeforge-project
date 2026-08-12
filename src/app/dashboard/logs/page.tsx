@@ -242,7 +242,7 @@ export default function Page() {
           </div>
         </div>
         
-        {logs.filter(log => log.agent.toLowerCase().includes(searchTerm.toLowerCase()) || log.action.toLowerCase().includes(searchTerm.toLowerCase()) || log.resource.toLowerCase().includes(searchTerm.toLowerCase())).map((log, i) => {
+        {logs.filter((log: any) => log.agent.toLowerCase().includes(searchTerm.toLowerCase()) || log.action.toLowerCase().includes(searchTerm.toLowerCase()) || log.resource.toLowerCase().includes(searchTerm.toLowerCase())).map((log: any, i: number) => {
           const { badge, icon } = resultStyles(log.result);
           return (
             <MotionCard
