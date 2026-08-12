@@ -233,27 +233,52 @@ export default function Page() {
 
     setIsRegistering(true);
     try {
-      const res = await fetch('/api/agents', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: agentName,
-          user_id: user.email,
-          provider: selectedPreset.provider,
-          policyId: selectedPolicyId,
-          provider_api_key: providerApiKey,
-        })
+      // Generate IDs
+      const generateId = () => typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID().replace(/-/g, '') : Math.random().toString(36).substring(2) + Math.random().toString(36).substring(2);
+      const newId = `agent_${generateId().substring(0, 12)}`;
+      const proxy_api_key = `cp_${generateId()}`;
+
+      if (!dbData) throw new Error("Database not loaded yet. Please wait a moment and try again.");
+      
+      const updatedDb = { ...dbData };
+      if (!updatedDb.agents) updatedDb.agents = {};
+      updatedDb.agents[newId] = {
+        name: agentName,
+        owner: user.email,
+        provider: selectedPreset.provider || 'Custom',
+        policyId: selectedPolicyId || 'default',
+        provider_api_key: providerApiKey || '',
+        totalTokens: 0,
+        totalSpend: 0,
+        blockedCount: 0,
+        proxy_api_key,
+      };
+
+      if (!updatedDb.traces) updatedDb.traces = [];
+      updatedDb.traces.push({
+        id: `trace_${generateId().substring(0, 8)}`,
+        agentId: newId,
+        agentName: agentName,
+        timestamp: new Date().toISOString(),
+        success: true,
+        durationMs: 0,
+        tokensUsed: 0,
+        cost: 0,
+        response: 'Agent successfully registered and deployed to Checkpost.',
+        errorContext: 'Agent Registration'
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to create agent');
 
-      saveAgentMeta(data.id, selectedPreset.logo, selectedPreset.provider);
+      const { doc, setDoc } = await import('firebase/firestore');
+      const { db } = await import('@/lib/firebase');
+      await setDoc(doc(db, 'database', 'global'), updatedDb);
 
-      // Show the generated API key to the user inline instead of an alert
+      saveAgentMeta(newId, selectedPreset.logo, selectedPreset.provider);
+
+      // Show the generated API key to the user inline
       setNewAgentDetails({
-        id: data.id,
-        url: data.proxy_url,
-        key: data.proxy_api_key
+        id: newId,
+        url: `https://api.checkpost.app/v1/${newId}/chat`,
+        key: proxy_api_key
       });
       
     } catch (err) {

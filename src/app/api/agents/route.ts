@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getDb, saveDb } from '@/lib/db';
 
+export const runtime = 'edge';
+
 export async function POST(req: Request) {
   try {
     const { name, user_id, provider, policyId, provider_api_key } = await req.json();
