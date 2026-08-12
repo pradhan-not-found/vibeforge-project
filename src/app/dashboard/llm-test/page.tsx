@@ -95,7 +95,7 @@ export default function LLMTestPage() {
             <button 
               type="submit" 
               disabled={loading || !prompt}
-              className="flex items-center gap-2 px-6 py-3 bg-[var(--app-ink)] text-[var(--app-canvas)] font-medium rounded-xl hover:opacity-90 transition-opacity text-sm shadow-sm disabled:opacity-50"
+              className="cta-btn-dark text-on-dark shadow-sm flex items-center justify-center gap-[10px] px-[16px] py-[10px] text-[14px] font-[500] rounded-[8px] transition-all disabled:opacity-50"
             >
               {loading ? (
                 <span className="w-4 h-4 rounded-full border-2 border-[var(--app-canvas)] border-t-transparent animate-spin"></span>

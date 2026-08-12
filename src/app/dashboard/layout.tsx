@@ -82,7 +82,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {/* Mobile Navigation Toggle */}
         <button
           onClick={() => setIsMobileMenuOpen(true)}
-          className="md:hidden fixed top-4 right-4 z-40 p-2 rounded-lg bg-[var(--app-soft)] text-[var(--app-ink)] border border-[var(--app-hairline)]"
+          className="lg:hidden fixed top-4 right-4 z-40 p-2 rounded-lg bg-[var(--app-soft)] text-[var(--app-ink)] border border-[var(--app-hairline)]"
         >
           <Menu className="w-5 h-5" />
         </button>
@@ -90,13 +90,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {/* Mobile Sidebar Overlay */}
         {isMobileMenuOpen && (
           <div 
-            className="md:hidden fixed inset-0 bg-black/20 backdrop-blur-sm z-50 transition-opacity"
+            className="lg:hidden fixed inset-0 bg-black/20 backdrop-blur-sm z-50 transition-opacity"
             onClick={() => setIsMobileMenuOpen(false)}
           />
         )}
 
         {/* Sidebar */}
-        <aside className={`fixed inset-y-0 left-0 z-50 w-64 shrink-0 transition-transform duration-200 ease-in-out border-r border-[var(--app-hairline)] bg-[var(--app-canvas)] flex flex-col md:relative md:translate-x-0 ${isMobileMenuOpen ? 'translate-x-0 shadow-2xl' : 'max-md:-translate-x-full'}`}>
+        <aside className={`fixed inset-y-0 left-0 z-50 w-64 shrink-0 transition-transform duration-200 ease-in-out border-r border-[var(--app-hairline)] bg-[var(--app-canvas)] flex flex-col lg:relative lg:translate-x-0 ${isMobileMenuOpen ? 'translate-x-0 shadow-2xl' : 'max-lg:-translate-x-full'}`}>
           <div className="py-5 px-6 border-b border-[var(--app-hairline)] mb-4 flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <img src="/icon.png" alt="Checkpost Logo" className="w-8 h-8 rounded-md" />
@@ -116,7 +116,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             {/* Mobile Close Button */}
             <button
               onClick={() => setIsMobileMenuOpen(false)}
-              className="md:hidden p-1 rounded-md text-[var(--app-muted)] hover:bg-[var(--app-soft)] hover:text-[var(--app-ink)] transition-colors"
+              className="lg:hidden p-1 rounded-md text-[var(--app-muted)] hover:bg-[var(--app-soft)] hover:text-[var(--app-ink)] transition-colors"
             >
               <X className="w-5 h-5" />
             </button>

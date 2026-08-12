@@ -5,6 +5,7 @@ import { MotionCard } from '@/components/MotionCard';
 
 function guessLogo(name: string): { provider: string; logo: string } {
   const n = (name || '').toLowerCase();
+  if (n.includes('groq')) return { provider: 'Groq', logo: '/ai-logos/groq.png' };
   if (n.includes('gpt') || n.includes('openai') || n.includes(' o1') || n.includes(' o3')) return { provider: 'OpenAI',      logo: '/ai-logos/openai.svg'      };
   if (n.includes('claude code') || n.includes('claudecode'))                                  return { provider: 'Anthropic',   logo: '/ai-logos/claudecode.png'  };
   if (n.includes('claude') || n.includes('anthropic') || n.includes('sonnet') || n.includes('opus') || n.includes('haiku')) return { provider: 'Anthropic', logo: '/ai-logos/claude.png' };
@@ -96,8 +97,8 @@ export default function Page() {
               ))}
               {db.traces?.length === 0 && <option value="">No traces found</option>}
             </select>
-            <button onClick={fetchDb} className="flex items-center gap-2 px-4 py-2 bg-[var(--app-canvas)] border border-[var(--app-hairline)] text-[var(--app-muted)] text-sm font-medium rounded-xl shadow-sm hover:bg-[var(--app-soft)] transition-colors">
-              Refresh
+            <button onClick={fetchDb} className="cta-btn-dark text-on-dark shadow-sm flex items-center justify-center gap-[10px] px-[16px] py-[10px] text-[14px] font-[500] rounded-[8px] transition-all">
+              <Clock className="w-4 h-4" /> Refresh
             </button>
           </div>
         </div>
@@ -117,48 +118,52 @@ export default function Page() {
             {!selectedTrace ? (
               <div className="text-[var(--app-muted)] font-medium">Run a prompt in the Test LLM tab to generate a trace.</div>
             ) : (
-              <div className="flex items-center gap-16 relative">
+              <div className="flex items-start justify-center gap-2 relative mt-4">
                 
-                {/* Connecting Lines */}
-                <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 0 }}>
-                  <path d="M 120 40 L 220 40" stroke="var(--app-hairline)" strokeWidth="2" fill="none" strokeDasharray="4" />
-                  <path d="M 380 40 L 480 40" stroke={selectedTrace.success ? '#10b981' : '#e05252'} strokeWidth="2" fill="none" strokeDasharray="4" className={!selectedTrace.success ? "animate-pulse" : ""} />
-                </svg>
-
                 {/* Node 1: User Request */}
-                <div className={`relative z-10 flex flex-col items-center gap-3 w-[160px]`}>
-                  <div className={`w-16 h-16 rounded-2xl flex items-center justify-center shadow-md bg-[var(--app-canvas)] border-2 border-[var(--app-ink)]`}>
-                    <Server className="w-8 h-8 text-[var(--app-ink)]" />
+                <div className="relative z-10 flex flex-col items-center gap-3 w-[120px] sm:w-[140px]">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center shadow-sm bg-[var(--app-canvas)] border border-[var(--app-hairline)] relative">
+                    <Server className="w-5 h-5 sm:w-6 sm:h-6 text-[var(--app-ink)]" />
                   </div>
                   <div className="text-center">
-                    <div className="text-[13px] font-semibold text-[var(--app-ink)]">User Request</div>
+                    <div className="text-[12px] font-semibold text-[var(--app-ink)]">User Request</div>
                   </div>
+                </div>
+
+                {/* Connecting Line 1 */}
+                <div className="flex-1 min-w-[20px] sm:min-w-[40px] max-w-[80px] h-12 sm:h-14 flex items-center justify-center">
+                  <div className="w-full border-t-2 border-dashed border-[var(--app-hairline)]"></div>
                 </div>
 
                 {/* Node 2: Firewall Check */}
-                <div className={`relative z-10 flex flex-col items-center gap-3 w-[160px]`}>
-                  <div className={`w-16 h-16 rounded-2xl flex items-center justify-center shadow-md bg-[var(--app-canvas)] border-2 border-emerald-500 ring-4 ring-emerald-500/10`}>
-                    <ShieldAlert className="w-8 h-8 text-emerald-500" />
+                <div className="relative z-10 flex flex-col items-center gap-3 w-[120px] sm:w-[140px]">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center shadow-sm bg-emerald-50 border border-emerald-200 ring-2 ring-emerald-500/20 dark:bg-emerald-900/20 dark:border-emerald-700/50">
+                    <ShieldAlert className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-600 dark:text-emerald-400" />
                   </div>
                   <div className="text-center">
-                    <div className="text-[13px] font-semibold text-[var(--app-ink)]">Blast Radius Proxy</div>
-                    <div className="text-[11px] text-[var(--app-muted)]">Checks passed</div>
+                    <div className="text-[12px] font-semibold text-[var(--app-ink)]">Blast Radius</div>
+                    <div className="text-[10px] text-[var(--app-muted)]">Checks passed</div>
                   </div>
                 </div>
 
+                {/* Connecting Line 2 */}
+                <div className="flex-1 min-w-[20px] sm:min-w-[40px] max-w-[80px] h-12 sm:h-14 flex items-center justify-center">
+                  <div className={`w-full border-t-2 border-dashed ${selectedTrace.success ? 'border-emerald-500/50' : 'border-red-500/50'}`}></div>
+                </div>
+
                 {/* Node 3: Agent */}
-                <div className={`relative z-10 flex flex-col items-center gap-3 w-[160px]`}>
+                <div className="relative z-10 flex flex-col items-center gap-3 w-[120px] sm:w-[140px]">
                   {!selectedTrace.success && (
-                    <div className="absolute -top-3 -right-3 w-6 h-6 rounded-full bg-red-500 text-white flex items-center justify-center shadow-lg z-20 animate-bounce">
-                      <AlertCircle className="w-4 h-4" />
+                    <div className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center shadow-md z-20 animate-pulse">
+                      <AlertCircle className="w-3 h-3" />
                     </div>
                   )}
-                  <div className={`w-16 h-16 rounded-2xl flex items-center justify-center shadow-md border-2 ${selectedTrace.success ? 'bg-[var(--app-canvas)] border-emerald-500 ring-4 ring-emerald-500/10' : 'bg-red-950/20 border-red-500 ring-4 ring-red-500/20'}`}>
-                    {selectedTrace.success ? <CheckCircle2 className="w-8 h-8 text-emerald-500" /> : <AlertCircle className="w-8 h-8 text-red-500" />}
+                  <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center shadow-sm border ${selectedTrace.success ? 'bg-emerald-50 border-emerald-200 ring-2 ring-emerald-500/20 dark:bg-emerald-900/20 dark:border-emerald-700/50' : 'bg-red-50 border-red-200 ring-2 ring-red-500/20 dark:bg-red-900/20 dark:border-red-700/50'}`}>
+                    {selectedTrace.success ? <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-600 dark:text-emerald-400" /> : <AlertCircle className="w-5 h-5 sm:w-6 sm:h-6 text-red-600 dark:text-red-400" />}
                   </div>
                   <div className="text-center">
-                    <div className={`text-[13px] font-semibold ${selectedTrace.success ? 'text-[var(--app-ink)]' : 'text-red-500'}`}>{selectedTrace.agentName}</div>
-                    <div className="text-[11px] text-[var(--app-muted)]">Duration: {selectedTrace.durationMs}ms</div>
+                    <div className={`text-[12px] font-semibold ${selectedTrace.success ? 'text-[var(--app-ink)]' : 'text-red-600 dark:text-red-400'}`}>{selectedTrace.agentName}</div>
+                    <div className="text-[10px] text-[var(--app-muted)]">Duration: {selectedTrace.durationMs}ms</div>
                   </div>
                 </div>
 

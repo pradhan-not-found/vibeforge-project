@@ -71,6 +71,7 @@ function loadAgentMeta(id: string): { logo: string; provider: string } | null {
 // ─── Fallback logo guesser (for agents created before this update) ────────────
 function guessLogo(name: string): { provider: string; logo: string } {
   const n = name.toLowerCase();
+  if (n.includes('groq')) return { provider: 'Groq', logo: '/ai-logos/groq.png' };
   if (n.includes('gpt') || n.includes('openai') || n.includes(' o1') || n.includes(' o3')) return { provider: 'OpenAI',      logo: '/ai-logos/openai.svg'      };
   if (n.includes('claude code') || n.includes('claudecode'))                                  return { provider: 'Anthropic',   logo: '/ai-logos/claudecode.png'  };
   if (n.includes('claude') || n.includes('anthropic') || n.includes('sonnet') || n.includes('opus') || n.includes('haiku')) return { provider: 'Anthropic', logo: '/ai-logos/claude.png' };
@@ -447,7 +448,7 @@ export default function Page() {
                 <button type="button" onClick={closeModal} className="px-4 py-2 text-sm font-medium text-[var(--app-ink)] bg-transparent border border-[var(--app-hairline)] rounded-xl hover:bg-[var(--app-soft)] transition-colors">
                   Cancel
                 </button>
-                <button type="submit" className="px-4 py-2 text-sm font-medium text-[var(--app-canvas)] bg-[var(--app-ink)] rounded-xl hover:opacity-80 transition-opacity shadow-sm">
+                <button type="submit" className="cta-btn-dark text-on-dark shadow-sm flex items-center justify-center gap-[10px] px-[16px] py-[10px] text-[14px] font-[500] rounded-[8px] transition-all">
                   Register Agent
                 </button>
               </div>

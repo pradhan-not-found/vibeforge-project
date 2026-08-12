@@ -200,7 +200,7 @@ export default function Page() {
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="shrink-0 mt-2 flex items-center gap-2 px-5 py-2.5 bg-[var(--app-ink)] text-[var(--app-canvas)] text-sm font-semibold rounded-xl hover:opacity-80 transition-opacity shadow-sm"
+          className="cta-btn-dark text-on-dark shadow-sm shrink-0 mt-2 flex items-center justify-center gap-[10px] px-[16px] py-[10px] text-[14px] font-[500] rounded-[8px] transition-all"
         >
           <Plus className="w-4 h-4" /> Create Policy
         </button>
@@ -357,7 +357,7 @@ export default function Page() {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 text-sm font-medium text-[var(--app-canvas)] bg-[var(--app-ink)] rounded-xl hover:opacity-80 transition-opacity shadow-sm"
+                  className="cta-btn-dark text-on-dark shadow-sm flex items-center justify-center gap-[10px] px-[16px] py-[10px] text-[14px] font-[500] rounded-[8px] transition-all"
                 >
                   Create Policy
                 </button>
