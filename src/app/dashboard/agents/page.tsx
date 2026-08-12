@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import { MoreVertical, X, ChevronDown, Plus , Eye, EyeOff } from 'lucide-react';
+import { MoreVertical, X, ChevronDown, Plus, Eye, EyeOff, CheckCircle2 } from 'lucide-react';
 import { MotionCard } from '@/components/MotionCard';
 import { useAuth } from '@/context/AuthContext';
 import { useDatabase } from '@/context/DatabaseContext';
@@ -166,6 +166,10 @@ export default function Page() {
   const [testResult, setTestResult] = useState<string | null>(null);
   const [testStatus, setTestStatus] = useState<'idle'|'loading'|'success'|'error'>('idle');
 
+  // Registration State
+  const [isRegistering, setIsRegistering] = useState(false);
+  const [newAgentDetails, setNewAgentDetails] = useState<{id: string, url: string, key: string} | null>(null);
+
   const { user } = useAuth();
   const { dbData, loading } = useDatabase();
 
@@ -227,6 +231,7 @@ export default function Page() {
       return;
     }
 
+    setIsRegistering(true);
     try {
       const res = await fetch('/api/agents', {
         method: 'POST',
@@ -244,14 +249,18 @@ export default function Page() {
 
       saveAgentMeta(data.id, selectedPreset.logo, selectedPreset.provider);
 
-      closeModal();
-      
-      // Show the generated API key to the user
-      alert(`Agent Registered Successfully!\n\nID: ${data.id}\nProxy URL: ${data.proxy_url}\nAPI Key: ${data.proxy_api_key}\n\nPlease save this API key securely.`);
+      // Show the generated API key to the user inline instead of an alert
+      setNewAgentDetails({
+        id: data.id,
+        url: data.proxy_url,
+        key: data.proxy_api_key
+      });
       
     } catch (err) {
       console.error('Error inserting agent:', err);
       alert('Failed to register agent. Check console for details.');
+    } finally {
+      setIsRegistering(false);
     }
   };
 
@@ -278,6 +287,7 @@ export default function Page() {
     setSelectedPreset(PROVIDERS[0]);
     setCustomName('');
     setIsDropdownOpen(false);
+    setNewAgentDetails(null);
   };
 
   const openTestModal = (id: string) => {
@@ -442,12 +452,45 @@ export default function Page() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/20 backdrop-blur-sm animate-fade-in">
           <div className="bg-[var(--app-canvas)] rounded-2xl shadow-xl border border-[var(--app-hairline)] w-full max-w-md overflow-hidden animate-fade-up">
             <div className="px-6 py-4 border-b border-[var(--app-hairline)] flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-[var(--app-ink)]">Register New Agent</h2>
+              <h2 className="text-lg font-semibold text-[var(--app-ink)]">
+                {newAgentDetails ? 'Agent Registered Successfully' : 'Register New Agent'}
+              </h2>
               <button onClick={closeModal} className="text-[var(--app-muted)] hover:text-[var(--app-ink)] transition-colors">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
+            {newAgentDetails ? (
+              <div className="p-8 space-y-6 flex flex-col items-center">
+                <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-500/20 text-emerald-600 rounded-full flex items-center justify-center mb-2">
+                  <CheckCircle2 className="w-8 h-8" />
+                </div>
+                <div className="text-center space-y-2 w-full">
+                  <p className="text-sm text-[var(--app-muted)]">Your new agent is ready to receive requests via the Vibeforge firewall proxy.</p>
+                </div>
+                
+                <div className="w-full bg-[var(--app-soft)] border border-[var(--app-hairline)] rounded-xl p-4 space-y-4 text-left">
+                  <div>
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-[var(--app-muted)] mb-1 block">Agent ID</label>
+                    <div className="font-mono text-sm text-[var(--app-ink)] break-all">{newAgentDetails.id}</div>
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-[var(--app-muted)] mb-1 block">Proxy URL</label>
+                    <div className="font-mono text-sm text-[var(--app-ink)] break-all">{newAgentDetails.url}</div>
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-[var(--app-muted)] mb-1 block">API Key (Save this!)</label>
+                    <div className="font-mono text-sm text-[var(--app-ink)] break-all bg-yellow-50 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-400 p-2 rounded border border-yellow-200 dark:border-yellow-900/50">
+                      {newAgentDetails.key}
+                    </div>
+                  </div>
+                </div>
+
+                <button onClick={closeModal} className="w-full cta-btn-dark text-on-dark shadow-sm px-[16px] py-[12px] text-[14px] font-[500] rounded-[8px] transition-all">
+                  Done
+                </button>
+              </div>
+            ) : (
             <form onSubmit={handleAddAgent} className="p-8 space-y-7 overflow-y-auto max-h-[75vh]">
 
               {/* Provider Dropdown */}
@@ -577,11 +620,19 @@ export default function Page() {
                 <button type="button" onClick={closeModal} className="px-5 py-2.5 text-sm font-medium text-[var(--app-ink)] bg-transparent border border-[var(--app-hairline)] rounded-xl hover:bg-[var(--app-soft)] transition-colors">
                   Cancel
                 </button>
-                <button type="submit" className="cta-btn-dark text-on-dark shadow-sm flex items-center justify-center gap-[10px] px-[16px] py-[10px] text-[14px] font-[500] rounded-[8px] transition-all">
-                  Register Agent
+                <button type="submit" disabled={isRegistering} className="cta-btn-dark text-on-dark shadow-sm flex items-center justify-center gap-[10px] px-[16px] py-[10px] text-[14px] font-[500] rounded-[8px] transition-all disabled:opacity-50">
+                  {isRegistering ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                      Registering...
+                    </>
+                  ) : (
+                    'Register Agent'
+                  )}
                 </button>
               </div>
             </form>
+            )}
           </div>
         </div>
       )}
