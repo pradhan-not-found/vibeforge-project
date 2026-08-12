@@ -1,15 +1,21 @@
 "use client";
 import { useState } from 'react';
-import { Settings as SettingsIcon, Key, User, Bell, Trash2, Copy, Check } from 'lucide-react';
+import { Settings as SettingsIcon, Key, User, Bell, Trash2, Copy, Check, Zap, Eye, EyeOff } from 'lucide-react';
 import { MotionCard } from '@/components/MotionCard';
 import { useAuth } from '@/context/AuthContext';
 
 export default function Page() {
   const { user } = useAuth();
   const [copied, setCopied] = useState(false);
-  const [threatAlerts, setThreatAlerts] = useState('Email + Slack');
+  const [selectedPlan, setSelectedPlan] = useState('free');
+  const [gmailEnabled, setGmailEnabled] = useState(true);
+  const [slackEnabled, setSlackEnabled] = useState(false);
   const [weeklyDigest, setWeeklyDigest] = useState(true);
-  const [apiKey, setApiKey] = useState('cp_live_••••••••••••••••••1a2b');
+  
+  const [apiKey, setApiKey] = useState('cp_live_a8f9c2d4e5b61a2b3c4d5e6f');
+  const [apiKeyRevealed, setApiKeyRevealed] = useState(false);
+  const [isGeneratingKey, setIsGeneratingKey] = useState(false);
+  const [generationDots, setGenerationDots] = useState('');
 
   const handleCopy = () => {
     navigator.clipboard.writeText(apiKey);
@@ -18,23 +24,26 @@ export default function Page() {
   };
 
   const handleRegenerate = () => {
-    const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
-    let newKey = 'cp_live_';
-    for (let i = 0; i < 24; i++) newKey += chars.charAt(Math.floor(Math.random() * chars.length));
-    setApiKey(newKey);
-  };
+    setIsGeneratingKey(true);
+    setApiKeyRevealed(false);
+    
+    // Dot animation
+    let dotCount = 0;
+    const interval = setInterval(() => {
+      dotCount = (dotCount + 1) % 4;
+      setGenerationDots('.'.repeat(dotCount));
+    }, 250);
 
-  const SETTINGS_SECTIONS = [
-    {
-      title: 'Workspace',
-      icon: <User className="w-4 h-4" />,
-      fields: [
-        { label: 'Workspace Name', value: (user as any)?.workspaceName || 'Checkpost Workspace', type: 'text' },
-        { label: 'Owner Email', value: user?.email || 'admin@checkpost.app', type: 'email' },
-        { label: 'Plan', value: 'Pro — 10 agents, 5M tokens/mo', type: 'badge' },
-      ],
-    },
-  ];
+    setTimeout(() => {
+      clearInterval(interval);
+      const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+      let newKey = 'cp_live_';
+      for (let i = 0; i < 24; i++) newKey += chars.charAt(Math.floor(Math.random() * chars.length));
+      setApiKey(newKey);
+      setIsGeneratingKey(false);
+      setApiKeyRevealed(true);
+    }, 1500);
+  };
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto animate-fade-down">
@@ -46,35 +55,68 @@ export default function Page() {
       </div>
 
       <div className="flex flex-col gap-4">
-        {/* Config sections */}
-        {SETTINGS_SECTIONS.map((section, i) => (
-          <MotionCard
-            key={section.title}
-            index={i}
-            className="bg-[var(--app-soft)] rounded-2xl border-2 border-[var(--app-hairline)] p-6 card-elevate card-depth"
-          >
-            <div className="flex items-center gap-2.5 mb-5">
-              <div className="w-8 h-8 rounded-lg bg-[var(--app-canvas)] border border-[var(--app-hairline)] flex items-center justify-center text-[var(--app-muted)] shadow-sm">
-                {section.icon}
-              </div>
-              <h2 className="font-sans text-xl text-[var(--app-ink)] tracking-tight">{section.title}</h2>
+        
+        {/* Workspace Section */}
+        <MotionCard
+          index={0}
+          className="bg-[var(--app-soft)] rounded-2xl border-2 border-[var(--app-hairline)] p-6 card-elevate card-depth"
+        >
+          <div className="flex items-center gap-2.5 mb-5">
+            <div className="w-8 h-8 rounded-lg bg-[var(--app-canvas)] border border-[var(--app-hairline)] flex items-center justify-center text-[var(--app-muted)] shadow-sm">
+              <User className="w-4 h-4" />
             </div>
-            <div className="flex flex-col gap-3">
-              {section.fields.map((field) => (
-                <div key={field.label} className="flex items-center justify-between gap-4 rounded-xl bg-[var(--app-canvas)] border border-[var(--app-hairline)] px-4 py-3">
-                  <span className="text-sm text-[var(--app-muted)] font-medium">{field.label}</span>
-                  {field.type === 'badge' ? (
-                    <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-[var(--app-soft)] ring-1 ring-inset ring-[var(--app-hairline)] text-[var(--app-muted)]">
-                      {field.value}
-                    </span>
-                  ) : (
-                    <span className="text-sm font-medium text-[var(--app-ink)]">{field.value}</span>
-                  )}
+            <h2 className="font-sans text-xl text-[var(--app-ink)] tracking-tight">Workspace</h2>
+          </div>
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center justify-between gap-4 rounded-xl bg-[var(--app-canvas)] border border-[var(--app-hairline)] px-4 py-3">
+              <span className="text-sm text-[var(--app-muted)] font-medium">Workspace Name</span>
+              <span className="text-sm font-medium text-[var(--app-ink)]">{(user as any)?.workspaceName || 'Checkpost Workspace'}</span>
+            </div>
+            <div className="flex items-center justify-between gap-4 rounded-xl bg-[var(--app-canvas)] border border-[var(--app-hairline)] px-4 py-3 mb-2">
+              <span className="text-sm text-[var(--app-muted)] font-medium">Owner Email</span>
+              <span className="text-sm font-medium text-[var(--app-ink)]">{user?.email || 'admin@checkpost.app'}</span>
+            </div>
+            
+            {/* Plan Selector */}
+            <div className="flex items-center justify-between gap-4 rounded-xl bg-[var(--app-canvas)] border border-[var(--app-hairline)] px-4 py-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-[var(--app-soft)] flex items-center justify-center border border-[var(--app-hairline)] shadow-sm">
+                  <img 
+                    src="/UI 04/flower.svg" 
+                    alt="Plan Icon" 
+                    className={`object-contain transition-all duration-300 ease-spring ${
+                      selectedPlan === 'free' ? 'w-5 h-5 opacity-70' : 
+                      selectedPlan === 'pro' ? 'w-7 h-7 opacity-90' : 
+                      'w-9 h-9 opacity-100 scale-110 drop-shadow-sm'
+                    }`} 
+                  />
                 </div>
-              ))}
+                <div className="flex flex-col">
+                  <span className="text-sm text-[var(--app-ink)] font-medium">Active Plan</span>
+                  <span className="text-[11px] text-[var(--app-muted)]">
+                    {selectedPlan === 'free' ? '2 agents, 1M tokens/mo' : 
+                     selectedPlan === 'pro' ? '10 agents, 5M tokens/mo' : 
+                     'Unlimited agents, 20M tokens/mo'}
+                  </span>
+                </div>
+              </div>
+              <div className="relative group">
+                <select 
+                  value={selectedPlan} 
+                  onChange={(e) => setSelectedPlan(e.target.value)}
+                  className="appearance-none bg-white border border-[#E5E5E5] text-[var(--app-ink)] text-[13px] font-semibold rounded-lg pl-4 pr-10 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--app-ink)]/10 cursor-pointer transition-all hover:bg-[#FAFAF7] shadow-sm min-w-[130px]"
+                >
+                  <option value="free">Free Plan</option>
+                  <option value="pro">Pro Plan</option>
+                  <option value="team">Team Plan</option>
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-[var(--app-muted)] group-hover:text-[var(--app-ink)] transition-colors">
+                  <svg className="w-4 h-4 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                </div>
+              </div>
             </div>
-          </MotionCard>
-        ))}
+          </div>
+        </MotionCard>
 
         {/* Notifications */}
         <MotionCard
@@ -88,25 +130,7 @@ export default function Page() {
             <h2 className="font-sans text-xl text-[var(--app-ink)] tracking-tight">Notifications</h2>
           </div>
           <div className="flex flex-col gap-3">
-            <div className="flex items-center justify-between gap-4 rounded-xl bg-[var(--app-canvas)] border border-[var(--app-hairline)] px-4 py-3">
-              <span className="text-sm text-[var(--app-muted)] font-medium">Threat Alerts</span>
-              <div className="relative">
-                <select 
-                  value={threatAlerts} 
-                  onChange={(e) => setThreatAlerts(e.target.value)}
-                  className="appearance-none bg-[var(--app-soft)] border border-[var(--app-hairline)] text-[var(--app-ink)] text-sm font-medium rounded-lg px-3 py-1.5 pr-8 focus:outline-none focus:ring-2 focus:ring-[var(--app-ink)]/20 cursor-pointer transition-shadow"
-                >
-                  <option value="Email + Slack">Email + Slack</option>
-                  <option value="Email Only">Email Only</option>
-                  <option value="Slack Only">Slack Only</option>
-                  <option value="None">None</option>
-                </select>
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-[var(--app-muted)]">
-                  <svg className="w-3.5 h-3.5 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-                </div>
-              </div>
-            </div>
-            <div className="flex items-center justify-between gap-4 rounded-xl bg-[var(--app-canvas)] border border-[var(--app-hairline)] px-4 py-3">
+            <div className="flex items-center justify-between gap-4 rounded-xl bg-[var(--app-canvas)] border border-[var(--app-hairline)] px-4 py-3 mb-2">
               <span className="text-sm text-[var(--app-muted)] font-medium">Weekly Digest</span>
               <button 
                 onClick={() => setWeeklyDigest(!weeklyDigest)}
@@ -114,6 +138,55 @@ export default function Page() {
               >
                 <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${weeklyDigest ? 'translate-x-4' : 'translate-x-1'}`} />
               </button>
+            </div>
+
+            {/* Integrations */}
+            <span className="text-[12px] font-bold text-[var(--app-muted)] uppercase tracking-wider mt-1">Alert Integrations</span>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="flex items-center justify-between gap-4 rounded-xl bg-[var(--app-canvas)] border border-[var(--app-hairline)] px-4 py-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 flex items-center justify-center shrink-0 rounded-lg bg-white shadow-sm border border-[var(--app-hairline)] p-1.5">
+                    <svg viewBox="0 0 48 48" className="w-full h-full">
+                      <path fill="#4caf50" d="M45,16.2l-5,2.75l-5,4.73V40h7c1.657,0,3-1.343,3-3V16.2z"></path>
+                      <path fill="#1e88e5" d="M3,16.2l3.614,1.71L13,23.7V40H6c-1.657,0-3-1.343-3-3V16.2z"></path>
+                      <polygon fill="#e53935" points="35,11.2 24,19.43 13,11.2 12,17 13,23.7 24,31.93 35,23.7 36,17"></polygon>
+                      <path fill="#c62828" d="M3,12.298V16.2l10,7.5V11.2L9.876,8.859C9.132,8.301,8.228,8,7.298,8h0C4.924,8,3,9.924,3,12.298z"></path>
+                      <path fill="#fbc02d" d="M45,12.298V16.2l-10,7.5V11.2l3.124-2.341C38.868,8.301,39.772,8,40.702,8h0 C43.076,8,45,9.924,45,12.298z"></path>
+                    </svg>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-sm font-semibold text-[var(--app-ink)]">Gmail</span>
+                    <span className="text-[11px] text-[var(--app-muted)]">Send to inbox</span>
+                  </div>
+                </div>
+                <button onClick={() => setGmailEnabled(!gmailEnabled)} className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${gmailEnabled ? 'bg-emerald-500' : 'bg-gray-300 dark:bg-gray-700'}`}>
+                  <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${gmailEnabled ? 'translate-x-4' : 'translate-x-1'}`} />
+                </button>
+              </div>
+
+              <div className="flex items-center justify-between gap-4 rounded-xl bg-[var(--app-canvas)] border border-[var(--app-hairline)] px-4 py-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 flex items-center justify-center shrink-0 rounded-lg bg-white shadow-sm border border-[var(--app-hairline)] p-1.5">
+                    <svg viewBox="0 0 24 24" className="w-full h-full">
+                      <path fill="#e01e5a" d="M5.042 15.165a2.528 2.528 0 0 1-2.52 2.523A2.528 2.528 0 0 1 0 15.165a2.527 2.527 0 0 1 2.522-2.52h2.52v2.52z"></path>
+                      <path fill="#e01e5a" d="M6.313 15.165a2.527 2.527 0 0 1 2.521-2.52 2.527 2.527 0 0 1 2.521 2.52v6.313A2.528 2.528 0 0 1 8.834 24a2.528 2.528 0 0 1-2.521-2.522v-6.313z"></path>
+                      <path fill="#36c5f0" d="M8.834 5.042a2.528 2.528 0 0 1-2.521-2.52A2.528 2.528 0 0 1 8.834 0a2.528 2.528 0 0 1 2.521 2.522v2.52H8.834z"></path>
+                      <path fill="#36c5f0" d="M8.834 6.313a2.528 2.528 0 0 1 2.521 2.521 2.528 2.528 0 0 1-2.521 2.521H2.522A2.528 2.528 0 0 1 0 8.834a2.528 2.528 0 0 1 2.522-2.521h6.312z"></path>
+                      <path fill="#2eb67d" d="M18.956 8.834a2.528 2.528 0 0 1 2.522-2.521A2.528 2.528 0 0 1 24 8.834a2.528 2.528 0 0 1-2.522 2.521h-2.522V8.834z"></path>
+                      <path fill="#2eb67d" d="M17.688 8.834a2.528 2.528 0 0 1-2.523 2.521 2.527 2.527 0 0 1-2.52-2.521V2.522A2.527 2.527 0 0 1 15.165 0a2.528 2.528 0 0 1 2.523 2.522v6.312z"></path>
+                      <path fill="#ecB22e" d="M15.165 18.956a2.528 2.528 0 0 1 2.523 2.522A2.528 2.528 0 0 1 15.165 24a2.527 2.527 0 0 1-2.523-2.522v-2.522h2.523z"></path>
+                      <path fill="#ecB22e" d="M15.165 17.688a2.527 2.527 0 0 1-2.523-2.523 2.526 2.526 0 0 1 2.523-2.52h6.313A2.527 2.527 0 0 1 24 15.165a2.528 2.528 0 0 1-2.522 2.523h-6.313z"></path>
+                    </svg>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-sm font-semibold text-[var(--app-ink)]">Slack</span>
+                    <span className="text-[11px] text-[var(--app-muted)]">Send to #sec</span>
+                  </div>
+                </div>
+                <button onClick={() => setSlackEnabled(!slackEnabled)} className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${slackEnabled ? 'bg-emerald-500' : 'bg-gray-300 dark:bg-gray-700'}`}>
+                  <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${slackEnabled ? 'translate-x-4' : 'translate-x-1'}`} />
+                </button>
+              </div>
             </div>
           </div>
         </MotionCard>
@@ -132,11 +205,27 @@ export default function Page() {
           <div className="flex items-center justify-between gap-4 rounded-xl bg-[var(--app-canvas)] border border-[var(--app-hairline)] px-4 py-3 mb-3">
             <div>
               <p className="text-xs text-[var(--app-muted)] font-medium mb-0.5">Proxy Gateway Key</p>
-              <p className="text-sm font-mono text-[var(--app-ink)]">{apiKey}</p>
+              <div className="flex items-center gap-1.5">
+                <p className="text-sm font-mono text-[var(--app-ink)] h-5 flex items-center min-w-[220px]">
+                  {isGeneratingKey 
+                    ? <span className="text-[var(--app-muted)] animate-pulse font-sans font-medium text-xs">Generating{generationDots}</span>
+                    : (apiKeyRevealed ? apiKey : 'cp_live_••••••••••••••••••••••••')
+                  }
+                </p>
+                {!isGeneratingKey && (
+                  <button 
+                    onClick={() => setApiKeyRevealed(!apiKeyRevealed)} 
+                    className="p-1.5 rounded-md text-[var(--app-muted)] hover:bg-[var(--app-soft)] hover:text-[var(--app-ink)] transition-colors"
+                  >
+                    {apiKeyRevealed ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                  </button>
+                )}
+              </div>
             </div>
             <button 
               onClick={handleCopy}
-              className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors border ${copied ? 'bg-green-50 text-green-700 border-green-200' : 'bg-[var(--app-canvas)] text-[var(--app-muted)] border-[var(--app-hairline)] hover:text-[var(--app-ink)] hover:bg-[var(--app-soft)]'}`}
+              disabled={isGeneratingKey}
+              className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors border disabled:opacity-50 disabled:cursor-not-allowed ${copied ? 'bg-green-50 text-green-700 border-green-200' : 'bg-[var(--app-canvas)] text-[var(--app-muted)] border-[var(--app-hairline)] hover:text-[var(--app-ink)] hover:bg-[var(--app-soft)]'}`}
             >
               {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />} 
               {copied ? 'Copied' : 'Copy'}
@@ -144,8 +233,15 @@ export default function Page() {
           </div>
           <button 
             onClick={handleRegenerate}
-            className="w-full mt-1 py-2.5 text-sm font-semibold text-[var(--app-ink)] bg-[var(--app-canvas)] border border-[var(--app-hairline)] rounded-xl hover:bg-[var(--app-soft)] transition-colors shadow-sm"
+            disabled={isGeneratingKey}
+            className="w-full mt-1 py-2.5 text-sm font-semibold text-[var(--app-ink)] bg-[var(--app-canvas)] border border-[var(--app-hairline)] rounded-xl hover:bg-[var(--app-soft)] transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
+            {isGeneratingKey && (
+              <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-[var(--app-ink)]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+            )}
             Regenerate Key
           </button>
         </MotionCard>

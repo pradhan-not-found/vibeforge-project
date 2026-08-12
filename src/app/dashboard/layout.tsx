@@ -210,13 +210,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </aside>
 
         {/* Main Content Area */}
-        <main className="flex-1 h-full overflow-y-auto relative bg-[var(--app-canvas)] flex flex-col lg:pl-64">
+        <main className="flex-1 h-full overflow-y-auto overflow-x-hidden relative bg-[var(--app-canvas)] flex flex-col lg:pl-64">
           {/* Ambient accent backdrop tone */}
           <div className={`absolute inset-0 bg-gradient-to-br ${gradientClass} pointer-events-none z-0`} />
           {/* Fine noise texture overlay */}
           <div className="absolute inset-0 opacity-[0.015] dark:opacity-[0.025] pointer-events-none z-0 mix-blend-overlay" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }} />
 
-          <div className="relative z-10 w-full min-h-screen">
+          <div className="relative z-10 w-full flex-1">
             {children}
           </div>
         </main>
