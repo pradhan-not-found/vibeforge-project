@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { LayoutDashboard, Shield, ShieldAlert, BookOpen, Settings, Menu, X, LogOut, MoreVertical, User, Cloud, HelpCircle } from 'lucide-react';
+import { LayoutDashboard, Shield, ShieldAlert, BookOpen, Settings, Menu, X, LogOut, MoreVertical, User, Cloud, HelpCircle, Sparkles } from 'lucide-react';
 import { auth } from '@/lib/firebase';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { AuthProvider } from '@/context/AuthContext';
@@ -20,6 +20,7 @@ const navSections = [
     label: "Assets",
     items: [
       { title: "Agents", path: "/dashboard/agents", icon: LayoutDashboard },
+      { title: "Test LLM", path: "/dashboard/llm-test", icon: Sparkles },
     ],
   },
   {

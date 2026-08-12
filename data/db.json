@@ -1,0 +1,59 @@
+{
+  "policies": {
+    "maxSpend": 50,
+    "maxTokens": 1
+  },
+  "agents": {
+    "gemini-flash": {
+      "name": "Gemini Web Researcher",
+      "totalTokens": 181,
+      "totalSpend": 0.00006335,
+      "blockedCount": 1
+    },
+    "groq-agent": {
+      "name": "Groq Data Scraper",
+      "totalTokens": 53,
+      "totalSpend": 0.00000265,
+      "blockedCount": 0
+    }
+  },
+  "queue": [],
+  "traces": [
+    {
+      "id": "20c7fe88-2087-40a0-b047-4e5d370a2e34",
+      "agentId": "gemini-flash",
+      "agentName": "Gemini Web Researcher",
+      "success": true,
+      "durationMs": 2371,
+      "tokensUsed": 181,
+      "cost": 0.00006335,
+      "response": "Hey! Not much, just here and ready to help. What's on your mind?",
+      "errorContext": "",
+      "timestamp": "2026-08-11T16:41:57.232Z"
+    },
+    {
+      "id": "3d158c16-8981-48ef-8d40-fe69f5988d7b",
+      "agentId": "groq-agent",
+      "agentName": "Groq Data Scraper",
+      "success": true,
+      "durationMs": 538,
+      "tokensUsed": 53,
+      "cost": 0.00000265,
+      "response": "Not much, just ready to chat. What's on your mind?",
+      "errorContext": "",
+      "timestamp": "2026-08-11T16:41:46.483Z"
+    },
+    {
+      "id": "08f4e103-8003-4c76-86d4-cbde87f6ce7d",
+      "agentId": "groq-agent",
+      "agentName": "Groq Data Scraper",
+      "success": false,
+      "durationMs": 485,
+      "tokensUsed": 0,
+      "cost": 0,
+      "response": "",
+      "errorContext": "400 {\"error\":{\"message\":\"The model `llama3-8b-8192` has been decommissioned and is no longer supported. Please refer to https://console.groq.com/docs/deprecations for a recommendation on which model to use instead.\",\"type\":\"invalid_request_error\",\"code\":\"model_decommissioned\"}}",
+      "timestamp": "2026-08-11T16:40:28.968Z"
+    }
+  ]
+}

@@ -103,36 +103,55 @@ export default function Page() {
 
   const fetchMetrics = async () => {
     try {
-      const email = user?.email || 'admin';
-      const res = await fetch(`http://localhost:8000/api/dashboard/metrics?user_id=${email}`);
+      const res = await fetch(`/api/db`);
       if (res.ok) {
         const data = await res.json();
+        
+        // Compute active agents (those with > 0 tokens)
+        const activeCount = Object.values(data.agents || {}).filter((a: any) => a.totalTokens > 0).length;
+        
+        // Compute total actions (traces length)
+        const totalActions = (data.traces || []).length;
+        
+        // Compute threats blocked
+        const blockedCount = Object.values(data.agents || {}).reduce((sum: number, a: any) => sum + a.blockedCount, 0);
+
         setMetrics({
-          active: data.activeAgents || 0,
-          total: data.totalActions || 0,
-          blocked: data.threatsBlocked || 0,
-          riskScore: data.riskScore || 0
+          active: activeCount,
+          total: totalActions,
+          blocked: blockedCount,
+          riskScore: blockedCount > 0 ? Math.min(100, 15 + blockedCount * 10) : 5
         });
-      }
 
-      const topRes = await fetch(`http://localhost:8000/api/dashboard/top-agents?user_id=${email}`);
-      if (topRes.ok) {
-        const topData = await topRes.json();
-        setTopAgents(topData.map((a: any) => ({ name: a.name || a.id, count: a.action_count || 0, provider: a.provider })));
-      }
+        // Top Agents
+        const agentsArr = Object.entries(data.agents || {}).map(([id, a]: [string, any]) => ({
+          name: a.name,
+          count: a.totalTokens, // Using tokens as a proxy for 'action count' since we don't have separate action count
+          provider: id.includes('gemini') ? 'Google' : id.includes('groq') ? 'Groq' : 'OpenAI'
+        })).sort((a, b) => b.count - a.count);
+        setTopAgents(agentsArr);
 
-      const vRes = await fetch(`http://localhost:8000/api/dashboard/recent-violations?user_id=${email}`);
-      if (vRes.ok) {
-        const vData = await vRes.json();
-        const formatted = vData.map((v: any) => {
-          let timeStr = 'Just now';
-          if (v.time) {
-            const diff = Math.floor((new Date().getTime() - new Date(v.time).getTime()) / 60000);
-            timeStr = diff < 60 ? `${Math.max(0, diff)}m ago` : `${Math.floor(diff/60)}h ago`;
+        // Recent Violations (failed traces + queue items)
+        const violations = [];
+        for (const trace of data.traces || []) {
+          if (!trace.success) {
+            violations.push({
+              policy: 'Execution Error / Blocked',
+              agent: trace.agentName,
+              provider: trace.agentId.includes('gemini') ? 'Google' : 'Groq',
+              time: new Date(trace.timestamp).toLocaleTimeString()
+            });
           }
-            return { policy: v.policy, agent: v.agent, provider: v.provider, time: timeStr };
+        }
+        for (const q of data.queue || []) {
+          violations.push({
+            policy: q.policy,
+            agent: q.agentName,
+            provider: q.agentId.includes('gemini') ? 'Google' : 'Groq',
+            time: new Date(q.time).toLocaleTimeString()
           });
-          setRecentViolations(formatted);
+        }
+        setRecentViolations(violations.slice(0, 5));
       }
     } catch (err) {
       console.error('Failed to fetch metrics', err);

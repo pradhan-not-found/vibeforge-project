@@ -9,11 +9,13 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "@supabase/supabase-js": "^2.112.3",
     "cheerio": "^1.2.0",
     "firebase": "^12.17.1",
     "framer-motion": "^13.1.0",
     "geist": "^1.7.2",
+    "groq-sdk": "^1.5.0",
     "htmltojsx": "^0.3.0",
     "lucide-react": "^1.31.0",
     "motion": "^13.1.0",
