@@ -17,9 +17,15 @@ export type DatabaseSchema = {
   };
   agents: Record<string, {
     name: string;
+    owner?: string;
     totalTokens: number;
     totalSpend: number;
     blockedCount: number;
+  }>;
+  userSettings?: Record<string, {
+    geminiApiKey?: string;
+    groqApiKey?: string;
+    openAiApiKey?: string;
   }>;
   queue: Array<{
     id: string;
@@ -53,17 +59,20 @@ const defaultSchema: DatabaseSchema = {
   agents: {
     'gemini-flash': {
       name: 'Gemini Web Researcher',
+      owner: 'admin',
       totalTokens: 0,
       totalSpend: 0,
       blockedCount: 0,
     },
     'groq-agent': {
       name: 'Groq Data Scraper',
+      owner: 'admin',
       totalTokens: 0,
       totalSpend: 0,
       blockedCount: 0,
     },
   },
+  userSettings: {},
   queue: [],
   traces: [],
 };

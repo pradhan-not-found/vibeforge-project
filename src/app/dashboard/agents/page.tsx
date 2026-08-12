@@ -185,7 +185,9 @@ export default function Page() {
         if (localRes.ok) {
           const localData = await localRes.json();
           if (localData.agents) {
-            const localMapped = Object.entries(localData.agents).map(([id, info]: [string, any]) => {
+            const localMapped = Object.entries(localData.agents)
+              .filter(([_, info]: [string, any]) => info.owner === user.email)
+              .map(([id, info]: [string, any]) => {
               const { provider, logo } = loadAgentMeta(id) || guessLogo(info.name);
               
               // Calculate total calls from traces and queue
@@ -237,7 +239,7 @@ export default function Page() {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:8000/api/agents', {
+      const response = await fetch('/api/agents', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -271,7 +273,7 @@ export default function Page() {
 
   const handleDeleteAgent = async (id: string) => {
     try {
-      const response = await fetch(`http://localhost:8000/api/agents/${id}`, { method: 'DELETE' });
+      const response = await fetch(`/api/agents?id=${id}`, { method: 'DELETE' });
       if (!response.ok) throw new Error('Delete failed');
       setAgents(agents.filter(a => a.id !== id));
     } catch (err) {

@@ -3,11 +3,13 @@
 import { useState } from 'react';
 import { Send, Bot, Zap, ChevronDown } from 'lucide-react';
 import { MotionCard } from '@/components/MotionCard';
+import { useAuth } from '@/context/AuthContext';
 
 export default function LLMTestPage() {
   const [prompt, setPrompt] = useState('');
   const [response, setResponse] = useState('');
   const [loading, setLoading] = useState(false);
+  const { user } = useAuth();
   const [error, setError] = useState('');
   const [agentId, setAgentId] = useState('gemini-flash');
 
@@ -34,7 +36,7 @@ export default function LLMTestPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ prompt, agentId }),
+        body: JSON.stringify({ prompt, agentId, userId: user?.email }),
       });
 
       const data = await res.json();

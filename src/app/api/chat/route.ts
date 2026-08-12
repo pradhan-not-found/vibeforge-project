@@ -1,15 +1,20 @@
 import { NextResponse } from 'next/server';
+import { getDb } from '@/lib/db';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
 export async function POST(req: Request) {
   try {
-    const { prompt } = await req.json();
+    const { prompt, userId } = await req.json();
 
     if (!prompt) {
       return NextResponse.json({ error: 'Prompt is required' }, { status: 400 });
     }
 
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+    const db = getDb();
+    const userSettings = db.userSettings?.[userId] || {};
+    const apiKey = userSettings.geminiApiKey;
+    if (!apiKey) return new Response('Missing Gemini API Key in your Settings', { status: 400 });
+    const genAI = new GoogleGenerativeAI(apiKey);
     // Using gemini-3.5-flash as the standard fast and lightweight model
     const model = genAI.getGenerativeModel({ model: 'gemini-3.5-flash' });
 

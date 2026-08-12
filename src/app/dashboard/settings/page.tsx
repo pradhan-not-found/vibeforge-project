@@ -1,5 +1,5 @@
 "use client";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Settings as SettingsIcon, Key, User, Bell, Trash2, Copy, Check, Zap, Eye, EyeOff } from 'lucide-react';
 import { MotionCard } from '@/components/MotionCard';
 import { useAuth } from '@/context/AuthContext';
@@ -16,6 +16,49 @@ export default function Page() {
   const [apiKeyRevealed, setApiKeyRevealed] = useState(false);
   const [isGeneratingKey, setIsGeneratingKey] = useState(false);
   const [generationDots, setGenerationDots] = useState('');
+
+    const [geminiKey, setGeminiKey] = useState('');
+  const [groqKey, setGroqKey] = useState('');
+  const [openaiKey, setOpenaiKey] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    if (user?.email) {
+      fetch(`/api/settings?userId=${encodeURIComponent(user.email)}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.geminiApiKey) setGeminiKey(data.geminiApiKey);
+          if (data.groqApiKey) setGroqKey(data.groqApiKey);
+          if (data.openAiApiKey) setOpenaiKey(data.openAiApiKey);
+        })
+        .catch(err => console.error("Failed to load settings:", err));
+    }
+  }, [user]);
+
+  const handleSaveProviderKeys = async () => {
+    if (!user?.email) return;
+    setIsSaving(true);
+    try {
+      await fetch('/api/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: user.email,
+          settings: {
+            geminiApiKey: geminiKey,
+            groqApiKey: groqKey,
+            openAiApiKey: openaiKey
+          }
+        })
+      });
+      alert('API keys saved successfully!');
+    } catch (err) {
+      console.error(err);
+      alert('Failed to save keys.');
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   const handleCopy = () => {
     navigator.clipboard.writeText(apiKey);
@@ -186,6 +229,59 @@ export default function Page() {
                 <button onClick={() => setSlackEnabled(!slackEnabled)} className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${slackEnabled ? 'bg-emerald-500' : 'bg-gray-300 dark:bg-gray-700'}`}>
                   <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${slackEnabled ? 'translate-x-4' : 'translate-x-1'}`} />
                 </button>
+              </div>
+            </div>
+          </div>
+        </MotionCard>
+
+        {/* LLM Provider Keys Section */}
+        <MotionCard
+          index={1.5}
+          className="bg-[var(--app-soft)] rounded-2xl border-2 border-[var(--app-hairline)] p-6 card-elevate card-depth"
+        >
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-lg bg-[var(--app-canvas)] border border-[var(--app-hairline)] flex items-center justify-center text-[var(--app-muted)] shadow-sm">
+                <Key className="w-4 h-4" />
+              </div>
+              <h2 className="font-sans text-xl text-[var(--app-ink)] tracking-tight">LLM Provider Keys</h2>
+            </div>
+            <button
+              onClick={handleSaveProviderKeys}
+              disabled={isSaving}
+              className="flex items-center justify-center gap-2 rounded-lg bg-[var(--app-ink)] px-4 py-2 text-sm font-semibold text-[var(--app-canvas)] shadow-sm transition-all hover:bg-[var(--app-ink)]/90 disabled:opacity-50"
+            >
+              {isSaving ? 'Saving...' : 'Save Keys'}
+            </button>
+          </div>
+          <div className="flex flex-col gap-4">
+            <p className="text-sm text-[var(--app-muted)]">Configure your provider API keys to allow your agents to execute prompts.</p>
+            
+            {/* Gemini */}
+            <div className="flex flex-col gap-2">
+              <label className="text-xs font-semibold uppercase tracking-wider text-[var(--app-muted)]">Google Gemini API Key</label>
+              <div className="relative">
+                <input
+                  type="password"
+                  value={geminiKey}
+                  onChange={(e) => setGeminiKey(e.target.value)}
+                  placeholder="AIzaSy..."
+                  className="w-full bg-[var(--app-canvas)] border border-[var(--app-hairline)] text-[var(--app-ink)] text-sm font-medium rounded-xl pl-4 pr-10 py-3 focus:outline-none focus:ring-2 focus:ring-[var(--app-ink)]/10 shadow-sm transition-all"
+                />
+              </div>
+            </div>
+
+            {/* Groq */}
+            <div className="flex flex-col gap-2">
+              <label className="text-xs font-semibold uppercase tracking-wider text-[var(--app-muted)]">Groq API Key</label>
+              <div className="relative">
+                <input
+                  type="password"
+                  value={groqKey}
+                  onChange={(e) => setGroqKey(e.target.value)}
+                  placeholder="gsk_..."
+                  className="w-full bg-[var(--app-canvas)] border border-[var(--app-hairline)] text-[var(--app-ink)] text-sm font-medium rounded-xl pl-4 pr-10 py-3 focus:outline-none focus:ring-2 focus:ring-[var(--app-ink)]/10 shadow-sm transition-all"
+                />
               </div>
             </div>
           </div>

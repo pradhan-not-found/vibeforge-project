@@ -6,7 +6,8 @@ import { v4 as uuidv4 } from 'uuid';
 
 export async function POST(req: Request) {
   try {
-    const { prompt, agentId = 'gemini-flash' } = await req.json();
+    const reqBody = await req.json();
+    const { prompt, agentId = 'gemini-flash' } = reqBody;
 
     if (!prompt) {
       return NextResponse.json({ error: 'Prompt is required' }, { status: 400 });
