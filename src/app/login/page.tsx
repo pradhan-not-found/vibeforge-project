@@ -229,7 +229,7 @@ function DesktopLeftContent() {
           }}>
           {/* Column headers */}
           <div className="absolute top-0 left-0 right-0 flex h-[36px] border-b border-black/5">
-            {['Idea stage  1/1', 'Initial stage  0/3', 'Identity stage  0/4'].map((label) => (
+            {['Intercept Request', 'Policy Evaluation', 'Execution State'].map((label) => (
               <div key={label} className="flex-1 flex items-center px-3 border-r border-black/5 last:border-0">
                 <span style={{ fontSize: '9px', color: 'rgba(38,35,35,0.35)', fontFamily: 'var(--font-departure-mono, monospace)', letterSpacing: '0.5px', textTransform: 'uppercase' }}>{label}</span>
               </div>
