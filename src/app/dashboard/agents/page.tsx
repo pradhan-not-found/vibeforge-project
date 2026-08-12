@@ -577,7 +577,7 @@ export default function Page() {
               {/* Provider API Key */}
               <div>
                 <label className="block text-sm font-medium text-[var(--app-ink)] mb-1.5">
-                  Provider API Key <span className="text-[var(--app-muted)] font-normal">(required)</span>
+                  Provider API Key <span className="text-[var(--app-muted)] font-normal">(optional)</span>
                 </label>
                 <div className="flex items-center justify-between gap-4 rounded-xl bg-[var(--app-canvas)] border border-[var(--app-hairline)] px-4 py-3">
                   <div className="flex-1">
@@ -587,7 +587,6 @@ export default function Page() {
                         value={providerApiKey}
                         onChange={(e) => setProviderApiKey(e.target.value)}
                         placeholder="sk-..."
-                        required
                         className="w-full bg-transparent text-sm font-mono text-[var(--app-ink)] focus:outline-none placeholder:text-[var(--app-muted)]"
                       />
                       <button 
