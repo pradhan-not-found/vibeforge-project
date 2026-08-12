@@ -151,3 +151,27 @@ hover-tilt::part(tilt)::before{border-radius:20px}html{scrollbar-gutter:stable}
 .sidebar-scroll::-webkit-scrollbar-thumb { background-color: transparent; }
 .sidebar-scroll:hover { scrollbar-width: thin; }
 .sidebar-scroll:hover::-webkit-scrollbar-thumb { background-color: var(--app-hairline, rgba(150, 150, 150, 0.3)); }
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+@media (prefers-color-scheme: dark) {
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+  }
+}
