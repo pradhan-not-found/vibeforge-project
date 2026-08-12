@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { getDb, saveDb } from '@/lib/db';
-import { v4 as uuidv4 } from 'uuid';
 
 export async function POST(req: Request) {
   try {
@@ -11,7 +10,7 @@ export async function POST(req: Request) {
     }
 
     const db = getDb();
-    const newId = `agent_${uuidv4().replace(/-/g, '').substring(0, 12)}`;
+    const newId = `agent_${crypto.randomUUID().replace(/-/g, '').substring(0, 12)}`;
     
     db.agents[newId] = {
       name,
@@ -26,7 +25,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ 
       id: newId,
       proxy_url: `https://api.checkpost.app/v1/${newId}/chat`,
-      proxy_api_key: `cp_${uuidv4().replace(/-/g, '')}`
+      proxy_api_key: `cp_${crypto.randomUUID().replace(/-/g, '')}`
     });
   } catch (error) {
     return NextResponse.json({ error: 'Failed to create agent' }, { status: 500 });
