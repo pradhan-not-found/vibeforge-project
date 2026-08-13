@@ -285,19 +285,41 @@ export default function Page() {
               <div className="flex-1">
                 <p className="text-xs text-[var(--app-muted)] font-medium mb-1">OpenAI API Key</p>
                 <div className="flex items-center gap-1.5">
-                  <input
-                    type={openaiRevealed ? "text" : "password"}
-                    value={openaiKey}
-                    onChange={(e) => setOpenaiKey(e.target.value)}
-                    placeholder="sk-proj-xxxxxxxxxxxxxxxxxxxx"
-                    className="w-full bg-transparent text-sm font-mono text-[var(--app-ink)] focus:outline-none placeholder:text-[var(--app-muted)]"
-                  />
-                  <button 
-                    onClick={() => setOpenaiRevealed(!openaiRevealed)} 
-                    className="p-1.5 rounded-md text-[var(--app-muted)] hover:bg-[var(--app-soft)] hover:text-[var(--app-ink)] transition-colors shrink-0"
-                  >
-                    {openaiRevealed ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-                  </button>
+                  {openaiRevealed ? (
+                    <textarea
+                      value={openaiKey}
+                      onChange={(e) => setOpenaiKey(e.target.value)}
+                      placeholder="sk-proj-xxxxxxxxxxxxxxxxxxxx"
+                      rows={3}
+                      className="w-full bg-transparent text-sm font-mono text-[var(--app-ink)] focus:outline-none placeholder:text-[var(--app-muted)] resize-none"
+                    />
+                  ) : (
+                    <input
+                      type="password"
+                      value={openaiKey}
+                      onChange={(e) => setOpenaiKey(e.target.value)}
+                      placeholder="sk-proj-xxxxxxxxxxxxxxxxxxxx"
+                      className="w-full bg-transparent text-sm font-mono text-[var(--app-ink)] focus:outline-none placeholder:text-[var(--app-muted)]"
+                    />
+                  )}
+                  <div className="flex flex-col gap-1 shrink-0">
+                    <button 
+                      onClick={() => setOpenaiRevealed(!openaiRevealed)} 
+                      className="p-1.5 rounded-md text-[var(--app-muted)] hover:bg-[var(--app-soft)] hover:text-[var(--app-ink)] transition-colors"
+                      title={openaiRevealed ? "Hide key" : "Show key"}
+                    >
+                      {openaiRevealed ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                    </button>
+                    {openaiRevealed && openaiKey && (
+                      <button 
+                        onClick={() => navigator.clipboard.writeText(openaiKey)} 
+                        className="p-1.5 rounded-md text-[var(--app-muted)] hover:bg-[var(--app-soft)] hover:text-[var(--app-ink)] transition-colors"
+                        title="Copy key"
+                      >
+                        <Copy className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -309,19 +331,41 @@ export default function Page() {
               <div className="flex-1">
                 <p className="text-xs text-[var(--app-muted)] font-medium mb-1">Google Gemini API Key</p>
                 <div className="flex items-center gap-1.5">
-                  <input
-                    type={geminiRevealed ? "text" : "password"}
-                    value={geminiKey}
-                    onChange={(e) => setGeminiKey(e.target.value)}
-                    placeholder="AIzaSyxxxxxxxxxxxxxxxxxxxx"
-                    className="w-full bg-transparent text-sm font-mono text-[var(--app-ink)] focus:outline-none placeholder:text-[var(--app-muted)]"
-                  />
-                  <button 
-                    onClick={() => setGeminiRevealed(!geminiRevealed)} 
-                    className="p-1.5 rounded-md text-[var(--app-muted)] hover:bg-[var(--app-soft)] hover:text-[var(--app-ink)] transition-colors shrink-0"
-                  >
-                    {geminiRevealed ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-                  </button>
+                  {geminiRevealed ? (
+                    <textarea
+                      value={geminiKey}
+                      onChange={(e) => setGeminiKey(e.target.value)}
+                      placeholder="AIzaSyxxxxxxxxxxxxxxxxxxxx"
+                      rows={3}
+                      className="w-full bg-transparent text-sm font-mono text-[var(--app-ink)] focus:outline-none placeholder:text-[var(--app-muted)] resize-none"
+                    />
+                  ) : (
+                    <input
+                      type="password"
+                      value={geminiKey}
+                      onChange={(e) => setGeminiKey(e.target.value)}
+                      placeholder="AIzaSyxxxxxxxxxxxxxxxxxxxx"
+                      className="w-full bg-transparent text-sm font-mono text-[var(--app-ink)] focus:outline-none placeholder:text-[var(--app-muted)]"
+                    />
+                  )}
+                  <div className="flex flex-col gap-1 shrink-0">
+                    <button 
+                      onClick={() => setGeminiRevealed(!geminiRevealed)} 
+                      className="p-1.5 rounded-md text-[var(--app-muted)] hover:bg-[var(--app-soft)] hover:text-[var(--app-ink)] transition-colors"
+                      title={geminiRevealed ? "Hide key" : "Show key"}
+                    >
+                      {geminiRevealed ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                    </button>
+                    {geminiRevealed && geminiKey && (
+                      <button 
+                        onClick={() => navigator.clipboard.writeText(geminiKey)} 
+                        className="p-1.5 rounded-md text-[var(--app-muted)] hover:bg-[var(--app-soft)] hover:text-[var(--app-ink)] transition-colors"
+                        title="Copy key"
+                      >
+                        <Copy className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -333,19 +377,41 @@ export default function Page() {
               <div className="flex-1">
                 <p className="text-xs text-[var(--app-muted)] font-medium mb-1">Groq API Key</p>
                 <div className="flex items-center gap-1.5">
-                  <input
-                    type={groqRevealed ? "text" : "password"}
-                    value={groqKey}
-                    onChange={(e) => setGroqKey(e.target.value)}
-                    placeholder="gsk_xxxxxxxxxxxxxxxxxxxx"
-                    className="w-full bg-transparent text-sm font-mono text-[var(--app-ink)] focus:outline-none placeholder:text-[var(--app-muted)]"
-                  />
-                  <button 
-                    onClick={() => setGroqRevealed(!groqRevealed)} 
-                    className="p-1.5 rounded-md text-[var(--app-muted)] hover:bg-[var(--app-soft)] hover:text-[var(--app-ink)] transition-colors shrink-0"
-                  >
-                    {groqRevealed ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-                  </button>
+                  {groqRevealed ? (
+                    <textarea
+                      value={groqKey}
+                      onChange={(e) => setGroqKey(e.target.value)}
+                      placeholder="gsk_xxxxxxxxxxxxxxxxxxxx"
+                      rows={3}
+                      className="w-full bg-transparent text-sm font-mono text-[var(--app-ink)] focus:outline-none placeholder:text-[var(--app-muted)] resize-none"
+                    />
+                  ) : (
+                    <input
+                      type="password"
+                      value={groqKey}
+                      onChange={(e) => setGroqKey(e.target.value)}
+                      placeholder="gsk_xxxxxxxxxxxxxxxxxxxx"
+                      className="w-full bg-transparent text-sm font-mono text-[var(--app-ink)] focus:outline-none placeholder:text-[var(--app-muted)]"
+                    />
+                  )}
+                  <div className="flex flex-col gap-1 shrink-0">
+                    <button 
+                      onClick={() => setGroqRevealed(!groqRevealed)} 
+                      className="p-1.5 rounded-md text-[var(--app-muted)] hover:bg-[var(--app-soft)] hover:text-[var(--app-ink)] transition-colors"
+                      title={groqRevealed ? "Hide key" : "Show key"}
+                    >
+                      {groqRevealed ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                    </button>
+                    {groqRevealed && groqKey && (
+                      <button 
+                        onClick={() => navigator.clipboard.writeText(groqKey)} 
+                        className="p-1.5 rounded-md text-[var(--app-muted)] hover:bg-[var(--app-soft)] hover:text-[var(--app-ink)] transition-colors"
+                        title="Copy key"
+                      >
+                        <Copy className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
