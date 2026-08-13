@@ -5,6 +5,7 @@ import { Send, Bot, Zap, ChevronDown } from 'lucide-react';
 import { MotionCard } from '@/components/MotionCard';
 import { useAuth } from '@/context/AuthContext';
 import { useDatabase } from '@/context/DatabaseContext';
+import { Diamond } from '@/components/Diamond';
 
 export default function LLMTestPage() {
   const [prompt, setPrompt] = useState('');
@@ -155,7 +156,7 @@ export default function LLMTestPage() {
               className="cta-btn-dark text-on-dark shadow-sm flex items-center justify-center gap-[10px] px-[16px] py-[10px] text-[14px] font-[500] rounded-[8px] transition-all disabled:opacity-50"
             >
               {loading ? (
-                <span className="w-4 h-4 rounded-full border-2 border-[var(--app-canvas)] border-t-transparent animate-spin"></span>
+                <Diamond className="w-4 h-4 text-[var(--app-canvas)]" />
               ) : (
                 <Send className="w-4 h-4" />
               )}

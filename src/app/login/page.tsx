@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { auth } from '@/lib/firebase';
 import { GoogleAuthProvider, GithubAuthProvider, signInWithPopup } from 'firebase/auth';
 import HeroSlideshow from '@/app/components/HeroSlideshow';
+import { Diamond } from '@/components/Diamond';
 
 /* ──────────────────────────────────────────────────────────
    Auth Panel (shared between desktop right + mobile bottom)
@@ -301,7 +302,7 @@ export default function Login() {
   if (authLoading) {
     return (
       <div className="flex min-h-[100dvh] items-center justify-center" style={{ background: '#EBEBEA' }}>
-        <div className="animate-spin rounded-full h-8 w-8 border-2 border-[rgba(38,35,35,0.2)] border-t-[rgba(38,35,35,0.8)]"></div>
+        <Diamond className="w-8 h-8 text-[rgba(38,35,35,0.8)]" />
       </div>
     );
   }

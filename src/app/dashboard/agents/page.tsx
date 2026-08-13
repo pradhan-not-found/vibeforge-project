@@ -4,6 +4,7 @@ import { MoreVertical, X, ChevronDown, Plus, Eye, EyeOff, CheckCircle2, ShieldCh
 import { MotionCard } from '@/components/MotionCard';
 import { useAuth } from '@/context/AuthContext';
 import { useDatabase } from '@/context/DatabaseContext';
+import { Diamond } from '@/components/Diamond';
 
 // ─── Provider presets ────────────────────────────────────────────────────────
 const PROVIDERS = [
@@ -347,7 +348,7 @@ export default function Page() {
       {/* Agent Grid */}
       {loading ? (
         <div className="flex items-center justify-center p-12 text-[var(--app-muted)]">
-          <div className="w-5 h-5 border-2 border-[var(--app-muted)] border-t-transparent rounded-full animate-spin" />
+          <Diamond className="w-5 h-5 text-[var(--app-muted)]" />
         </div>
       ) : agents.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 bg-[var(--app-soft)] rounded-2xl border border-[var(--app-hairline)] border-dashed">
@@ -630,7 +631,7 @@ export default function Page() {
                 <button type="submit" disabled={isRegistering} className="cta-btn-dark text-on-dark shadow-sm flex items-center justify-center gap-[10px] px-[16px] py-[10px] text-[14px] font-[500] rounded-[8px] transition-all disabled:opacity-50">
                   {isRegistering ? (
                     <>
-                      <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                      <Diamond className="w-4 h-4 text-white" />
                       Registering...
                     </>
                   ) : (

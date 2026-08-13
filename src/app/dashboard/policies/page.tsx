@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { MotionCard } from '@/components/MotionCard';
 import { useAuth } from '@/context/AuthContext';
+import { Diamond } from '@/components/Diamond';
 import { useDatabase } from '@/context/DatabaseContext';
 
 // ─── Icon system ──────────────────────────────────────────────────────────────
@@ -535,7 +536,7 @@ export default function PoliciesPage() {
               >
                 {isSaving ? (
                   <>
-                    <div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                    <Diamond className="w-4 h-4 text-white" />
                     Saving...
                   </>
                 ) : 'Save Profile'}
