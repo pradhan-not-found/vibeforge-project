@@ -1,86 +1,57 @@
 import React from 'react';
-import Link from 'next/link';
-import { Shield, Lock, Server, CheckCircle2 } from 'lucide-react';
 
-export default function EnterpriseReady() {
+export default function EnterpriseReadyPage() {
   return (
-    <article className="animate-fade-down text-[#262323]">
-      <header className="mb-12">
-        <span className="inline-block py-1 px-3 rounded-full bg-blue-50 text-blue-600 text-[10px] font-mono uppercase tracking-wider mb-4 border border-blue-100">
+    <article className="prose prose-lg max-w-none prose-headings:font-sans prose-h1:text-[32px] prose-h1:leading-[120%] prose-h1:tracking-tight prose-h1:mb-6 prose-p:text-[#202020] prose-p:text-[17px] prose-p:leading-[160%] prose-p:mb-6 prose-a:text-blue-600">
+      
+      <div className="mb-[40px] md:mb-[60px]">
+        {/* Chapter pill badge */}
+        <div className="inline-flex items-center px-[10px] py-[4px] rounded-full border border-[#D8D8D4] text-[12px] font-mono text-[#202020]/50 mb-[16px] tracking-[0.5px]">
           Chapter IV
-        </span>
-        <h1 className="text-4xl md:text-5xl font-normal leading-[110%] tracking-tight mb-6">
-          Enterprise Ready & Secure
-        </h1>
-        <p className="text-lg text-gray-500 leading-relaxed font-[460]">
-          Checkpost is built from the ground up for massive scale, zero-trust environments, and strict compliance requirements.
+        </div>
+        <h1 className="m-0 text-[40px] sm:text-[48px] leading-[110%] tracking-[-0.5px] font-normal text-[#262323]">Enterprise Ready &amp; Secure</h1>
+        <p className="text-[20px] leading-[150%] text-[#202020]/60 font-[460] max-w-[600px] mt-4">
+          Built from the ground up for SOC2 compliance, auditability, and massive scale.
         </p>
-      </header>
+      </div>
 
-      <section className="mb-14">
-        <h2 className="text-2xl font-semibold mb-6 tracking-tight">Built for Scale</h2>
-        <p className="text-base text-gray-600 leading-relaxed mb-6">
-          Deploying autonomous agents across an enterprise requires infrastructure that won't buckle under load. Checkpost's proxy architecture is designed to handle thousands of concurrent agent requests with sub-millisecond added latency.
+      <section>
+        <h2 id="security" className="text-[24px] font-semibold text-[#202020] mb-4 mt-12">Security is not an afterthought</h2>
+        <p>
+          Deploying autonomous agents in a production enterprise environment introduces entirely new attack vectors: prompt injection, data exfiltration through tool use, and unauthorized lateral movement.
+        </p>
+        
+        <p>
+          Checkpost secures the perimeter around your agent, ensuring that even if an LLM is compromised via malicious prompt injection, the blast radius is tightly contained.
         </p>
       </section>
 
-      {/* Visual Block */}
-      <div className="my-14 rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="flex items-start gap-4">
-            <div className="shrink-0 w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600">
-              <Shield className="w-6 h-6" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-2">Zero-Trust Architecture</h3>
-              <p className="text-sm text-gray-600">Every agent request is cryptographically verified and authenticated before evaluation.</p>
-            </div>
-          </div>
-          
-          <div className="flex items-start gap-4">
-            <div className="shrink-0 w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600">
-              <Lock className="w-6 h-6" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-2">SOC2 Compliance</h3>
-              <p className="text-sm text-gray-600">Full audit logging of every action an agent takes, ready for compliance export.</p>
-            </div>
-          </div>
-          
-          <div className="flex items-start gap-4">
-            <div className="shrink-0 w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center text-purple-600">
-              <Server className="w-6 h-6" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-2">On-Premise Deployment</h3>
-              <p className="text-sm text-gray-600">Deploy Checkpost entirely within your own VPC to ensure data never leaves your network.</p>
-            </div>
-          </div>
-          
-          <div className="flex items-start gap-4">
-            <div className="shrink-0 w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center text-amber-600">
-              <CheckCircle2 className="w-6 h-6" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-2">99.99% Uptime SLA</h3>
-              <p className="text-sm text-gray-600">Enterprise grade reliability backed by comprehensive SLAs.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      {/* CTA Block */}
-      <div className="my-16 bg-[#1E1E1E] rounded-2xl p-8 md:p-12 text-white flex flex-col md:flex-row items-center justify-between gap-8 shadow-xl">
-        <div>
-          <h3 className="text-2xl font-semibold mb-2">Need Enterprise Support?</h3>
-          <p className="text-gray-400 max-w-md">
-            Talk to our engineering team about custom integrations, volume pricing, and on-premise deployments.
+      <section>
+        <h2 id="core-features" className="text-[24px] font-semibold text-[#202020] mb-4 mt-12">Core Enterprise Features</h2>
+        
+        <h3 className="text-[20px] font-medium text-[#202020] mt-8 mb-3">1. Immutable Audit Logs</h3>
+        <p>
+          Every decision, API call, and state transition made by an agent is cryptographically signed and stored in an immutable ledger. When compliance auditors ask "Why did the system do this?", you can instantly replay the agent's exact reasoning trace and tool execution history.
+        </p>
+
+        <h3 className="text-[20px] font-medium text-[#202020] mt-8 mb-3">2. Ephemeral Execution Environments</h3>
+        <p>
+          Agents execute external code (like generated Python scripts) in strictly isolated, ephemeral sandboxes. These environments are torn down immediately after execution, preventing persistent threats and ensuring complete memory safety between sessions.
+        </p>
+        
+        <h3 className="text-[20px] font-medium text-[#202020] mt-8 mb-3">3. Role-Based Access Control (RBAC)</h3>
+        <p>
+          Agents assume IAM roles just like human employees. An HR parsing agent has read-only access to specific S3 buckets, while a deployment agent has write access to staging environments. Checkpost natively integrates with AWS IAM, Okta, and Azure AD.
+        </p>
+
+        <div className="bg-blue-50/50 border border-blue-100 p-6 rounded-lg my-8">
+          <h4 className="text-[16px] font-bold text-blue-900 mb-2">SOC2 Type II Certified</h4>
+          <p className="text-[15px] text-blue-800 m-0">
+            Checkpost has achieved SOC2 Type II compliance, ensuring our internal security protocols meet the rigorous standards required by Fortune 500 organizations.
           </p>
         </div>
-        <Link href="mailto:enterprise@checkpost.app" className="shrink-0 bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors shadow-sm">
-          Contact Sales
-        </Link>
-      </div>
+
+      </section>
 
     </article>
   );

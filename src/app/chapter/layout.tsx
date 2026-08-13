@@ -1,69 +1,304 @@
-"use client";
-import React from 'react';
+'use client';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { ArrowRight } from 'lucide-react';
 
 const CHAPTERS = [
-  { id: 'deterministic-policy-engine', title: 'The Deterministic Policy Engine (The Rulebook)', chapter: 'Chapter I' },
-  { id: 'cost-governance', title: 'Cost Governance and Loop Protection', chapter: 'Chapter II' },
-  { id: 'hitl', title: 'Human-in-the-Loop (HITL) Interruption', chapter: 'Chapter III' },
-  { id: 'enterprise-ready', title: 'Enterprise Ready & Secure', chapter: 'Chapter IV' },
+  {
+    id: 'deterministic-policy-engine',
+    numeral: 'I',
+    title: 'Deterministic Policy Engine',
+    label: 'Policy Engine',
+    sections: [
+      { id: 'what-is-it', label: 'What is it?' },
+      { id: 'core-capabilities', label: 'Core Capabilities' },
+    ],
+  },
+  {
+    id: 'cost-governance',
+    numeral: 'II',
+    title: 'Cost Governance',
+    label: 'Governance',
+    sections: [
+      { id: 'runaway-agent', label: 'Runaway Agent' },
+      { id: 'governance-controls', label: 'Controls' },
+    ],
+  },
+  {
+    id: 'hitl',
+    numeral: 'III',
+    title: 'Human-in-the-Loop',
+    label: 'HITL',
+    sections: [
+      { id: 'delegation-protocol', label: 'Protocol' },
+      { id: 'how-it-works', label: 'How it works' },
+    ],
+  },
+  {
+    id: 'enterprise-ready',
+    numeral: 'IV',
+    title: 'Enterprise Ready',
+    label: 'Enterprise',
+    sections: [
+      { id: 'security', label: 'Security' },
+      { id: 'core-features', label: 'Features' },
+    ],
+  },
 ];
+
+/* ─── Scroll minimap — vertical tick bar, exactly like cofounder ─── */
+function ScrollMinimap() {
+  const [scrollPct, setScrollPct] = useState(0);
+  const TICK_COUNT = 50;
+
+  useEffect(() => {
+    const onScroll = () => {
+      const el = document.documentElement;
+      const max = el.scrollHeight - el.clientHeight;
+      setScrollPct(max > 0 ? el.scrollTop / max : 0);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  const activeIdx = scrollPct * (TICK_COUNT - 1);
+
+  return (
+    <div
+      className="flex flex-col items-end cursor-pointer touch-none"
+      style={{ gap: '5px', width: '14px' }}
+    >
+      {Array.from({ length: TICK_COUNT }).map((_, i) => {
+        const d = Math.abs(i - activeIdx);
+        let width = 7;
+        let r = 32, g = 32, b = 32, a = 0.16;
+
+        if (d < 4) {
+          if (d < 1) {
+            const t = d;
+            width = 14 * (1 - t) + 12.25 * t;
+            r = 0 * (1 - t) + 52 * t;
+            g = 176 * (1 - t) + 184 * t;
+            b = 255 * (1 - t) + 244 * t;
+            a = 1;
+          } else if (d < 2) {
+            const t = d - 1;
+            width = 12.25 * (1 - t) + 8.75 * t;
+            r = 52 * (1 - t) + 156 * t;
+            g = 184 * (1 - t) + 201 * t;
+            b = 244 * (1 - t) + 221 * t;
+            a = 1;
+          } else if (d < 3) {
+            const t = d - 2;
+            width = 8.75 * (1 - t) + 7 * t;
+            r = 156 * (1 - t) + 208 * t;
+            g = 201 * (1 - t) + 209 * t;
+            b = 221 * (1 - t) + 210 * t;
+            a = 1;
+          } else {
+            const t = d - 3;
+            width = 7;
+            r = 208 * (1 - t) + 32 * t;
+            g = 209 * (1 - t) + 32 * t;
+            b = 210 * (1 - t) + 32 * t;
+            a = 1 * (1 - t) + 0.16 * t;
+          }
+        }
+
+        return (
+          <span
+            key={i}
+            className="shrink-0 rounded-full"
+            style={{
+              width: `${width}px`,
+              height: '2px',
+              background: a < 1 ? `rgba(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)}, ${a})` : `rgb(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)})`,
+              transition: 'background 120ms linear, width 120ms cubic-bezier(0.22, 1, 0.36, 1)'
+            }}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
+/* ─── Divider between nav items ─── */
+function NavDivider() {
+  return (
+    <span className="relative mx-[6px] self-center shrink-0 w-[1px] h-[14px] translate-y-[4px]">
+      <span
+        className="absolute inset-0"
+        style={{ background: 'rgba(32,32,32,0.12)' }}
+      />
+    </span>
+  );
+}
 
 export default function ChapterLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const isActive = (id: string) => pathname.includes(`/chapter/${id}`);
 
   return (
-    <div className="min-h-screen bg-[#F5F5F0] flex flex-col font-sans text-[#262323]">
-      {/* Top Header */}
-      <header className="w-full bg-white/80 backdrop-blur-md border-b border-gray-200/60 px-6 py-4 flex items-center justify-between sticky top-0 z-50">
-        <div className="flex items-center gap-4">
-          <Link href="/" className="flex items-center gap-2 font-medium text-gray-600 hover:text-black transition-colors">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-            Back to Checkpost
+    <div
+      className="min-h-screen flex flex-col antialiased selection:bg-black selection:text-white"
+      style={{ background: '#F5F5F2' }}
+    >
+      {/* ── HEADER ── exact clone of cofounder header */}
+      <header
+        className="site-header fixed top-0 left-0 right-0 z-[201] flex justify-center"
+        style={{
+          background: '#F5F5F2',
+          borderBottom: '1px solid #E8E7E6',
+          boxShadow: '0 1px 0 0 #fff',
+        }}
+      >
+        <div className="w-full max-w-[1440px] mx-auto px-[20px] min-[476px]:px-[32px] md:px-[20px] py-[18px] min-[1000px]:py-0 min-[1000px]:pt-[26px] min-[1000px]:pb-[23px] flex items-center justify-between">
+          {/* Logo */}
+          <Link className="shrink-0 flex items-center" aria-label="Home" href="/">
+            <span
+              className="text-black transition-colors duration-300"
+              style={{
+                fontFamily: 'var(--font-geist-pixel-grid, monospace)',
+                fontWeight: 'bold',
+                fontSize: 'clamp(20px, 2.5vw, 28px)',
+              }}
+            >
+              Checkpost
+            </span>
           </Link>
-        </div>
-        <div className="text-xs font-mono tracking-wider text-gray-400 uppercase">
-          Architecture Guide
+
+          {/* Desktop nav — empty center, CTA on right */}
+          <div className="hidden min-[1000px]:block">
+            <nav className="flex items-center gap-3">
+              {/* CTA */}
+              <Link
+                href="/login"
+                className="group relative inline-flex items-center justify-center no-underline whitespace-nowrap cursor-pointer h-[41px] px-3 rounded-[8px] w-[130px] bg-[#262323] text-white hover:bg-black transition-colors"
+              >
+                <span className="relative z-10 inline-flex items-center justify-center gap-[6px]">
+                  <span className="font-[460] text-[15px] tracking-[0.15px]">
+                    Get started
+                  </span>
+                  <ArrowRight className="w-4 h-4" />
+                </span>
+              </Link>
+            </nav>
+          </div>
+
+          {/* Mobile: just the CTA */}
+          <div className="flex items-center min-[1000px]:hidden gap-3">
+            <Link
+              href="/login"
+              className="text-[13px] sm:text-[14px] font-[500] text-black/60 hover:text-black transition-colors px-2 py-1"
+            >
+              Log in
+            </Link>
+            <Link
+              href="/signup"
+              className="bg-[#111] text-white px-[12px] py-[8px] rounded-[6px] text-[13px] sm:text-[14px] font-[500] hover:opacity-90 transition-all"
+            >
+              Sign up
+            </Link>
+          </div>
         </div>
       </header>
-      
-      {/* Main Layout Area */}
-      <div className="flex-1 w-full max-w-[1400px] mx-auto flex flex-col md:flex-row">
-        
-        {/* Left Sidebar */}
-        <aside className="w-full md:w-[320px] shrink-0 border-r border-gray-200/50 p-6 md:py-12 md:px-8 bg-[#FAFAF7]/50 md:sticky md:top-[65px] md:h-[calc(100vh-65px)] overflow-y-auto">
-          <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-widest mb-8 font-mono">Index</h3>
-          <nav className="flex flex-col gap-6">
-            {CHAPTERS.map((chap) => {
-              const isActive = pathname.includes(chap.id);
-              return (
-                <Link key={chap.id} href={`/chapter/${chap.id}`} className="group relative">
-                  {/* Active Indicator Line */}
-                  {isActive && (
-                    <div className="absolute -left-4 top-0 bottom-0 w-[3px] bg-blue-500 rounded-full shadow-[0_0_8px_rgba(59,130,246,0.5)]"></div>
-                  )}
-                  
-                  <div className="flex flex-col">
-                    <span className={`text-[10px] font-mono mb-1 tracking-wider uppercase transition-colors ${isActive ? 'text-blue-500 font-bold' : 'text-gray-400 group-hover:text-blue-400'}`}>
-                      {chap.chapter}
-                    </span>
-                    <span className={`text-[15px] font-[460] leading-[140%] transition-colors ${isActive ? 'text-black' : 'text-gray-600 group-hover:text-black'}`}>
-                      {chap.title}
-                    </span>
-                  </div>
-                </Link>
-              );
-            })}
-          </nav>
-        </aside>
 
-        {/* Content Area */}
-        <main className="flex-1 w-full min-w-0 bg-white">
-          <div className="max-w-[800px] mx-auto px-6 py-12 md:py-20 md:px-12">
-            {children}
+      {/* ── BODY: sidebar + content + minimap ── */}
+      <div className="w-full flex-1 pt-[73px] min-[1000px]:pt-[69px] flex justify-center">
+        <div className="w-full max-w-[1440px] flex flex-row items-stretch px-0 min-[1000px]:px-[32px] relative">
+
+          {/* LEFT SIDEBAR */}
+          <aside className="shrink-0 w-[260px] xl:w-[280px] hidden min-[1000px]:flex flex-col sticky top-[89px] z-10 pt-[40px] pl-[0px] pr-[8px]">
+
+            {/* CTA block */}
+            <div className="mb-[28px]">
+              <p
+                className="text-[13px] leading-[150%] font-[440] mb-[12px]"
+                style={{ color: 'rgba(32,32,32,0.50)' }}
+              >
+                How to run secure agents
+                <br />
+                with Checkpost
+              </p>
+              <Link
+                href="/signup"
+                className="inline-flex items-center gap-[8px] text-white px-[14px] py-[8px] rounded-[8px] text-[13px] font-[500] no-underline transition-colors"
+                style={{ background: '#2D2D2D' }}
+                onMouseEnter={e => (e.currentTarget.style.background = '#111')}
+                onMouseLeave={e => (e.currentTarget.style.background = '#2D2D2D')}
+              >
+                Try in Checkpost <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+
+            {/* Chapter nav */}
+            <nav className="flex flex-col gap-[24px]">
+              {CHAPTERS.map((chapter) => {
+                const active = isActive(chapter.id);
+                return (
+                  <div key={chapter.id} className="flex flex-col gap-[10px]">
+                    {/* Chapter title */}
+                    <Link
+                      href={`/chapter/${chapter.id}`}
+                      className="flex items-center gap-[12px] no-underline group"
+                    >
+                      <span
+                        className="font-mono text-[12px] shrink-0 transition-colors duration-150"
+                        style={{ color: active ? 'rgba(32,32,32,0.55)' : 'rgba(32,32,32,0.28)' }}
+                      >
+                        ({chapter.numeral})
+                      </span>
+                      <span
+                        className="text-[14px] leading-[140%] font-[520] transition-colors duration-150 group-hover:text-[#111]"
+                        style={{ color: active ? '#111' : 'rgba(32,32,32,0.48)' }}
+                      >
+                        {chapter.title}
+                      </span>
+                    </Link>
+
+                    {/* Sub-sections — always rendered, opacity varies */}
+                    <div className="flex flex-col gap-[8px] ml-[28px]">
+                      {chapter.sections.map((sec) => (
+                        <Link
+                          key={sec.id}
+                          href={`/chapter/${chapter.id}#${sec.id}`}
+                          className="flex items-center gap-[12px] no-underline group transition-colors duration-150"
+                          style={{ color: active ? '#5B5B5B' : 'rgba(32,32,32,0.25)' }}
+                        >
+                          {/* Hollow circle dot — professional size matching cofounder */}
+                          <span
+                            className="w-[11px] h-[11px] rounded-full shrink-0 transition-all duration-150"
+                            style={{
+                              border: `1.5px solid ${active ? 'rgba(32,32,32,0.3)' : 'rgba(32,32,32,0.15)'}`,
+                            }}
+                          />
+                          <span className="text-[13px] leading-[140%] group-hover:text-[#111] transition-colors duration-150">
+                            {sec.label}
+                          </span>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </nav>
+          </aside>
+
+          {/* MAIN CONTENT */}
+          <main className="flex-1 w-full min-w-0 px-[20px] sm:px-[32px] min-[1000px]:px-[40px] xl:px-[64px] py-[40px] min-[1000px]:py-[32px] pb-[120px] md:pb-[200px]">
+            <div className="w-full max-w-[680px]">
+              {children}
+            </div>
+          </main>
+
+          {/* RIGHT MINIMAP */}
+          <div className="shrink-0 hidden lg:flex flex-col items-end pr-[32px] sticky top-[89px] h-[calc(100vh-89px)] justify-center">
+            <ScrollMinimap />
           </div>
-        </main>
+
+        </div>
       </div>
     </div>
   );

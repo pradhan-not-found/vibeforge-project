@@ -1,95 +1,56 @@
 import React from 'react';
-import Link from 'next/link';
-import { DollarSign, AlertCircle, Ban, TrendingUp } from 'lucide-react';
 
-export default function CostGovernance() {
+export default function CostGovernancePage() {
   return (
-    <article className="animate-fade-down text-[#262323]">
-      <header className="mb-12">
-        <span className="inline-block py-1 px-3 rounded-full bg-blue-50 text-blue-600 text-[10px] font-mono uppercase tracking-wider mb-4 border border-blue-100">
+    <article className="prose prose-lg max-w-none prose-headings:font-sans prose-h1:text-[32px] prose-h1:leading-[120%] prose-h1:tracking-tight prose-h1:mb-6 prose-p:text-[#202020] prose-p:text-[17px] prose-p:leading-[160%] prose-p:mb-6 prose-a:text-blue-600">
+      
+      <div className="mb-[40px] md:mb-[60px]">
+        {/* Chapter pill badge */}
+        <div className="inline-flex items-center px-[10px] py-[4px] rounded-full border border-[#D8D8D4] text-[12px] font-mono text-[#202020]/50 mb-[16px] tracking-[0.5px]">
           Chapter II
-        </span>
-        <h1 className="text-4xl md:text-5xl font-normal leading-[110%] tracking-tight mb-6">
-          Cost Governance & Loop Protection
-        </h1>
-        <p className="text-lg text-gray-500 leading-relaxed font-[460]">
-          Prevent catastrophic bills caused by agent hallucinations. Checkpost enforces hard-stops at the network level, ensuring an infinite loop never translates to infinite API charges.
+        </div>
+        <h1 className="m-0 text-[40px] sm:text-[48px] leading-[110%] tracking-[-0.5px] font-normal text-[#262323]">Cost Governance and Loop Protection</h1>
+        <p className="text-[20px] leading-[150%] text-[#202020]/60 font-[460] max-w-[600px] mt-4">
+          Prevent infinite loops and runaway API costs with hard expenditure limits at the agent level.
         </p>
-      </header>
+      </div>
 
-      <section className="mb-14">
-        <h2 className="text-2xl font-semibold mb-6 tracking-tight">The Infinite Loop Problem</h2>
-        <p className="text-base text-gray-600 leading-relaxed mb-6">
-          Autonomous agents operate in loops (e.g., ReAct, Plan-and-Execute). If an agent fails to achieve its goal or misunderstands an API response, it can retry endlessly. When connected to paid external APIs or cloud infrastructure, a simple bug can drain thousands of dollars in hours.
+      <section>
+        <h2 id="runaway-agent" className="text-[24px] font-semibold text-[#202020] mb-4 mt-12">The Runaway Agent Problem</h2>
+        <p>
+          AI agents are designed to autonomously solve problems. When an agent encounters an unexpected error or an edge case in its environment, its default behavior is often to retry, pivot, and attempt alternative solutions. 
         </p>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <div className="bg-red-50 p-5 rounded-xl border border-red-100">
-            <TrendingUp className="w-6 h-6 text-red-500 mb-3" />
-            <h4 className="font-semibold text-red-900 mb-1">Runaway API Calls</h4>
-            <p className="text-xs text-red-700">An agent retrying a failed payment API 10,000 times a minute.</p>
-          </div>
-          <div className="bg-amber-50 p-5 rounded-xl border border-amber-100">
-            <DollarSign className="w-6 h-6 text-amber-500 mb-3" />
-            <h4 className="font-semibold text-amber-900 mb-1">Inference Drain</h4>
-            <p className="text-xs text-amber-700">Wasting $500/day on LLM tokens just to process the repeated failures.</p>
-          </div>
-          <div className="bg-blue-50 p-5 rounded-xl border border-blue-100">
-            <Ban className="w-6 h-6 text-blue-500 mb-3" />
-            <h4 className="font-semibold text-blue-900 mb-1">Silent Failures</h4>
-            <p className="text-xs text-blue-700">The loop often goes unnoticed until the billing cycle ends.</p>
-          </div>
-        </div>
-      </section>
-
-      {/* Visual Block */}
-      <div className="my-14 rounded-2xl border border-gray-200 bg-white shadow-sm overflow-hidden">
-        <div className="border-b border-gray-100 bg-gray-50 p-4">
-          <h3 className="font-semibold text-sm flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 text-gray-500" />
-            Checkpost Hard Stop Mechanism
-          </h3>
-        </div>
-        <div className="p-8">
-          <div className="flex flex-col gap-6 max-w-lg mx-auto">
-            <div className="flex items-center justify-between p-4 rounded-lg bg-gray-50 border border-gray-200">
-              <span className="text-sm font-medium">Daily Token Limit</span>
-              <span className="text-sm font-mono bg-white px-2 py-1 rounded border border-gray-200">100,000</span>
-            </div>
-            <div className="flex items-center justify-between p-4 rounded-lg bg-gray-50 border border-gray-200">
-              <span className="text-sm font-medium">Max Spend / Action</span>
-              <span className="text-sm font-mono bg-white px-2 py-1 rounded border border-gray-200">$5.00</span>
-            </div>
-            <div className="flex items-center justify-between p-4 rounded-lg bg-red-50 border border-red-200 ring-2 ring-red-500/20">
-              <span className="text-sm font-medium text-red-900">API Call Rate Limit</span>
-              <span className="text-sm font-mono text-red-700 bg-white px-2 py-1 rounded border border-red-200">10 / minute</span>
-            </div>
-          </div>
-        </div>
-        <div className="bg-gray-900 text-gray-300 p-4 text-xs font-mono text-center">
-          SYSTEM: Agent exceeded rate limit. Network connections severed. Pending HITL review.
-        </div>
-      </div>
-
-      <section className="mb-14">
-        <h2 className="text-2xl font-semibold mb-6 tracking-tight">How Checkpost Intervenes</h2>
-        <p className="text-base text-gray-600 leading-relaxed mb-6">
-          Checkpost tracks every outbound byte at the wire level. It isn't dependent on the agent's internal logging (which can fail if the agent crashes). You define budgets in the policy config, and Checkpost enforces them mercilessly.
+        <p>
+          Without strict governance, this persistence can result in <strong>infinite reasoning loops</strong>, where an agent repeatedly calls an LLM API and executing external functions, draining thousands of dollars in a matter of minutes.
         </p>
       </section>
-      
-      {/* CTA Block */}
-      <div className="my-16 bg-[#262323] rounded-2xl p-8 md:p-12 text-white flex flex-col md:flex-row items-center justify-between gap-8 shadow-xl">
-        <div>
-          <h3 className="text-2xl font-semibold mb-2">Stop burning money</h3>
-          <p className="text-gray-300 max-w-md">
-            Implement hard caps on your agents today and sleep peacefully knowing your infrastructure is protected.
+
+      <section>
+        <h2 id="governance-controls" className="text-[24px] font-semibold text-[#202020] mb-4 mt-12">Checkpost Governance Controls</h2>
+        
+        <h3 className="text-[20px] font-medium text-[#202020] mt-8 mb-3">1. Token & API Call Budgets</h3>
+        <p>
+          Assign strict budgets per session, per task, or per day for each agent. Once the budget is consumed, the agent is automatically paused, and the session is suspended until a human administrator approves an override.
+        </p>
+
+        <h3 className="text-[20px] font-medium text-[#202020] mt-8 mb-3">2. Recursive Loop Detection</h3>
+        <p>
+          Checkpost analyzes the execution trace of the agent in real-time. If the engine detects identical state transitions or repetitive API payload generation over a defined threshold, it classifies the behavior as a loop and halts execution immediately.
+        </p>
+        
+        <div className="bg-[#FAFAF7] border border-[#E8E7E6] p-6 rounded-lg my-8">
+          <h4 className="text-[16px] font-bold mb-2">Example Scenario</h4>
+          <p className="text-[15px] m-0">
+            A web-scraping agent fails to find a CSS selector on a target site. Instead of retrying 50,000 times and racking up GPT-4 vision costs, Checkpost detects the loop at iteration #5, halts the process, and flags the failure for human review.
           </p>
         </div>
-        <Link href="/dashboard" className="shrink-0 bg-white text-[#262323] px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors shadow-sm">
-          Set Up Budgets
-        </Link>
-      </div>
+
+        <h3 className="text-[20px] font-medium text-[#202020] mt-8 mb-3">3. Rate Limiting</h3>
+        <p>
+          Enforce traditional rate limits (e.g., max 10 requests per minute) on agent-to-external-API interactions to prevent your agents from accidentally DDOSing your partners or your internal microservices.
+        </p>
+      </section>
 
     </article>
   );

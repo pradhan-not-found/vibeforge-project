@@ -586,7 +586,7 @@ export default function LandingPage() {
                       d="M1 0H329.508V95.7412C329.508 108.996 318.763 119.741 305.508 119.741H25C11.7452 119.741 1 108.996 1 95.7412V0Z"
                       fill="#CFCFCF"
                       fillOpacity="0.16"
-                      shape-rendering="crispEdges"
+                      shapeRendering="crispEdges"
                     />
                   </g>
                   <defs>
@@ -600,7 +600,7 @@ export default function LandingPage() {
                       colorInterpolationFilters="sRGB"
                     >
                       <feFlood
-                        flood-opacity="0"
+                        floodOpacity="0"
                         result="BackgroundImageFix"
                       ></feFlood>
                       <feColorMatrix
@@ -656,7 +656,7 @@ export default function LandingPage() {
                         result="noise1Clipped"
                       ></feComposite>
                       <feFlood
-                        flood-color="rgba(199, 199, 199, 0.06)"
+                        floodColor="rgba(199, 199, 199, 0.06)"
                         result="color1Flood"
                       ></feFlood>
                       <feComposite
@@ -870,7 +870,7 @@ export default function LandingPage() {
                       d="M1 0H329.508V95.7412C329.508 108.996 318.763 119.741 305.508 119.741H25C11.7452 119.741 1 108.996 1 95.7412V0Z"
                       fill="#CFCFCF"
                       fillOpacity="0.16"
-                      shape-rendering="crispEdges"
+                      shapeRendering="crispEdges"
                     />
                   </g>
                   <defs>
@@ -884,7 +884,7 @@ export default function LandingPage() {
                       colorInterpolationFilters="sRGB"
                     >
                       <feFlood
-                        flood-opacity="0"
+                        floodOpacity="0"
                         result="BackgroundImageFix"
                       ></feFlood>
                       <feColorMatrix
@@ -940,7 +940,7 @@ export default function LandingPage() {
                         result="noise1Clipped"
                       ></feComposite>
                       <feFlood
-                        flood-color="rgba(199, 199, 199, 0.06)"
+                        floodColor="rgba(199, 199, 199, 0.06)"
                         result="color1Flood"
                       ></feFlood>
                       <feComposite
@@ -1156,7 +1156,7 @@ export default function LandingPage() {
                       d="M1 0H329.508V95.7412C329.508 108.996 318.763 119.741 305.508 119.741H25C11.7452 119.741 1 108.996 1 95.7412V0Z"
                       fill="#CFCFCF"
                       fillOpacity="0.16"
-                      shape-rendering="crispEdges"
+                      shapeRendering="crispEdges"
                     />
                   </g>
                   <defs>
@@ -1170,7 +1170,7 @@ export default function LandingPage() {
                       colorInterpolationFilters="sRGB"
                     >
                       <feFlood
-                        flood-opacity="0"
+                        floodOpacity="0"
                         result="BackgroundImageFix"
                       ></feFlood>
                       <feColorMatrix
@@ -1226,7 +1226,7 @@ export default function LandingPage() {
                         result="noise1Clipped"
                       ></feComposite>
                       <feFlood
-                        flood-color="rgba(199, 199, 199, 0.06)"
+                        floodColor="rgba(199, 199, 199, 0.06)"
                         result="color1Flood"
                       ></feFlood>
                       <feComposite
@@ -1439,7 +1439,7 @@ export default function LandingPage() {
                       d="M1 0H329.508V95.7412C329.508 108.996 318.763 119.741 305.508 119.741H25C11.7452 119.741 1 108.996 1 95.7412V0Z"
                       fill="#CFCFCF"
                       fillOpacity="0.16"
-                      shape-rendering="crispEdges"
+                      shapeRendering="crispEdges"
                     />
                   </g>
                   <defs>
@@ -1453,7 +1453,7 @@ export default function LandingPage() {
                       colorInterpolationFilters="sRGB"
                     >
                       <feFlood
-                        flood-opacity="0"
+                        floodOpacity="0"
                         result="BackgroundImageFix"
                       ></feFlood>
                       <feColorMatrix
@@ -1509,7 +1509,7 @@ export default function LandingPage() {
                         result="noise1Clipped"
                       ></feComposite>
                       <feFlood
-                        flood-color="rgba(199, 199, 199, 0.06)"
+                        floodColor="rgba(199, 199, 199, 0.06)"
                         result="color1Flood"
                       ></feFlood>
                       <feComposite
@@ -1666,7 +1666,7 @@ export default function LandingPage() {
                       colorInterpolationFilters="sRGB"
                     >
                       <feFlood
-                        flood-opacity="0"
+                        floodOpacity="0"
                         result="BackgroundImageFix"
                       ></feFlood>
                       <feBlend
@@ -2037,6 +2037,7 @@ export default function LandingPage() {
                 </h2>
                 <div className="mt-[32px] md:hidden max-w-[312px]">
                   <div
+                    suppressHydrationWarning
                     className="footer-card-2-tilt"
                     data-shadow=""
                     data-scale-factor="1"
@@ -2259,7 +2260,7 @@ export default function LandingPage() {
                             colorInterpolationFilters="sRGB"
                           >
                             <feFlood
-                              flood-opacity="0"
+                              floodOpacity="0"
                               result="BackgroundImageFix"
                             ></feFlood>
                             <feBlend
@@ -2332,7 +2333,7 @@ export default function LandingPage() {
                             colorInterpolationFilters="sRGB"
                           >
                             <feFlood
-                              flood-opacity="0"
+                              floodOpacity="0"
                               result="BackgroundImageFix"
                             ></feFlood>
                             <feBlend
@@ -2405,7 +2406,7 @@ export default function LandingPage() {
                             colorInterpolationFilters="sRGB"
                           >
                             <feFlood
-                              flood-opacity="0"
+                              floodOpacity="0"
                               result="BackgroundImageFix"
                             ></feFlood>
                             <feBlend
@@ -2462,6 +2463,7 @@ export default function LandingPage() {
               </div>
               <div className="hidden md:relative md:block md:w-full md:max-w-[350px] md:shrink-0">
                 <div
+                  suppressHydrationWarning
                   className="footer-card-2-tilt"
                   data-shadow=""
                   data-scale-factor="1"
