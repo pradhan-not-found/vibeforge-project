@@ -289,7 +289,7 @@ export default function Page() {
                     <textarea
                       value={openaiKey}
                       onChange={(e) => setOpenaiKey(e.target.value)}
-                      placeholder="sk-proj-xxxxxxxxxxxxxxxxxxxx"
+                      placeholder="Paste your OpenAI API key here..."
                       rows={3}
                       className="w-full bg-transparent text-sm font-mono text-[var(--app-ink)] focus:outline-none placeholder:text-[var(--app-muted)] resize-none"
                     />
@@ -298,7 +298,7 @@ export default function Page() {
                       type="password"
                       value={openaiKey}
                       onChange={(e) => setOpenaiKey(e.target.value)}
-                      placeholder="sk-proj-xxxxxxxxxxxxxxxxxxxx"
+                      placeholder="Paste your OpenAI API key here..."
                       className="w-full bg-transparent text-sm font-mono text-[var(--app-ink)] focus:outline-none placeholder:text-[var(--app-muted)]"
                     />
                   )}
@@ -335,7 +335,7 @@ export default function Page() {
                     <textarea
                       value={geminiKey}
                       onChange={(e) => setGeminiKey(e.target.value)}
-                      placeholder="AIzaSyxxxxxxxxxxxxxxxxxxxx"
+                      placeholder="Paste your Gemini API key here..."
                       rows={3}
                       className="w-full bg-transparent text-sm font-mono text-[var(--app-ink)] focus:outline-none placeholder:text-[var(--app-muted)] resize-none"
                     />
@@ -344,7 +344,7 @@ export default function Page() {
                       type="password"
                       value={geminiKey}
                       onChange={(e) => setGeminiKey(e.target.value)}
-                      placeholder="AIzaSyxxxxxxxxxxxxxxxxxxxx"
+                      placeholder="Paste your Gemini API key here..."
                       className="w-full bg-transparent text-sm font-mono text-[var(--app-ink)] focus:outline-none placeholder:text-[var(--app-muted)]"
                     />
                   )}
@@ -381,7 +381,7 @@ export default function Page() {
                     <textarea
                       value={groqKey}
                       onChange={(e) => setGroqKey(e.target.value)}
-                      placeholder="gsk_xxxxxxxxxxxxxxxxxxxx"
+                      placeholder="Paste your Groq API key here..."
                       rows={3}
                       className="w-full bg-transparent text-sm font-mono text-[var(--app-ink)] focus:outline-none placeholder:text-[var(--app-muted)] resize-none"
                     />
@@ -390,7 +390,7 @@ export default function Page() {
                       type="password"
                       value={groqKey}
                       onChange={(e) => setGroqKey(e.target.value)}
-                      placeholder="gsk_xxxxxxxxxxxxxxxxxxxx"
+                      placeholder="Paste your Groq API key here..."
                       className="w-full bg-transparent text-sm font-mono text-[var(--app-ink)] focus:outline-none placeholder:text-[var(--app-muted)]"
                     />
                   )}
