@@ -4,54 +4,36 @@ import { CreditCard, Key } from 'lucide-react';
 import { MotionCard } from '@/components/MotionCard';
 import { useAuth } from '@/context/AuthContext';
 
-function guessLogo(name: string): { provider: string; logo: string } {
-  const n = (name || '').toLowerCase();
-  if (n.includes('gpt') || n.includes('openai') || n.includes(' o1') || n.includes(' o3')) return { provider: 'OpenAI',      logo: '/ai-logos/openai.svg'      };
-  if (n.includes('claude code') || n.includes('claudecode'))                                  return { provider: 'Anthropic',   logo: '/ai-logos/claudecode.png'  };
-  if (n.includes('claude') || n.includes('anthropic') || n.includes('sonnet') || n.includes('opus') || n.includes('haiku')) return { provider: 'Anthropic', logo: '/ai-logos/claude.png' };
-  if (n.includes('gemma'))                                                                    return { provider: 'Google',      logo: '/ai-logos/gemma.png'       };
-  if (n.includes('gemini') || n.includes('google') || n.includes('bard'))                    return { provider: 'Google',      logo: '/ai-logos/gemini.svg'      };
-  if (n.includes('llama') || n.includes('meta'))                                              return { provider: 'Meta',        logo: '/ai-logos/meta.svg'        };
-  if (n.includes('mistral') || n.includes('mixtral'))                                         return { provider: 'Mistral',     logo: '/ai-logos/mistral.svg'     };
-  if (n.includes('deepseek'))                                                                  return { provider: 'DeepSeek',    logo: '/ai-logos/deepseek.svg'    };
-  if (n.includes('grok') || n.includes('xai'))                                                return { provider: 'xAI',         logo: '/ai-logos/xai.svg'         };
-  if (n.includes('perplexity'))                                                               return { provider: 'Perplexity',  logo: '/ai-logos/perplexity.svg'  };
-  if (n.includes('qwen') || n.includes('alibaba'))                                            return { provider: 'Alibaba',     logo: '/ai-logos/qwen.svg'        };
-  if (n.includes('kimi') || n.includes('moonshot'))                                           return { provider: 'Moonshot',    logo: '/ai-logos/kimi.png'        };
-  if (n.includes('ollama') || n.includes('local'))                                            return { provider: 'Ollama',      logo: '/ai-logos/ollama.svg'      };
-  if (n.includes('hugging') || n.includes('hf'))                                              return { provider: 'HuggingFace', logo: '/ai-logos/huggingface.svg' };
-  if (n.includes('cursor'))                                                                   return { provider: 'Cursor',      logo: '/ai-logos/cursor.svg'      };
-  if (n.includes('github') || n.includes('copilot'))                                          return { provider: 'GitHub',      logo: '/ai-logos/github.svg'      };
-  return { provider: 'Custom', logo: '/ai-logos/openai.svg' };
-}
+import { guessLogo } from '@/lib/guessLogo';
+import { useDatabase } from '@/context/DatabaseContext';
 
 export default function Page() {
   const [tokens, setTokens] = useState<any[]>([]);
   const { user } = useAuth();
+  const { dbData } = useDatabase();
 
   useEffect(() => {
-    const email = user?.email || 'admin';
-    fetch(`http://localhost:8000/api/agents?user_id=${email}`)
-      .then(res => res.json())
-      .then(data => {
-        const mapped = data.map((agent: any, i: number) => {
-          const usedTokens = agent.action_count ? (agent.action_count * 1200) : (100 * (i + 1));
-          const limitTokens = 500000;
-          return {
-            id: agent.id,
-            name: agent.name,
-            provider: agent.provider || 'Custom',
-            logo: guessLogo(agent.provider || agent.name).logo,
-            used: Math.round(usedTokens / 1000), 
-            limit: Math.round(limitTokens / 1000),
-            unit: 'K',
-            status: 'Healthy'
-          };
-        });
-        setTokens(mapped);
-      })
-      .catch(err => console.error(err));
-  }, [user]);
+    if (!user?.email || !dbData?.agents) return;
+    
+    const mapped = Object.entries(dbData.agents)
+      .filter(([_, info]: [string, any]) => info.owner === user.email)
+      .map(([id, info]: [string, any]) => {
+        const policyId = info.policyId || 'default';
+        const policy = dbData.policyProfiles?.[policyId] || dbData.policyProfiles?.['default'] || { maxTokens: 100000, maxSpend: 50 };
+        
+        return {
+          id: id,
+          name: info.name,
+          provider: info.provider || 'Custom',
+          logo: guessLogo(info.provider || info.name).logo,
+          used: Math.round((info.totalTokens || 0) / 1000), 
+          limit: Math.round((policy.maxTokens || 100000) / 1000),
+          unit: 'K',
+          status: 'Healthy'
+        };
+      });
+    setTokens(mapped);
+  }, [user, dbData]);
 
   const handleTopUpAll = () => {
     setTokens(tokens.map(t => ({ ...t, used: 0, status: 'Healthy' })));

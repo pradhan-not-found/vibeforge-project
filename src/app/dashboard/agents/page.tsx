@@ -84,39 +84,7 @@ function loadAgentMeta(id: string): { logo: string; provider: string } | null {
 }
 
 // ─── Fallback logo guesser (for agents created before this update) ────────────
-function guessLogo(name: string): { provider: string; logo: string } {
-  const n = name.toLowerCase();
-  if (n.includes('groq')) return { provider: 'Groq', logo: '/ai-logos/groq.png' };
-  if (n.includes('gpt') || n.includes('openai') || n.includes(' o1') || n.includes(' o3')) return { provider: 'OpenAI',      logo: '/ai-logos/openai.svg'      };
-  if (n.includes('claude code') || n.includes('claudecode'))                                  return { provider: 'Anthropic',   logo: '/ai-logos/claudecode.png'  };
-  if (n.includes('claude') || n.includes('anthropic') || n.includes('sonnet') || n.includes('opus') || n.includes('haiku')) return { provider: 'Anthropic', logo: '/ai-logos/claude.png' };
-  if (n.includes('gemma'))                                                                    return { provider: 'Google',      logo: '/ai-logos/gemma.png'       };
-  if (n.includes('gemini') || n.includes('google') || n.includes('bard'))                    return { provider: 'Google',      logo: '/ai-logos/gemini.svg'      };
-  if (n.includes('llama') || n.includes('meta'))                                              return { provider: 'Meta',        logo: '/ai-logos/meta.svg'        };
-  if (n.includes('mistral') || n.includes('mixtral'))                                         return { provider: 'Mistral',     logo: '/ai-logos/mistral.svg'     };
-  if (n.includes('deepseek'))                                                                  return { provider: 'DeepSeek',    logo: '/ai-logos/deepseek.svg'    };
-  if (n.includes('grok') || n.includes('xai'))                                                return { provider: 'xAI',         logo: '/ai-logos/xai.svg'         };
-  if (n.includes('perplexity'))                                                               return { provider: 'Perplexity',  logo: '/ai-logos/perplexity.svg'  };
-  if (n.includes('qwen') || n.includes('alibaba'))                                            return { provider: 'Alibaba',     logo: '/ai-logos/qwen.svg'        };
-  if (n.includes('kimi') || n.includes('moonshot'))                                           return { provider: 'Moonshot',     logo: '/ai-logos/kimi.png'        };
-  if (n.includes('ollama') || n.includes('local'))                                            return { provider: 'Ollama',      logo: '/ai-logos/ollama.svg'      };
-  if (n.includes('hugging') || n.includes('hf'))                                              return { provider: 'HuggingFace', logo: '/ai-logos/huggingface.svg' };
-  if (n.includes('cursor'))                                                                   return { provider: 'Cursor',      logo: '/ai-logos/cursor.svg'      };
-  if (n.includes('github') || n.includes('copilot'))                                          return { provider: 'GitHub',      logo: '/ai-logos/github.svg'      };
-  if (n.includes('antigravity'))                                                              return { provider: 'Antigravity', logo: '/ai-logos/antigravity.svg' };
-  if (n.includes('factory'))                                                                  return { provider: 'Factory',     logo: '/ai-logos/factory.png'     };
-  if (n.includes('hermes') || n.includes('nous'))                                             return { provider: 'NousResearch',logo: '/ai-logos/hermes.png'      };
-  if (n.includes('kilo'))                                                                     return { provider: 'Kilo',        logo: '/ai-logos/kilo.png'        };
-  if (n.includes('maincode'))                                                                 return { provider: 'Maincode',    logo: '/ai-logos/maincode.png'    };
-  if (n.includes('openclaw'))                                                                 return { provider: 'OpenClaw',    logo: '/ai-logos/openclaw.jpeg'   };
-  if (n.includes('opencode'))                                                                 return { provider: 'OpenCode',    logo: '/ai-logos/opencode.svg'    };
-  if (n.includes('amp'))                                                                      return { provider: 'AMP',         logo: '/ai-logos/amp-logo.svg'    };
-  if (n.includes('cohere'))                                                                   return { provider: 'Cohere',      logo: '/ai-logos/cohere.svg'      };
-  if (n.includes('aws') || n.includes('bedrock') || n.includes('amazon'))                     return { provider: 'AWS',         logo: '/ai-logos/aws.svg'         };
-  if (n.includes('azure'))                                                                    return { provider: 'Azure',       logo: '/ai-logos/azure.svg'       };
-  if (n.includes('replicate'))                                                                return { provider: 'Replicate',   logo: '/ai-logos/replicate.svg'   };
-  return { provider: 'Custom', logo: '/ai-logos/openai.svg' };
-}
+import { guessLogo } from '@/lib/guessLogo';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type Agent = {
@@ -186,7 +154,7 @@ export default function Page() {
       const localMapped = Object.entries(dbData.agents)
         .filter(([_, info]: [string, any]) => info.owner === user.email)
         .map(([id, info]: [string, any]) => {
-          const { provider, logo } = loadAgentMeta(id) || guessLogo(info.name);
+          const { provider, logo } = loadAgentMeta(id) || guessLogo(info.provider || info.name);
           
           const agentTraces = (dbData.traces || []).filter((t: any) => t.agentId === id);
           const agentBlocked = (dbData.queue || []).filter((q: any) => q.agentId === id);

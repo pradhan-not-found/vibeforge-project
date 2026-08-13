@@ -5,27 +5,7 @@ import { MotionCard } from '@/components/MotionCard';
 import { useAuth } from '@/context/AuthContext';
 import { useDatabase } from '@/context/DatabaseContext';
 
-function guessLogo(name: string): { provider: string; logo: string } {
-  const n = (name || '').toLowerCase();
-  if (n.includes('groq')) return { provider: 'Groq', logo: '/ai-logos/groq.png' };
-  if (n.includes('gpt') || n.includes('openai') || n.includes(' o1') || n.includes(' o3')) return { provider: 'OpenAI',      logo: '/ai-logos/openai.svg'      };
-  if (n.includes('claude code') || n.includes('claudecode'))                                  return { provider: 'Anthropic',   logo: '/ai-logos/claudecode.png'  };
-  if (n.includes('claude') || n.includes('anthropic') || n.includes('sonnet') || n.includes('opus') || n.includes('haiku')) return { provider: 'Anthropic', logo: '/ai-logos/claude.png' };
-  if (n.includes('gemma'))                                                                    return { provider: 'Google',      logo: '/ai-logos/gemma.png'       };
-  if (n.includes('gemini') || n.includes('google') || n.includes('bard'))                    return { provider: 'Google',      logo: '/ai-logos/gemini.svg'      };
-  if (n.includes('llama') || n.includes('meta'))                                              return { provider: 'Meta',        logo: '/ai-logos/meta.svg'        };
-  if (n.includes('mistral') || n.includes('mixtral'))                                         return { provider: 'Mistral',     logo: '/ai-logos/mistral.svg'     };
-  if (n.includes('deepseek'))                                                                  return { provider: 'DeepSeek',    logo: '/ai-logos/deepseek.svg'    };
-  if (n.includes('grok') || n.includes('xai'))                                                return { provider: 'xAI',         logo: '/ai-logos/xai.svg'         };
-  if (n.includes('perplexity'))                                                               return { provider: 'Perplexity',  logo: '/ai-logos/perplexity.svg'  };
-  if (n.includes('qwen') || n.includes('alibaba'))                                            return { provider: 'Alibaba',     logo: '/ai-logos/qwen.svg'        };
-  if (n.includes('kimi') || n.includes('moonshot'))                                           return { provider: 'Moonshot',    logo: '/ai-logos/kimi.png'        };
-  if (n.includes('ollama') || n.includes('local'))                                            return { provider: 'Ollama',      logo: '/ai-logos/ollama.svg'      };
-  if (n.includes('hugging') || n.includes('hf'))                                              return { provider: 'HuggingFace', logo: '/ai-logos/huggingface.svg' };
-  if (n.includes('cursor'))                                                                   return { provider: 'Cursor',      logo: '/ai-logos/cursor.svg'      };
-  if (n.includes('github') || n.includes('copilot'))                                          return { provider: 'GitHub',      logo: '/ai-logos/github.svg'      };
-  return { provider: 'Custom', logo: '/ai-logos/openai.svg' };
-}
+import { guessLogo } from '@/lib/guessLogo';
 
 function resultStyles(result: string) {
   if (result === 'Allowed' || result === 'Success') return { badge: 'bg-emerald-50 text-emerald-700 ring-emerald-600/20 dark:bg-emerald-500/10 dark:text-emerald-400 dark:ring-emerald-500/20', icon: <CheckCircle2 className="w-3.5 h-3.5" /> };
@@ -235,7 +215,7 @@ export default function Page() {
                     <div className="absolute -left-1.5 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full border-[1.5px] border-[var(--app-canvas)] bg-gray-400"></div>
                     
                     <img 
-                      src={guessLogo(selectedTrace.agentName || selectedTrace.agentId).logo} 
+                      src={selectedTrace.logo} 
                       alt="Agent" 
                       className="w-8 h-8 object-contain" 
                     />
@@ -268,7 +248,7 @@ export default function Page() {
                 {/* Header info */}
                 <div className="flex items-center gap-3 mb-2">
                   <div className="w-10 h-10 rounded-xl bg-[var(--app-canvas)] border border-[var(--app-hairline)] flex items-center justify-center p-2 shadow-sm shrink-0">
-                    <img src={guessLogo(selectedTrace.agentName || selectedTrace.agentId).logo} alt="Agent" className="w-full h-full object-contain" />
+                    <img src={selectedTrace.logo} alt="Agent" className="w-full h-full object-contain" />
                   </div>
                   <div>
                     <h3 className="text-[16px] font-semibold text-[var(--app-ink)] tracking-tight">{selectedTrace.agentName}</h3>
