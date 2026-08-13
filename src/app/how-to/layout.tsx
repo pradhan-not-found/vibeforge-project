@@ -224,10 +224,7 @@ export default function HowToLayout({ children }: { children: React.ReactNode })
               </p>
               <Link
                 href="/signup"
-                className="inline-flex items-center gap-[8px] text-white px-[14px] py-[8px] rounded-[8px] text-[13px] font-[500] no-underline transition-colors"
-                style={{ background: '#2D2D2D' }}
-                onMouseEnter={e => (e.currentTarget.style.background = '#111')}
-                onMouseLeave={e => (e.currentTarget.style.background = '#2D2D2D')}
+                className="inline-flex items-center gap-[8px] text-white px-[14px] py-[8px] rounded-[8px] text-[13px] font-[500] no-underline transition-colors bg-[#2D2D2D] hover:bg-[#111]"
               >
                 Try in Checkpost <ArrowRight className="w-3.5 h-3.5" />
               </Link>
@@ -258,28 +255,30 @@ export default function HowToLayout({ children }: { children: React.ReactNode })
                       </span>
                     </Link>
 
-                    {/* Sub-sections — always rendered, opacity varies */}
-                    <div className="flex flex-col gap-[8px] ml-[28px]">
-                      {chapter.sections.map((sec) => (
-                        <Link
-                          key={sec.id}
-                          href={`/how-to/${chapter.id}#${sec.id}`}
-                          className="flex items-center gap-[12px] no-underline group transition-colors duration-150"
-                          style={{ color: active ? '#5B5B5B' : 'rgba(32,32,32,0.25)' }}
-                        >
-                          {/* Hollow circle dot — professional size matching cofounder */}
-                          <span
-                            className="w-[11px] h-[11px] rounded-full shrink-0 transition-all duration-150"
-                            style={{
-                              border: `1.5px solid ${active ? 'rgba(32,32,32,0.3)' : 'rgba(32,32,32,0.15)'}`,
-                            }}
-                          />
-                          <span className="text-[13px] leading-[140%] group-hover:text-[#111] transition-colors duration-150">
-                            {sec.label}
-                          </span>
-                        </Link>
-                      ))}
-                    </div>
+                    {/* Sub-sections — only rendered when active */}
+                    {active && (
+                      <div className="flex flex-col gap-[8px] ml-[28px]">
+                        {chapter.sections.map((sec) => (
+                          <Link
+                            key={sec.id}
+                            href={`/how-to/${chapter.id}#${sec.id}`}
+                            className="flex items-center gap-[12px] no-underline group transition-colors duration-150"
+                            style={{ color: '#5B5B5B' }}
+                          >
+                            {/* Hollow circle dot — professional size matching cofounder */}
+                            <span
+                              className="w-[11px] h-[11px] rounded-full shrink-0 transition-all duration-150"
+                              style={{
+                                border: '1.5px solid rgba(32,32,32,0.3)',
+                              }}
+                            />
+                            <span className="text-[13px] leading-[140%] group-hover:text-[#111] transition-colors duration-150">
+                              {sec.label}
+                            </span>
+                          </Link>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 );
               })}
@@ -292,12 +291,13 @@ export default function HowToLayout({ children }: { children: React.ReactNode })
               {children}
             </div>
           </main>
+        </div>
+      </div>
 
-          {/* RIGHT MINIMAP */}
-          <div className="shrink-0 hidden lg:flex flex-col items-end pr-[32px] sticky top-[89px] h-[calc(100vh-89px)] justify-center">
-            <ScrollMinimap />
-          </div>
-
+      {/* RIGHT MINIMAP (Fixed to viewport) */}
+      <div className="hidden lg:flex flex-col items-end pr-[20px] xl:pr-[32px] fixed right-0 top-[89px] h-[calc(100vh-89px)] justify-center z-[100] pointer-events-none">
+        <div className="pointer-events-auto">
+          <ScrollMinimap />
         </div>
       </div>
     </div>
