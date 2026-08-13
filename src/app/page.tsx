@@ -111,9 +111,14 @@ export default function LandingPage() {
             color: black !important;
           }
           .site-header.scrolled .cta-btn-dark {
-            background-color: #111 !important;
+            background-color: #212121 !important;
             background-image: none !important;
             color: white !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1), inset 0 1px 1px rgba(255,255,255,0.15) !important;
+          }
+          .site-header.scrolled .cta-btn-dark:hover {
+            background-color: #111 !important;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15), inset 0 1px 1px rgba(255,255,255,0.2) !important;
           }
           .site-header:not(.scrolled) .cta-btn-dark {
             background-color: white !important;
