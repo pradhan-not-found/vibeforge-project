@@ -289,7 +289,7 @@ export default function Page() {
                     type={openaiRevealed ? "text" : "password"}
                     value={openaiKey}
                     onChange={(e) => setOpenaiKey(e.target.value)}
-                    placeholder="sk-proj-..."
+                    placeholder="sk-proj-xxxxxxxxxxxxxxxxxxxx"
                     className="w-full bg-transparent text-sm font-mono text-[var(--app-ink)] focus:outline-none placeholder:text-[var(--app-muted)]"
                   />
                   <button 
@@ -313,7 +313,7 @@ export default function Page() {
                     type={geminiRevealed ? "text" : "password"}
                     value={geminiKey}
                     onChange={(e) => setGeminiKey(e.target.value)}
-                    placeholder="AIzaSy..."
+                    placeholder="AIzaSyxxxxxxxxxxxxxxxxxxxx"
                     className="w-full bg-transparent text-sm font-mono text-[var(--app-ink)] focus:outline-none placeholder:text-[var(--app-muted)]"
                   />
                   <button 
@@ -337,7 +337,7 @@ export default function Page() {
                     type={groqRevealed ? "text" : "password"}
                     value={groqKey}
                     onChange={(e) => setGroqKey(e.target.value)}
-                    placeholder="gsk_..."
+                    placeholder="gsk_xxxxxxxxxxxxxxxxxxxx"
                     className="w-full bg-transparent text-sm font-mono text-[var(--app-ink)] focus:outline-none placeholder:text-[var(--app-muted)]"
                   />
                   <button 

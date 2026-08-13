@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import { MoreVertical, X, ChevronDown, Plus, Eye, EyeOff, CheckCircle2 } from 'lucide-react';
+import { MoreVertical, X, ChevronDown, Plus, Eye, EyeOff, CheckCircle2, ShieldCheck, Copy } from 'lucide-react';
 import { MotionCard } from '@/components/MotionCard';
 import { useAuth } from '@/context/AuthContext';
 import { useDatabase } from '@/context/DatabaseContext';
@@ -455,32 +455,47 @@ export default function Page() {
 
             {newAgentDetails ? (
               <div className="p-8 space-y-6 flex flex-col items-center">
-                <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-500/20 text-emerald-600 rounded-full flex items-center justify-center mb-2">
-                  <CheckCircle2 className="w-8 h-8" />
+                <div className="relative">
+                  <div className="absolute inset-0 bg-emerald-500/20 blur-xl rounded-full"></div>
+                  <div className="relative w-20 h-20 bg-gradient-to-br from-emerald-400 to-emerald-600 text-white rounded-2xl shadow-lg border border-emerald-300 dark:border-emerald-700 flex items-center justify-center mb-2">
+                    <ShieldCheck className="w-10 h-10" />
+                  </div>
                 </div>
                 <div className="text-center space-y-2 w-full">
-                  <p className="text-sm text-[var(--app-muted)]">Your new agent is ready to receive requests via the Vibeforge firewall proxy.</p>
+                  <h3 className="text-xl font-bold text-[var(--app-ink)] tracking-tight">Deployment Active</h3>
+                  <p className="text-sm text-[var(--app-muted)] leading-relaxed">
+                    Your agent has been securely registered with the Vibeforge firewall proxy and is ready to process traffic.
+                  </p>
                 </div>
                 
-                <div className="w-full bg-[var(--app-soft)] border border-[var(--app-hairline)] rounded-xl p-4 space-y-4 text-left">
+                <div className="w-full bg-[var(--app-soft)] border-2 border-[var(--app-hairline)] rounded-2xl p-5 space-y-5 text-left shadow-sm">
                   <div>
-                    <label className="text-[10px] font-bold uppercase tracking-wider text-[var(--app-muted)] mb-1 block">Agent ID</label>
-                    <div className="font-mono text-sm text-[var(--app-ink)] break-all">{newAgentDetails.id}</div>
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-[var(--app-muted)] mb-1.5 flex items-center justify-between">
+                      Agent ID
+                      <button onClick={() => navigator.clipboard.writeText(newAgentDetails.id)} className="hover:text-[var(--app-ink)] transition-colors"><Copy className="w-3.5 h-3.5" /></button>
+                    </label>
+                    <div className="font-mono text-sm text-[var(--app-ink)] bg-[var(--app-canvas)] border border-[var(--app-hairline)] px-3 py-2 rounded-lg break-all">{newAgentDetails.id}</div>
                   </div>
                   <div>
-                    <label className="text-[10px] font-bold uppercase tracking-wider text-[var(--app-muted)] mb-1 block">Proxy URL</label>
-                    <div className="font-mono text-sm text-[var(--app-ink)] break-all">{newAgentDetails.url}</div>
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-[var(--app-muted)] mb-1.5 flex items-center justify-between">
+                      Proxy URL
+                      <button onClick={() => navigator.clipboard.writeText(newAgentDetails.url)} className="hover:text-[var(--app-ink)] transition-colors"><Copy className="w-3.5 h-3.5" /></button>
+                    </label>
+                    <div className="font-mono text-sm text-[var(--app-ink)] bg-[var(--app-canvas)] border border-[var(--app-hairline)] px-3 py-2 rounded-lg break-all">{newAgentDetails.url}</div>
                   </div>
                   <div>
-                    <label className="text-[10px] font-bold uppercase tracking-wider text-[var(--app-muted)] mb-1 block">API Key (Save this!)</label>
-                    <div className="font-mono text-sm text-[var(--app-ink)] break-all bg-yellow-50 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-400 p-2 rounded border border-yellow-200 dark:border-yellow-900/50">
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-[var(--app-muted)] mb-1.5 flex items-center justify-between">
+                      API Key <span className="text-amber-600 dark:text-amber-500 font-semibold">(Save this!)</span>
+                      <button onClick={() => navigator.clipboard.writeText(newAgentDetails.key)} className="hover:text-amber-800 dark:hover:text-amber-300 transition-colors"><Copy className="w-3.5 h-3.5" /></button>
+                    </label>
+                    <div className="font-mono text-sm font-semibold tracking-wide text-amber-900 dark:text-amber-200 break-all bg-amber-50 dark:bg-amber-900/30 px-3 py-2.5 rounded-lg border border-amber-200 dark:border-amber-800/50 shadow-inner">
                       {newAgentDetails.key}
                     </div>
                   </div>
                 </div>
 
-                <button onClick={closeModal} className="w-full cta-btn-dark text-on-dark shadow-sm px-[16px] py-[12px] text-[14px] font-[500] rounded-[8px] transition-all">
-                  Done
+                <button onClick={closeModal} className="w-full cta-btn-dark text-on-dark shadow-md px-[16px] py-[12px] text-[14px] font-[600] rounded-xl transition-all hover:scale-[1.02]">
+                  Return to Dashboard
                 </button>
               </div>
             ) : (

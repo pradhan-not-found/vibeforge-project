@@ -167,7 +167,7 @@ export default function LLMTestPage() {
         {error && (
           <div className="mt-6 p-4 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/50 rounded-xl flex items-start gap-3">
             <div className="w-8 h-8 rounded-lg bg-red-100 dark:bg-red-900/50 flex items-center justify-center shrink-0">
-              <Zap className="w-4 h-4 text-red-600 dark:text-red-400" />
+              <img src="/icon.png" alt="Blocked Icon" className="w-4 h-4 object-contain" />
             </div>
             <div className="flex flex-col">
               <span className="text-sm font-semibold text-red-800 dark:text-red-300">Execution Blocked</span>
