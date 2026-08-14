@@ -1,27 +1,19 @@
 <div align="center">
+  <img src="./repo/adamas.png" height="100" style="margin: 0 15px;" align="absmiddle" />
+  <img src="./repo/gamelimals.png" height="130" style="margin: 0 15px;" align="absmiddle" />
+  <img src="./repo/cycoders.png" height="100" style="margin: 0 15px;" align="absmiddle" />
+
+  <br />
+  <br />
+
   <img src="./repo/banner.png" alt="Checkpost Banner" width="100%" />
   
-  <br />
-  <br />
-
-  <img src="./repo/adamas.png" height="50" style="margin: 0 15px;" align="absmiddle" />
-  <img src="./repo/gamelimals.png" height="120" style="margin: 0 15px;" align="absmiddle" />
-  <img src="./repo/cycoders.png" height="50" style="margin: 0 15px;" align="absmiddle" />
-
   <br />
   <br />
 
   <h1><img src="./repo/checkpost-icon.png" height="40" align="absmiddle" /> Checkpost</h1>
   
   <p><strong>A modern, enterprise-grade AI security and monitoring dashboard.</strong></p>
-
-  <p>
-    <a href="https://nextjs.org/"><img src="https://img.shields.io/badge/Next.js-15+-black?style=for-the-badge&logo=next.js" alt="Next.js" /></a>
-    <a href="https://react.dev/"><img src="https://img.shields.io/badge/React-19-blue?style=for-the-badge&logo=react" alt="React" /></a>
-    <a href="https://tailwindcss.com/"><img src="https://img.shields.io/badge/Tailwind_CSS-4.0-38B2AC?style=for-the-badge&logo=tailwind-css" alt="Tailwind CSS" /></a>
-    <a href="https://firebase.google.com/"><img src="https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black" alt="Firebase" /></a>
-    <a href="https://supabase.com/"><img src="https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white" alt="Supabase" /></a>
-  </p>
 </div>
 
 **Checkpost** (repository: `vibeforge`) provides a comprehensive suite of tools for managing AI agents, testing Large Language Models (LLMs), and enforcing robust security policies—all wrapped in a stunning, highly responsive user interface.
