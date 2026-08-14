@@ -4,14 +4,14 @@
   <br />
   <br />
 
-  <img src="./repo/adamas.png" height="50" style="margin: 0 15px;" />
-  <img src="./repo/gamelimals.png" height="50" style="margin: 0 15px;" />
-  <img src="./repo/cycoders.png" height="50" style="margin: 0 15px;" />
+  <img src="./repo/adamas.png" height="50" style="margin: 0 15px;" align="absmiddle" />
+  <img src="./repo/gamelimals.png" height="120" style="margin: 0 15px;" align="absmiddle" />
+  <img src="./repo/cycoders.png" height="50" style="margin: 0 15px;" align="absmiddle" />
 
   <br />
   <br />
 
-  <h1>Checkpost</h1>
+  <h1><img src="./repo/checkpost-icon.png" height="40" align="absmiddle" /> Checkpost</h1>
   
   <p><strong>A modern, enterprise-grade AI security and monitoring dashboard.</strong></p>
 
@@ -67,11 +67,13 @@ flowchart TD
 
 ## <img src="https://api.iconify.design/lucide/sparkles.svg?color=white" width="24" height="24" align="absmiddle" /> Features
 
-- **<img src="https://api.iconify.design/lucide/bar-chart.svg?color=white" width="20" height="20" align="absmiddle" /> Comprehensive Monitoring**: Keep track of system health with a real-time dashboard and detailed audit logs.
-- **<img src="https://api.iconify.design/lucide/bot.svg?color=white" width="20" height="20" align="absmiddle" /> Asset Management**: Seamlessly orchestrate your AI agents and perform isolated tests on various LLMs directly from the platform.
-- **<img src="https://api.iconify.design/lucide/shield-alert.svg?color=white" width="20" height="20" align="absmiddle" /> Advanced Security**: Define strict usage policies and monitor potential threats to ensure safe and compliant AI deployments.
-- **<img src="https://api.iconify.design/lucide/palette.svg?color=white" width="20" height="20" align="absmiddle" /> Premium UI/UX**: Built with Framer Motion, Tailwind CSS 4, and Lucide Icons for a beautiful, dynamic, and glassmorphism-inspired aesthetic.
-- **<img src="https://api.iconify.design/lucide/lock.svg?color=white" width="20" height="20" align="absmiddle" /> Secure Authentication**: Integrated with Firebase for secure, frictionless user authentication and session management.
+| Feature | Description |
+| :--- | :--- |
+| **<img src="https://api.iconify.design/lucide/bar-chart.svg?color=white" width="20" height="20" align="absmiddle" /> Comprehensive Monitoring** | Keep track of system health with a real-time dashboard and detailed audit logs. |
+| **<img src="https://api.iconify.design/lucide/bot.svg?color=white" width="20" height="20" align="absmiddle" /> Asset Management** | Seamlessly orchestrate your AI agents and perform isolated tests on various LLMs directly from the platform. |
+| **<img src="https://api.iconify.design/lucide/shield-alert.svg?color=white" width="20" height="20" align="absmiddle" /> Advanced Security** | Define strict usage policies and monitor potential threats to ensure safe and compliant AI deployments. |
+| **<img src="https://api.iconify.design/lucide/palette.svg?color=white" width="20" height="20" align="absmiddle" /> Premium UI/UX** | Built with Framer Motion, Tailwind CSS 4, and Lucide Icons for a beautiful, dynamic, and glassmorphism-inspired aesthetic. |
+| **<img src="https://api.iconify.design/lucide/lock.svg?color=white" width="20" height="20" align="absmiddle" /> Secure Authentication** | Integrated with Firebase for secure, frictionless user authentication and session management. |
 
 ## <img src="https://api.iconify.design/lucide/layers.svg?color=white" width="24" height="24" align="absmiddle" /> Tech Stack
 
