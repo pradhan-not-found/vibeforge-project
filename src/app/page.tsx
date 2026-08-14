@@ -1747,13 +1747,21 @@ export default function LandingPage() {
             <p className="m-0 mx-auto mt-5 max-w-[800px] text-center text-[16px] font-[460] leading-[150%] text-white/70">
               Join Checkpost today and deploy autonomous workflows with enterprise-grade governance.
             </p>
-            <div className="mt-8 flex justify-center">
+            <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
               <a
                 className="bg-black text-white inline-flex items-center justify-center gap-[10px] px-[20px] py-[12px] rounded-[8px] text-[15px] font-[500] hover:opacity-90 transition-opacity cursor-pointer no-underline shadow-lg"
                 href="/signup"
               >
                 Get started
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </a>
+              <a
+                className="text-white border border-white/30 hover:bg-white/10 inline-flex items-center justify-center gap-[10px] px-[20px] py-[12px] rounded-[8px] text-[15px] font-[500] transition-all cursor-pointer no-underline"
+                href="https://github.com/pradhan-not-found/vibeforge-project"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                View Documentation
               </a>
             </div>
           </div>
