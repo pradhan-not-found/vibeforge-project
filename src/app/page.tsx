@@ -1747,9 +1747,9 @@ export default function LandingPage() {
             <p className="m-0 mx-auto mt-5 max-w-[800px] text-center text-[16px] font-[460] leading-[150%] text-white/70">
               Join Checkpost today and deploy autonomous workflows with enterprise-grade governance.
             </p>
-            <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <div className="mt-8 flex flex-row items-center justify-center gap-4">
               <a
-                className="bg-black text-white inline-flex items-center justify-center gap-[10px] px-[20px] py-[12px] rounded-[8px] text-[15px] font-[500] hover:opacity-90 transition-opacity cursor-pointer no-underline shadow-lg"
+                className="bg-gray-600 text-white inline-flex items-center justify-center gap-[10px] px-[20px] py-[12px] rounded-[8px] text-[15px] font-[500] hover:bg-gray-700 transition-colors cursor-pointer no-underline shadow-lg"
                 href="/signup"
               >
                 Get started
