@@ -68,18 +68,13 @@ flowchart TD
 ## <img src="https://api.iconify.design/lucide/layers.svg?color=white" width="24" height="24" align="absmiddle" /> Tech Stack
 
 <div align="center">
-  
-  <a href="https://nextjs.org"><img src="https://img.shields.io/badge/Next.js-15+-black?style=for-the-badge&logo=next.js" alt="Next.js" /></a>
-  <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-5.0-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" /></a>
-  <a href="https://react.dev"><img src="https://img.shields.io/badge/React-19-blue?style=for-the-badge&logo=react" alt="React" /></a>
-  <a href="https://tailwindcss.com"><img src="https://img.shields.io/badge/Tailwind_CSS-4.0-38B2AC?style=for-the-badge&logo=tailwind-css" alt="Tailwind CSS" /></a>
-  <a href="https://www.framer.com/motion/"><img src="https://img.shields.io/badge/Framer_Motion-13.1-black?style=for-the-badge&logo=framer&logoColor=white" alt="Framer Motion" /></a>
-  
-  <br />
-
-  <a href="https://firebase.google.com/"><img src="https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black" alt="Firebase" /></a>
-  <a href="https://supabase.com/"><img src="https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white" alt="Supabase" /></a>
-
+  <img src="./repo/icons/nextjs.jpeg" alt="Next.js" width="50" style="border-radius: 10px; margin: 0 8px;" />
+  <img src="./repo/icons/typescript.png" alt="TypeScript" width="50" style="border-radius: 10px; margin: 0 8px;" />
+  <img src="./repo/icons/react.png" alt="React" width="50" style="border-radius: 10px; margin: 0 8px;" />
+  <img src="./repo/icons/tailwindcss.jpeg" alt="Tailwind CSS" width="50" style="border-radius: 10px; margin: 0 8px;" />
+  <img src="./repo/icons/framer.jpeg" alt="Framer Motion" width="50" style="border-radius: 10px; margin: 0 8px;" />
+  <img src="./repo/icons/supabase.jpeg" alt="Supabase" width="50" style="border-radius: 10px; margin: 0 8px;" />
+  <img src="./repo/icons/vercel.png" alt="Vercel" width="50" style="border-radius: 10px; margin: 0 8px;" />
 </div>
 
 ## <img src="https://api.iconify.design/lucide/folder-git-2.svg?color=white" width="24" height="24" align="absmiddle" /> Project Structure
