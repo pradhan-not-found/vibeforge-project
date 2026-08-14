@@ -18,7 +18,62 @@
 
 **Checkpost** (repository: `vibeforge`) provides a comprehensive suite of tools for managing AI agents, testing Large Language Models (LLMs), and enforcing robust security policies—all wrapped in a stunning, highly responsive user interface.
 
-## <img src="https://api.iconify.design/lucide/layout-template.svg?color=white" width="24" height="24" align="absmiddle" /> Architecture
+---
+
+## <img src="https://api.iconify.design/lucide/trophy.svg?color=white" width="24" height="24" align="absmiddle" /> Track
+
+**03 — AI in Finance & E-commerce (FinTech)**
+
+---
+
+## <img src="https://api.iconify.design/lucide/target.svg?color=white" width="24" height="24" align="absmiddle" /> Problem Statement
+
+As companies increasingly grant AI agents direct access to live databases, internal systems, and financial infrastructure — including corporate credit cards, payment gateways, and refund systems — a critical, largely unaddressed risk has emerged: **financial loss caused by autonomous AI agent behavior.**
+
+Unlike traditional fraud (human-initiated, credit card theft, phishing), this new category of risk comes from the agents themselves. If an AI agent hallucinates a command, misinterprets an instruction, or enters an infinite retry loop, the consequences are immediate and severe:
+
+- Unauthorized transactions
+- Uncontrolled API / LLM spend
+- Incorrect refund approvals
+- Destructive database operations
+
+All of this can happen in seconds, with **zero human oversight**.
+
+Existing fintech fraud detection systems are built to catch human-driven fraud. **No equivalent control layer exists to govern financial and operational decisions made by autonomous AI agents.** As enterprises adopt agentic AI at scale, this gap represents a direct threat to financial security, budget integrity, and operational trust.
+
+---
+
+## <img src="https://api.iconify.design/lucide/lightbulb.svg?color=white" width="24" height="24" align="absmiddle" /> Our Solution
+
+**Checkpost** is a Web Application Firewall built exclusively for autonomous AI agents. It acts as a **wire-level checkpoint** positioned entirely between the AI agent and every financial tool, API, or system it attempts to use.
+
+Before any action executes, Checkpost:
+
+1. **Intercepts** the request
+2. **Evaluates** it against strict policy rules
+3. **Allows, blocks, or pauses** it for human review
+
+---
+
+## <img src="https://api.iconify.design/lucide/layout-template.svg?color=white" width="24" height="24" align="absmiddle" /> Architecture — The Three Pillars
+
+### 1️⃣ Deterministic Policy Engine *(The Rulebook)*
+A sub-millisecond, rule-based engine — configured via a simple declarative **YAML** file — enforces:
+- Deny-by-default rules
+- Allow-lists for safe tools
+- Exact parameter matching (blocks destructive commands / unauthorized transactions)
+
+> No ML inference required for enforcement → near-zero latency (**<1ms**)
+
+### 2️⃣ Cost Governance & Loop Protection *(The Hard Stop)*
+- Real-time tracking of accumulated spend, tool calls, and retries
+- Caps on loop counts to detect low-yield execution patterns
+- When an agent hits its budget ceiling → **instant hard stop**, not a passive alert
+
+### 3️⃣ Human-in-the-Loop (HITL) Interruption *(The Dashboard)*
+- Sensitive actions (e.g. authorizing a refund, dropping a database table) trigger a **synchronous hold**
+- Agent run is paused; a live dashboard shows the operator the intended action + reasoning
+- Operator can **Approve** (resumes workflow) or **Reject** (blocks action, sends rejection back to the model)
 
 Below is a high-level overview of the Checkpost architecture and user flow:
 
@@ -82,6 +137,16 @@ flowchart TD
 - `/src/components` - Reusable React components (UI elements, Layouts)
 - `/src/context` - React Context providers (AuthContext, DatabaseContext)
 - `/src/lib` - Utility functions and third-party initializations (Firebase)
+
+---
+
+## <img src="https://api.iconify.design/lucide/bar-chart-3.svg?color=white" width="24" height="24" align="absmiddle" /> Impact
+
+> **10,650+ AI agents** are currently secured by Checkpost.
+
+Checkpost provides enterprises with a real-time financial control layer purpose-built for the agentic AI era — closing a gap that traditional fintech security tools were never designed to cover.
+
+---
 
 ## <img src="https://api.iconify.design/lucide/users.svg?color=white" width="24" height="24" align="absmiddle" /> Team
 
