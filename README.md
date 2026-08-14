@@ -1,9 +1,17 @@
 <div align="center">
   <img src="./repo/banner.png" alt="Checkpost Banner" width="100%" />
+  
   <br />
-  <img src="./repo/logo.png" alt="Checkpost Logo" width="100%" />
+  <br />
 
-  <h1><img src="https://api.iconify.design/lucide/shield.svg?color=white" width="32" height="32" align="absmiddle" /> Checkpost</h1>
+  <img src="./repo/adamas.png" height="50" style="margin: 0 15px;" />
+  <img src="./repo/gamelimals.png" height="50" style="margin: 0 15px;" />
+  <img src="./repo/cycoders.png" height="50" style="margin: 0 15px;" />
+
+  <br />
+  <br />
+
+  <h1>Checkpost</h1>
   
   <p><strong>A modern, enterprise-grade AI security and monitoring dashboard.</strong></p>
 
@@ -67,16 +75,12 @@ flowchart TD
 
 ## <img src="https://api.iconify.design/lucide/layers.svg?color=white" width="24" height="24" align="absmiddle" /> Tech Stack
 
-<div align="center">
-  <img src="./repo/icons/nextjs.jpeg" alt="Next.js" width="50" style="border-radius: 10px; margin: 0 8px;" />
-  <img src="./repo/icons/typescript.png" alt="TypeScript" width="50" style="border-radius: 10px; margin: 0 8px;" />
-  <img src="./repo/icons/react.png" alt="React" width="50" style="border-radius: 10px; margin: 0 8px;" />
-  <img src="./repo/icons/tailwindcss.jpeg" alt="Tailwind CSS" width="50" style="border-radius: 10px; margin: 0 8px;" />
-  <img src="./repo/icons/framer.jpeg" alt="Framer Motion" width="50" style="border-radius: 10px; margin: 0 8px;" />
-  <img src="./repo/icons/firebase.png" alt="Firebase" width="50" style="border-radius: 10px; margin: 0 8px;" />
-  <img src="./repo/icons/supabase.jpeg" alt="Supabase" width="50" style="border-radius: 10px; margin: 0 8px;" />
-  <img src="./repo/icons/vercel.png" alt="Vercel" width="50" style="border-radius: 10px; margin: 0 8px;" />
-</div>
+| Technology | Logo | Technology | Logo |
+| :--- | :--- | :--- | :--- |
+| **Next.js** | <img src="./repo/icons/nextjs.jpeg" width="32" style="border-radius:6px;" /> | **Framer Motion** | <img src="./repo/icons/framer.jpeg" width="32" style="border-radius:6px;" /> |
+| **TypeScript** | <img src="./repo/icons/typescript.png" width="32" style="border-radius:6px;" /> | **Firebase** | <img src="./repo/icons/firebase.png" width="32" style="border-radius:6px;" /> |
+| **React** | <img src="./repo/icons/react.png" width="32" style="border-radius:6px;" /> | **Supabase** | <img src="./repo/icons/supabase.jpeg" width="32" style="border-radius:6px;" /> |
+| **Tailwind CSS** | <img src="./repo/icons/tailwindcss.jpeg" width="32" style="border-radius:6px;" /> | **Vercel** | <img src="./repo/icons/vercel.png" width="32" style="border-radius:6px;" /> |
 
 ## <img src="https://api.iconify.design/lucide/folder-git-2.svg?color=white" width="24" height="24" align="absmiddle" /> Project Structure
 
