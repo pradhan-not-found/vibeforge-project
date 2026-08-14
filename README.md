@@ -1,36 +1,121 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<div align="center">
+  <img src="./repo/banner.png" alt="Checkpost Banner" width="100%" />
+  <br />
+  <img src="./repo/logo.png" alt="Checkpost Logo" width="150" />
 
-## Getting Started
+  <h1>🛡️ Checkpost</h1>
+  
+  <p><strong>A modern, enterprise-grade AI security and monitoring dashboard.</strong></p>
 
-First, run the development server:
+  <p>
+    <a href="https://nextjs.org/"><img src="https://img.shields.io/badge/Next.js-15+-black?style=for-the-badge&logo=next.js" alt="Next.js" /></a>
+    <a href="https://react.dev/"><img src="https://img.shields.io/badge/React-19-blue?style=for-the-badge&logo=react" alt="React" /></a>
+    <a href="https://tailwindcss.com/"><img src="https://img.shields.io/badge/Tailwind_CSS-4.0-38B2AC?style=for-the-badge&logo=tailwind-css" alt="Tailwind CSS" /></a>
+    <a href="https://firebase.google.com/"><img src="https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black" alt="Firebase" /></a>
+    <a href="https://supabase.com/"><img src="https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white" alt="Supabase" /></a>
+  </p>
+</div>
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+**Checkpost** (repository: `vibeforge`) provides a comprehensive suite of tools for managing AI agents, testing Large Language Models (LLMs), and enforcing robust security policies—all wrapped in a stunning, highly responsive user interface.
+
+## 🏗️ Architecture
+
+Below is a high-level overview of the Checkpost architecture and user flow:
+
+```mermaid
+graph TD
+    A([Admin / User]) -->|Authenticates| B(Checkpost Dashboard)
+    
+    subgraph Dashboard Views
+    B -->|Monitors| C[Audit Logs & Metrics]
+    B -->|Manages| D[AI Agents]
+    B -->|Evaluates| E[LLM Testing]
+    B -->|Enforces| F[Security Policies]
+    end
+    
+    subgraph Backend Infrastructure
+    C --> G{API Layer}
+    D --> G
+    E --> G
+    F --> G
+    end
+    
+    subgraph Data & Auth
+    G --> H[(Firebase Auth)]
+    G --> I[(Supabase / DB)]
+    G --> J[External LLM APIs]
+    end
+    
+    style A fill:#f9f,stroke:#333,stroke-width:2px
+    style B fill:#bbf,stroke:#333,stroke-width:2px
+    style G fill:#dfd,stroke:#333,stroke-width:2px
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## ✨ Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **📊 Comprehensive Monitoring**: Keep track of system health with a real-time dashboard and detailed audit logs.
+- **🤖 Asset Management**: Seamlessly orchestrate your AI agents and perform isolated tests on various LLMs directly from the platform.
+- **🛡️ Advanced Security**: Define strict usage policies and monitor potential threats to ensure safe and compliant AI deployments.
+- **🎨 Premium UI/UX**: Built with Framer Motion, Tailwind CSS 4, and Lucide Icons for a beautiful, dynamic, and glassmorphism-inspired aesthetic.
+- **🔐 Secure Authentication**: Integrated with Firebase for secure, frictionless user authentication and session management.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🛠️ Tech Stack
 
-## Learn More
+- **Framework**: [Next.js](https://nextjs.org) (App Router)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
+- **Animations**: [Framer Motion](https://www.framer.com/motion/)
+- **Icons**: [Lucide React](https://lucide.dev/)
+- **Charts**: [Recharts](https://recharts.org/)
+- **Backend & Auth**: [Firebase](https://firebase.google.com/) / [Supabase](https://supabase.com/)
+- **AI Integrations**: Google Generative AI, Groq SDK
 
-To learn more about Next.js, take a look at the following resources:
+## 🚀 Getting Started
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Prerequisites
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Make sure you have Node.js (v18 or higher) and npm/yarn/pnpm installed on your machine.
 
-## Deploy on Vercel
+### Installation
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. **Clone the repository** (if you haven't already):
+   ```bash
+   git clone https://github.com/your-username/vibeforge.git
+   cd vibeforge
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+2. **Install dependencies**:
+   ```bash
+   npm install
+   # or
+   yarn install
+   # or
+   pnpm install
+   ```
+
+3. **Environment Variables**:
+   Create a `.env.local` file in the root directory and add your required configuration (e.g., Firebase, Supabase, LLM API keys):
+   ```env
+   # Add your environment variables here
+   ```
+
+4. **Run the development server**:
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   ```
+
+5. **Open the app**:
+   Navigate to [http://localhost:3000](http://localhost:3000) in your browser to see the application in action.
+
+## 📁 Project Structure
+
+- `/src/app` - Next.js app router pages and layouts (Dashboard, Authentication, etc.)
+- `/src/components` - Reusable React components (UI elements, Layouts)
+- `/src/context` - React Context providers (AuthContext, DatabaseContext)
+- `/src/lib` - Utility functions and third-party initializations (Firebase)
+
+## 📄 License
+
+This project is licensed under the terms found in the [LICENSE](./LICENSE) file.
