@@ -23,32 +23,38 @@
 Below is a high-level overview of the Checkpost architecture and user flow:
 
 ```mermaid
-graph TD
-    A([Admin / User]) -->|Authenticates| B(Checkpost Dashboard)
+flowchart TD
+    %% Define sleek, dark-mode friendly professional classes
+    classDef default fill:#0f172a,stroke:#334155,stroke-width:1px,color:#e2e8f0
+    classDef highlight fill:#38bdf8,stroke:#0284c7,stroke-width:2px,color:#0f172a,font-weight:bold
+    classDef core fill:#1e293b,stroke:#475569,stroke-width:2px,color:#f8fafc
+    classDef database fill:#020617,stroke:#6366f1,stroke-width:2px,color:#c7d2fe
+
+    A((Admin User)):::highlight -->|Authenticates| B[Checkpost Client]:::core
     
-    subgraph Dashboard Views
-    B -->|Monitors| C[Audit Logs & Metrics]
-    B -->|Manages| D[AI Agents]
-    B -->|Evaluates| E[LLM Testing]
-    B -->|Enforces| F[Security Policies]
+    subgraph Frontend Features
+        direction LR
+        B --> C[Audit & Monitoring]
+        B --> D[Threat Policies]
+        B --> E[Agent Management]
+        B --> F[LLM Testing]
     end
     
-    subgraph Backend Infrastructure
-    C --> G{API Layer}
-    D --> G
-    E --> G
-    F --> G
+    subgraph Backend Services
+        C -.-> G{API Layer}:::core
+        D -.-> G
+        E -.-> G
+        F -.-> G
     end
     
-    subgraph Data & Auth
-    G --> H[(Firebase Auth)]
-    G --> I[(Supabase / DB)]
-    G --> J[External LLM APIs]
+    subgraph Infrastructure
+        G ==> H[(Firebase Auth)]:::database
+        G ==> I[(Supabase SQL)]:::database
+        G ==> J[[External LLMs]]:::database
     end
-    
-    style A fill:#f9f,stroke:#333,stroke-width:2px
-    style B fill:#bbf,stroke:#333,stroke-width:2px
-    style G fill:#dfd,stroke:#333,stroke-width:2px
+
+    %% Link styles
+    linkStyle default stroke:#64748b,stroke-width:2px,fill:none
 ```
 
 ## <img src="https://api.iconify.design/lucide/sparkles.svg?color=white" width="24" height="24" align="absmiddle" /> Features
@@ -61,53 +67,20 @@ graph TD
 
 ## <img src="https://api.iconify.design/lucide/layers.svg?color=white" width="24" height="24" align="absmiddle" /> Tech Stack
 
-- **Framework**: [Next.js](https://nextjs.org) (App Router)
-- **Language**: [TypeScript](https://www.typescriptlang.org/)
-- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
-- **Animations**: [Framer Motion](https://www.framer.com/motion/)
-- **Icons**: [Lucide React](https://lucide.dev/)
-- **Charts**: [Recharts](https://recharts.org/)
-- **Backend & Auth**: [Firebase](https://firebase.google.com/) / [Supabase](https://supabase.com/)
-- **AI Integrations**: Google Generative AI, Groq SDK
+<div align="center">
+  
+  <a href="https://nextjs.org"><img src="https://img.shields.io/badge/Next.js-15+-black?style=for-the-badge&logo=next.js" alt="Next.js" /></a>
+  <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-5.0-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" /></a>
+  <a href="https://react.dev"><img src="https://img.shields.io/badge/React-19-blue?style=for-the-badge&logo=react" alt="React" /></a>
+  <a href="https://tailwindcss.com"><img src="https://img.shields.io/badge/Tailwind_CSS-4.0-38B2AC?style=for-the-badge&logo=tailwind-css" alt="Tailwind CSS" /></a>
+  <a href="https://www.framer.com/motion/"><img src="https://img.shields.io/badge/Framer_Motion-13.1-black?style=for-the-badge&logo=framer&logoColor=white" alt="Framer Motion" /></a>
+  
+  <br />
 
-## <img src="https://api.iconify.design/lucide/rocket.svg?color=white" width="24" height="24" align="absmiddle" /> Getting Started
+  <a href="https://firebase.google.com/"><img src="https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black" alt="Firebase" /></a>
+  <a href="https://supabase.com/"><img src="https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white" alt="Supabase" /></a>
 
-### Prerequisites
-
-Make sure you have Node.js (v18 or higher) and npm/yarn/pnpm installed on your machine.
-
-### Installation
-
-1. **Clone the repository** (if you haven't already):
-   ```bash
-   git clone https://github.com/your-username/vibeforge.git
-   cd vibeforge
-   ```
-
-2. **Install dependencies**:
-   ```bash
-   npm install
-   # or
-   yarn install
-   # or
-   pnpm install
-   ```
-
-3. **Environment Variables**:
-   Create a `.env.local` file in the root directory and add your required configuration (e.g., Firebase, Supabase, LLM API keys):
-   ```env
-   # Add your environment variables here
-   ```
-
-4. **Run the development server**:
-   ```bash
-   npm run dev
-   # or
-   yarn dev
-   ```
-
-5. **Open the app**:
-   Navigate to [http://localhost:3000](http://localhost:3000) in your browser to see the application in action.
+</div>
 
 ## <img src="https://api.iconify.design/lucide/folder-git-2.svg?color=white" width="24" height="24" align="absmiddle" /> Project Structure
 
