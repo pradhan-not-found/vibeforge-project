@@ -83,6 +83,20 @@ flowchart TD
 - `/src/context` - React Context providers (AuthContext, DatabaseContext)
 - `/src/lib` - Utility functions and third-party initializations (Firebase)
 
+## <img src="https://api.iconify.design/lucide/users.svg?color=white" width="24" height="24" align="absmiddle" /> Team
+
+| Photo | Name | Role |
+| :---: | :--- | :--- |
+| <img src="./public/teams/souradeeppradhan.png" width="60" style="border-radius: 50%; aspect-ratio: 1/1; object-fit: cover;" /> | **Souradeep Pradhan** | Full Stack Developer |
+| <img src="./public/teams/anirudhhadas.png" width="60" style="border-radius: 50%; aspect-ratio: 1/1; object-fit: cover;" /> | **Aniruddha Das** | Full Stack Developer |
+| <img src="./public/teams/sattwikdas.png" width="60" style="border-radius: 50%; aspect-ratio: 1/1; object-fit: cover;" /> | **Sattwik Das** | Full Stack Developer |
+
+---
+
 ## <img src="https://api.iconify.design/lucide/file-text.svg?color=white" width="24" height="24" align="absmiddle" /> License
 
-This project is licensed under the terms found in the [LICENSE](./LICENSE) file.
+This project is licensed under the terms found in the [LICENSE](./LICENSE) file (Apache-2.0).
+
+---
+
+<p align="center">Made with ❤️ for devs by devs — <b>Fantastic 4</b></p>
