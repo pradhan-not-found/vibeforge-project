@@ -1,9 +1,9 @@
 <div align="center">
   <img src="./repo/banner.png" alt="Checkpost Banner" width="100%" />
   <br />
-  <img src="./repo/logo.png" alt="Checkpost Logo" width="150" />
+  <img src="./repo/logo.png" alt="Checkpost Logo" width="100%" />
 
-  <h1>🛡️ Checkpost</h1>
+  <h1><img src="https://unpkg.com/lucide-static@0.321.0/icons/shield.svg" width="32" height="32" align="absmiddle" /> Checkpost</h1>
   
   <p><strong>A modern, enterprise-grade AI security and monitoring dashboard.</strong></p>
 
@@ -18,7 +18,7 @@
 
 **Checkpost** (repository: `vibeforge`) provides a comprehensive suite of tools for managing AI agents, testing Large Language Models (LLMs), and enforcing robust security policies—all wrapped in a stunning, highly responsive user interface.
 
-## 🏗️ Architecture
+## <img src="https://unpkg.com/lucide-static@0.321.0/icons/layout-template.svg" width="24" height="24" align="absmiddle" /> Architecture
 
 Below is a high-level overview of the Checkpost architecture and user flow:
 
@@ -51,15 +51,15 @@ graph TD
     style G fill:#dfd,stroke:#333,stroke-width:2px
 ```
 
-## ✨ Features
+## <img src="https://unpkg.com/lucide-static@0.321.0/icons/sparkles.svg" width="24" height="24" align="absmiddle" /> Features
 
-- **📊 Comprehensive Monitoring**: Keep track of system health with a real-time dashboard and detailed audit logs.
-- **🤖 Asset Management**: Seamlessly orchestrate your AI agents and perform isolated tests on various LLMs directly from the platform.
-- **🛡️ Advanced Security**: Define strict usage policies and monitor potential threats to ensure safe and compliant AI deployments.
-- **🎨 Premium UI/UX**: Built with Framer Motion, Tailwind CSS 4, and Lucide Icons for a beautiful, dynamic, and glassmorphism-inspired aesthetic.
-- **🔐 Secure Authentication**: Integrated with Firebase for secure, frictionless user authentication and session management.
+- **<img src="https://unpkg.com/lucide-static@0.321.0/icons/bar-chart.svg" width="20" height="20" align="absmiddle" /> Comprehensive Monitoring**: Keep track of system health with a real-time dashboard and detailed audit logs.
+- **<img src="https://unpkg.com/lucide-static@0.321.0/icons/bot.svg" width="20" height="20" align="absmiddle" /> Asset Management**: Seamlessly orchestrate your AI agents and perform isolated tests on various LLMs directly from the platform.
+- **<img src="https://unpkg.com/lucide-static@0.321.0/icons/shield-alert.svg" width="20" height="20" align="absmiddle" /> Advanced Security**: Define strict usage policies and monitor potential threats to ensure safe and compliant AI deployments.
+- **<img src="https://unpkg.com/lucide-static@0.321.0/icons/palette.svg" width="20" height="20" align="absmiddle" /> Premium UI/UX**: Built with Framer Motion, Tailwind CSS 4, and Lucide Icons for a beautiful, dynamic, and glassmorphism-inspired aesthetic.
+- **<img src="https://unpkg.com/lucide-static@0.321.0/icons/lock.svg" width="20" height="20" align="absmiddle" /> Secure Authentication**: Integrated with Firebase for secure, frictionless user authentication and session management.
 
-## 🛠️ Tech Stack
+## <img src="https://unpkg.com/lucide-static@0.321.0/icons/layers.svg" width="24" height="24" align="absmiddle" /> Tech Stack
 
 - **Framework**: [Next.js](https://nextjs.org) (App Router)
 - **Language**: [TypeScript](https://www.typescriptlang.org/)
@@ -70,7 +70,7 @@ graph TD
 - **Backend & Auth**: [Firebase](https://firebase.google.com/) / [Supabase](https://supabase.com/)
 - **AI Integrations**: Google Generative AI, Groq SDK
 
-## 🚀 Getting Started
+## <img src="https://unpkg.com/lucide-static@0.321.0/icons/rocket.svg" width="24" height="24" align="absmiddle" /> Getting Started
 
 ### Prerequisites
 
@@ -109,13 +109,13 @@ Make sure you have Node.js (v18 or higher) and npm/yarn/pnpm installed on your m
 5. **Open the app**:
    Navigate to [http://localhost:3000](http://localhost:3000) in your browser to see the application in action.
 
-## 📁 Project Structure
+## <img src="https://unpkg.com/lucide-static@0.321.0/icons/folder-git-2.svg" width="24" height="24" align="absmiddle" /> Project Structure
 
 - `/src/app` - Next.js app router pages and layouts (Dashboard, Authentication, etc.)
 - `/src/components` - Reusable React components (UI elements, Layouts)
 - `/src/context` - React Context providers (AuthContext, DatabaseContext)
 - `/src/lib` - Utility functions and third-party initializations (Firebase)
 
-## 📄 License
+## <img src="https://unpkg.com/lucide-static@0.321.0/icons/file-text.svg" width="24" height="24" align="absmiddle" /> License
 
 This project is licensed under the terms found in the [LICENSE](./LICENSE) file.
