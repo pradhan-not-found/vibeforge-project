@@ -73,6 +73,7 @@ flowchart TD
   <img src="./repo/icons/react.png" alt="React" width="50" style="border-radius: 10px; margin: 0 8px;" />
   <img src="./repo/icons/tailwindcss.jpeg" alt="Tailwind CSS" width="50" style="border-radius: 10px; margin: 0 8px;" />
   <img src="./repo/icons/framer.jpeg" alt="Framer Motion" width="50" style="border-radius: 10px; margin: 0 8px;" />
+  <img src="./repo/icons/firebase.png" alt="Firebase" width="50" style="border-radius: 10px; margin: 0 8px;" />
   <img src="./repo/icons/supabase.jpeg" alt="Supabase" width="50" style="border-radius: 10px; margin: 0 8px;" />
   <img src="./repo/icons/vercel.png" alt="Vercel" width="50" style="border-radius: 10px; margin: 0 8px;" />
 </div>
