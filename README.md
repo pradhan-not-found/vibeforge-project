@@ -79,36 +79,42 @@ Below is a high-level overview of the Checkpost architecture and user flow:
 
 ```mermaid
 flowchart TD
-    %% Define sleek, dark-mode friendly professional classes
     classDef default fill:#0f172a,stroke:#334155,stroke-width:1px,color:#e2e8f0
-    classDef highlight fill:#38bdf8,stroke:#0284c7,stroke-width:2px,color:#0f172a,font-weight:bold
-    classDef core fill:#1e293b,stroke:#475569,stroke-width:2px,color:#f8fafc
-    classDef database fill:#020617,stroke:#6366f1,stroke-width:2px,color:#c7d2fe
+    classDef user fill:#0284c7,stroke:#bae6fd,stroke-width:2px,color:#ffffff,font-weight:bold
+    classDef agent fill:#8b5cf6,stroke:#ddd6fe,stroke-width:2px,color:#ffffff,font-weight:bold
+    classDef core fill:#1e293b,stroke:#6366f1,stroke-width:2px,color:#f8fafc,font-weight:bold
+    classDef firewall fill:#7f1d1d,stroke:#fca5a5,stroke-width:2px,color:#ffffff,font-weight:bold
+    classDef db fill:#020617,stroke:#38bdf8,stroke-width:2px,color:#e0f2fe
+    classDef llm fill:#064e3b,stroke:#34d399,stroke-width:2px,color:#ecfdf5
+    classDef alert fill:#b45309,stroke:#fcd34d,stroke-width:2px,color:#ffffff,font-weight:bold
 
-    A((Admin User)):::highlight -->|Authenticates| B[Checkpost Client]:::core
-    
-    subgraph Frontend Features
-        direction LR
-        B --> C[Audit & Monitoring]
-        B --> D[Threat Policies]
-        B --> E[Agent Management]
-        B --> F[LLM Testing]
-    end
-    
-    subgraph Backend Services
-        C -.-> G{API Layer}:::core
-        D -.-> G
-        E -.-> G
-        F -.-> G
-    end
-    
-    subgraph Infrastructure
-        G ==> H[(Firebase Auth)]:::database
-        G ==> I[(Supabase SQL)]:::database
-        G ==> J[[External LLMs]]:::database
-    end
+    Admin(("Admin Operator")):::user
+    Agent[["Autonomous AI Agent"]]:::agent
 
-    %% Link styles
+    Dash["Checkpost Dashboard<br/>(Next.js)"]:::core
+    Proxy{"Proxy API Interceptor"}:::core
+    
+    WAF["Blast Radius Firewall<br/>(Spend Caps & Rules)"]:::firewall
+    HITL{"Synchronous Hold<br/>(HITL Queue)"}:::alert
+    
+    DB[("Firebase Firestore<br/>(Policies & Traces)")]:::db
+    LLMs[["Protected Resources<br/>(External LLMs)"]]:::llm
+
+    Admin -->|Configures Policies| Dash
+    Admin -.->|Approves/Rejects| HITL
+    Dash <-->|Sync State| DB
+
+    Agent ==>|1. Submits Payload| Proxy
+    Proxy -->|2. Inspect Request| WAF
+    WAF <-->|Fetch Rules| DB
+    
+    WAF -.->|3a. Policy Violated| HITL
+    HITL -.->|Logs Held Action| DB
+    
+    WAF ==>|3b. Policy Passed| LLMs
+    LLMs ==>|4. Model Output| Proxy
+    Proxy ==>|5. Safe Response| Agent
+
     linkStyle default stroke:#64748b,stroke-width:2px,fill:none
 ```
 
