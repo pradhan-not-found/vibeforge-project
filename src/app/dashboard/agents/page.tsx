@@ -683,9 +683,9 @@ export default function Page() {
               </div>
 
               {testResult && (
-                <div className={`mt-4 p-4 rounded-xl border text-sm ${testStatus === 'success' ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 'bg-red-50 border-red-200 text-red-800'}`}>
+                <div className={`mt-4 p-4 rounded-xl border text-sm max-h-64 overflow-y-auto ${testStatus === 'success' ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 'bg-red-50 border-red-200 text-red-800'}`}>
                   <p className="font-semibold mb-1">{testStatus === 'success' ? 'Response:' : 'Error / Blocked:'}</p>
-                  <p className="whitespace-pre-wrap">{testResult}</p>
+                  <p className="whitespace-pre-wrap break-words">{testResult}</p>
                 </div>
               )}
             </form>

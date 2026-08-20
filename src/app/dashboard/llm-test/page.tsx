@@ -163,9 +163,13 @@ export default function LLMTestPage() {
             <div className="w-8 h-8 rounded-lg bg-red-100 dark:bg-red-900/50 flex items-center justify-center shrink-0">
               <img src="/checkpost-icon.png" alt="Blocked Icon" className="w-4 h-4 object-contain" />
             </div>
-            <div className="flex flex-col">
+            <div className="flex flex-col flex-1 min-w-0">
               <span className="text-sm font-semibold text-red-800 dark:text-red-300">Execution Blocked</span>
-              <span className="text-sm text-red-700 dark:text-red-400 mt-1 leading-relaxed">{error}</span>
+              <div className="mt-2 p-3 bg-red-100/50 dark:bg-red-900/30 rounded-lg border border-red-200/50 dark:border-red-800/50">
+                <span className="text-xs text-red-700 dark:text-red-400 font-mono leading-relaxed break-words whitespace-pre-wrap block max-h-64 overflow-y-auto">
+                  {error}
+                </span>
+              </div>
             </div>
           </div>
         )}
