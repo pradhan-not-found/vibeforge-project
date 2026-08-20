@@ -31,7 +31,9 @@ export default function Page() {
       
       // Fetch backend audit logs
       try {
-        const res = await fetch('http://localhost:8000/api/audit-logs');
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'http://localhost:8000' : '');
+        if (!baseUrl) return;
+        const res = await fetch(`${baseUrl}/api/audit-logs`);
         if (res.ok) {
           const data = await res.json();
           mapped = data
