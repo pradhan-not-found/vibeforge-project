@@ -101,26 +101,70 @@ export async function POST(req: Request) {
         text = chatCompletion.choices[0]?.message?.content || '';
         totalTokens = chatCompletion.usage?.total_tokens || Math.ceil(text.length / 4) + Math.ceil(prompt.length / 4);
         cost = (totalTokens / 1000000) * 0.05; // Groq pricing
-      } else if ((provider.includes('openai') || provider.includes('gpt')) && apiKey) {
-        const res = await fetch('https://api.openai.com/v1/chat/completions', {
+      } else if ((provider.includes('anthropic') || provider.includes('claude')) && apiKey) {
+        const res = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': apiKey,
+            'anthropic-version': '2023-06-01'
+          },
+          body: JSON.stringify({
+            model: 'claude-3-5-sonnet-20241022',
+            max_tokens: 1024,
+            messages: [{ role: 'user', content: prompt }]
+          })
+        });
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.error?.message || `Anthropic Error: ${res.status}`);
+        }
+        const data = await res.json();
+        text = data.content?.[0]?.text || '';
+        totalTokens = (data.usage?.input_tokens || 0) + (data.usage?.output_tokens || 0) || Math.ceil(text.length / 4) + Math.ceil(prompt.length / 4);
+        cost = (totalTokens / 1000000) * 3.0; // Sonnet approx pricing
+      } else if ((provider.includes('openai') || provider.includes('gpt') || provider.includes('deepseek') || provider.includes('mistral') || provider.includes('xai') || provider.includes('perplexity')) && apiKey) {
+        let baseURL = 'https://api.openai.com/v1/chat/completions';
+        let model = 'gpt-4o-mini';
+        let costPerM = 0.15;
+        
+        if (provider.includes('deepseek')) {
+          baseURL = 'https://api.deepseek.com/chat/completions';
+          model = 'deepseek-chat';
+          costPerM = 0.14;
+        } else if (provider.includes('mistral')) {
+          baseURL = 'https://api.mistral.ai/v1/chat/completions';
+          model = 'mistral-large-latest';
+          costPerM = 2.0;
+        } else if (provider.includes('xai') || provider.includes('grok')) {
+          baseURL = 'https://api.x.ai/v1/chat/completions';
+          model = 'grok-beta';
+          costPerM = 5.0;
+        } else if (provider.includes('perplexity')) {
+          baseURL = 'https://api.perplexity.ai/chat/completions';
+          model = 'llama-3.1-sonar-small-128k-online';
+          costPerM = 0.2;
+        }
+
+        const res = await fetch(baseURL, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${apiKey}`
           },
           body: JSON.stringify({
-            model: 'gpt-4o-mini',
+            model: model,
             messages: [{ role: 'user', content: prompt }]
           })
         });
         if (!res.ok) {
           const errData = await res.json().catch(() => ({}));
-          throw new Error(errData.error?.message || `OpenAI Error: ${res.status}`);
+          throw new Error(errData.error?.message || `${provider} Error: ${res.status}`);
         }
         const data = await res.json();
         text = data.choices[0]?.message?.content || '';
         totalTokens = data.usage?.total_tokens || Math.ceil(text.length / 4) + Math.ceil(prompt.length / 4);
-        cost = (totalTokens / 1000000) * 0.15; // GPT-4o-mini approx pricing
+        cost = (totalTokens / 1000000) * costPerM;
       } else {
         // Fallback for Custom/Unsupported models OR missing API keys
         text = `Error: No valid API key provided for the ${agent.provider || 'Custom'} provider. Please add your API key in Settings or configure the Agent.`;
