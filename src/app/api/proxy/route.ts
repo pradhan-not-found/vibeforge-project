@@ -58,19 +58,26 @@ export async function POST(req: Request) {
 
     try {
       const provider = (agent.provider || '').toLowerCase();
-      const apiKey = agent.provider_api_key;
+      let apiKey = agent.provider_api_key;
+      const userSettings = db.userSettings?.[userId] || {};
+      
+      if (!apiKey) {
+        if (provider.includes('gemini') || provider.includes('google')) apiKey = userSettings.geminiApiKey;
+        else if (provider.includes('groq')) apiKey = userSettings.groqApiKey;
+        else if (provider.includes('openai') || provider.includes('gpt')) apiKey = userSettings.openAiApiKey;
+      }
 
       if ((provider.includes('gemini') || provider.includes('google')) && apiKey) {
         const genAI = new GoogleGenerativeAI(apiKey);
         let response;
         try {
-          const model = genAI.getGenerativeModel({ model: 'gemini-flash-latest' });
+          const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
           const result = await model.generateContent(prompt);
           response = await result.response;
         } catch (err: any) {
           if (err.status === 404 || (err.message && err.message.includes('404'))) {
             try {
-              const fallbackModel = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+              const fallbackModel = genAI.getGenerativeModel({ model: 'gemini-pro' });
               const result = await fallbackModel.generateContent(prompt);
               response = await result.response;
             } catch (err2: any) {
@@ -94,11 +101,30 @@ export async function POST(req: Request) {
         text = chatCompletion.choices[0]?.message?.content || '';
         totalTokens = chatCompletion.usage?.total_tokens || Math.ceil(text.length / 4) + Math.ceil(prompt.length / 4);
         cost = (totalTokens / 1000000) * 0.05; // Groq pricing
+      } else if ((provider.includes('openai') || provider.includes('gpt')) && apiKey) {
+        const res = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}`
+          },
+          body: JSON.stringify({
+            model: 'gpt-4o-mini',
+            messages: [{ role: 'user', content: prompt }]
+          })
+        });
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.error?.message || `OpenAI Error: ${res.status}`);
+        }
+        const data = await res.json();
+        text = data.choices[0]?.message?.content || '';
+        totalTokens = data.usage?.total_tokens || Math.ceil(text.length / 4) + Math.ceil(prompt.length / 4);
+        cost = (totalTokens / 1000000) * 0.15; // GPT-4o-mini approx pricing
       } else {
         // Fallback for Custom/Unsupported models OR missing API keys
-        text = `Simulated response from ${agent.provider || 'Custom'} agent: Received your prompt "${prompt}". (Note: No valid API key provided for this provider, so response is simulated).`;
-        totalTokens = Math.ceil(text.length / 4) + Math.ceil(prompt.length / 4);
-        cost = (totalTokens / 1000000) * 0.1; 
+        text = `Error: No valid API key provided for the ${agent.provider || 'Custom'} provider. Please add your API key in Settings or configure the Agent.`;
+        throw new Error(`Missing API Key for ${provider || 'Custom'}`);
       }
       
       success = true;

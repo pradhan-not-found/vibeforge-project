@@ -8,6 +8,8 @@ import React, { useState, useEffect } from 'react';
 import { guessLogo } from '@/lib/guessLogo';
 
 
+import { useAuth } from '@/context/AuthContext';
+
 function severityStyles(severity: string) {
   if (severity === 'Critical') return 'bg-red-50 text-red-700 ring-red-600/20';
   if (severity === 'High') return 'bg-orange-50 text-orange-700 ring-orange-600/20';
@@ -15,66 +17,50 @@ function severityStyles(severity: string) {
 }
 
 export default function Page() {
+  const { user } = useAuth();
   const { dbData } = useDatabase();
   const [threats, setThreats] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    fetchLogs();
-    const interval = setInterval(fetchLogs, 800);
-    return () => clearInterval(interval);
-  }, [dbData]);
+    if (!dbData || !user?.email) return;
 
-  const fetchLogs = async () => {
-    try {
-      let mapped: any[] = [];
-      
-      // Fetch backend audit logs
-      try {
-        const res = await fetch('http://localhost:8000/api/audit-logs');
-        if (res.ok) {
-          const data = await res.json();
-          mapped = data
-            .filter((item: any) => item.decision.includes('Blocked') || item.risk_score >= 80)
-            .map((item: any) => ({
-              id: item.id,
-              agent: item.agent_name || item.agent_id || 'Unknown Agent',
-              logo: guessLogo(item.agent_provider || item.agent_name || item.agent_id || '').logo,
-              type: item.risk_score >= 90 ? 'Prompt Injection' : 'Data Exfiltration',
-              severity: item.risk_score >= 90 ? 'Critical' : item.risk_score >= 70 ? 'High' : 'Medium',
-              action: item.decision === 'Allowed' ? 'Flagged' : 'Blocked',
-              time: new Date(item.created_at).toLocaleString(),
-              timestampMs: new Date(item.created_at).getTime(),
-              payload: item.action_text || item.reasoning
-            }));
-        }
-      } catch (err) {
-        console.error("Failed to fetch audit logs:", err);
-      }
-        
-      let queueThreats: any[] = [];
-      
-      // Fetch local db queue
-      if (dbData) {
-        queueThreats = (dbData.queue || []).map((q: any) => ({
-          id: q.id,
-          agent: q.agentName,
-          logo: guessLogo(dbData.agents?.[q.agentId]?.provider || q.agentName || q.agentId).logo,
-          type: `Policy Violation`,
-          severity: 'High',
-          action: 'Blocked',
-          time: new Date(q.time).toLocaleString(),
-          timestampMs: new Date(q.time).getTime(),
-          payload: q.prompt || q.action || `Triggered: ${q.policy}`
-        }));
-      }
+    const userAgents = Object.entries(dbData.agents || {})
+      .filter(([_, a]: [string, any]) => a.owner === user.email)
+      .reduce((acc: any, [id, a]) => { acc[id] = a; return acc; }, {});
 
-      const allThreats = [...mapped, ...queueThreats].sort((a, b) => b.timestampMs - a.timestampMs);
-      setThreats(allThreats);
-    } catch (err) {
-      // Overall catch
-    }
-  };
+    // For threats we look at traces that failed/blocked and the queue
+    const traceThreats = (dbData.traces || [])
+      .filter((t: any) => userAgents[t.agentId] && !t.success)
+      .map((t: any) => ({
+        id: t.id,
+        agent: t.agentName || t.agentId || 'Unknown Agent',
+        logo: guessLogo(userAgents[t.agentId]?.provider || t.agentName || t.agentId || '').logo,
+        type: 'Execution Blocked / Error',
+        severity: 'High',
+        action: 'Blocked',
+        time: new Date(t.timestamp).toLocaleString(),
+        timestampMs: new Date(t.timestamp).getTime(),
+        payload: t.errorContext || 'Trace failed during execution'
+      }));
+
+    const queueThreats = (dbData.queue || [])
+      .filter((q: any) => userAgents[q.agentId])
+      .map((q: any) => ({
+        id: q.id,
+        agent: q.agentName,
+        logo: guessLogo(userAgents[q.agentId]?.provider || q.agentName || q.agentId).logo,
+        type: `Policy Violation`,
+        severity: q.policy.includes('Max Spend') ? 'Critical' : 'High',
+        action: 'Blocked',
+        time: new Date(q.time).toLocaleString(),
+        timestampMs: new Date(q.time).getTime(),
+        payload: q.prompt || q.action || `Triggered: ${q.policy}`
+      }));
+
+    const allThreats = [...traceThreats, ...queueThreats].sort((a, b) => b.timestampMs - a.timestampMs);
+    setThreats(allThreats);
+  }, [dbData, user]);
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto animate-fade-down">

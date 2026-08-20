@@ -165,14 +165,21 @@ export default function PoliciesPage() {
   }, []);
 
   useEffect(() => {
-    if (dbData) {
-      if (dbData.policyProfiles) setProfiles(dbData.policyProfiles);
+    if (dbData && user?.email) {
+      if (dbData.policyProfiles) {
+        const filteredProfiles = Object.entries(dbData.policyProfiles)
+          .filter(([id, p]: [string, any]) => id === 'default' || p.owner === user.email)
+          .reduce((acc: any, [id, p]) => { acc[id] = p; return acc; }, {});
+        setProfiles(filteredProfiles);
+      }
       if (dbData.agents) {
-        const mapped = Object.entries(dbData.agents).map(([id, info]: [any, any]) => ({ id, ...info }));
+        const mapped = Object.entries(dbData.agents)
+          .filter(([_, info]: [string, any]) => info.owner === user.email)
+          .map(([id, info]: [any, any]) => ({ id, ...info }));
         setAgents(mapped);
       }
     }
-  }, [dbData]);
+  }, [dbData, user]);
 
   const openNewModal = () => {
     setEditingId(null);
@@ -208,7 +215,7 @@ export default function PoliciesPage() {
     const id = editingId || `profile_${Date.now().toString(36)}`;
     const updatedProfiles = {
       ...profiles,
-      [id]: { name, description, maxSpend: Number(maxSpend), maxTokens: Number(maxTokens), loopLimit: Number(loopLimit), rules: selectedRules }
+      [id]: { name, description, maxSpend: Number(maxSpend), maxTokens: Number(maxTokens), loopLimit: Number(loopLimit), rules: selectedRules, owner: user?.email }
     };
     
     const agentUpdates: Record<string, string> = {};

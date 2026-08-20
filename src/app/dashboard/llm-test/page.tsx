@@ -20,30 +20,32 @@ export default function LLMTestPage() {
   const { dbData } = useDatabase();
 
   useEffect(() => {
-    if (dbData?.agents) {
-      const loadedAgents = Object.entries(dbData.agents).map(([id, info]: [string, any]) => {
-        const pLower = (info.provider || info.name).toLowerCase();
-        let provider = info.provider || 'Custom';
-        let logo = '/ai-logos/openai.svg';
-        if (pLower.includes('gemini') || pLower.includes('google')) { logo = '/ai-logos/gemini.svg'; }
-        else if (pLower.includes('claude') || pLower.includes('anthropic')) { logo = '/ai-logos/claude.png'; }
-        else if (pLower.includes('groq')) { logo = '/ai-logos/groq.png'; }
-        else if (pLower.includes('gpt') || pLower.includes('openai')) { logo = '/ai-logos/openai.svg'; }
-        else if (pLower.includes('meta') || pLower.includes('llama')) { logo = '/ai-logos/meta.svg'; }
-        else if (pLower.includes('mistral')) { logo = '/ai-logos/mistral.svg'; }
-        else if (pLower.includes('deepseek')) { logo = '/ai-logos/deepseek.svg'; }
-        
-        return {
-          id,
-          label: info.name,
-          provider,
-          logo
-        };
-      });
+    if (dbData?.agents && user?.email) {
+      const loadedAgents = Object.entries(dbData.agents)
+        .filter(([_, info]: [string, any]) => info.owner === user.email)
+        .map(([id, info]: [string, any]) => {
+          const pLower = (info.provider || info.name).toLowerCase();
+          let provider = info.provider || 'Custom';
+          let logo = '/ai-logos/openai.svg';
+          if (pLower.includes('gemini') || pLower.includes('google')) { logo = '/ai-logos/gemini.svg'; }
+          else if (pLower.includes('claude') || pLower.includes('anthropic')) { logo = '/ai-logos/claude.png'; }
+          else if (pLower.includes('groq')) { logo = '/ai-logos/groq.png'; }
+          else if (pLower.includes('gpt') || pLower.includes('openai')) { logo = '/ai-logos/openai.svg'; }
+          else if (pLower.includes('meta') || pLower.includes('llama')) { logo = '/ai-logos/meta.svg'; }
+          else if (pLower.includes('mistral')) { logo = '/ai-logos/mistral.svg'; }
+          else if (pLower.includes('deepseek')) { logo = '/ai-logos/deepseek.svg'; }
+          
+          return {
+            id,
+            label: info.name,
+            provider,
+            logo
+          };
+        });
       setAgents(loadedAgents);
       if (loadedAgents.length > 0 && !agentId) setAgentId(loadedAgents[0].id);
     }
-  }, [dbData]);
+  }, [dbData, user, agentId]);
 
   const selectedAgent = agents.find(a => a.id === agentId) || agents[0] || { id: 'default', label: 'Loading...', provider: 'System', logo: '/ai-logos/openai.svg' };
 
