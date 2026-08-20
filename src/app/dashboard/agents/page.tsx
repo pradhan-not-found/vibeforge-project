@@ -155,7 +155,9 @@ export default function Page() {
       const localMapped = Object.entries(dbData.agents)
         .filter(([_, info]: [string, any]) => info.owner === user.email)
         .map(([id, info]: [string, any]) => {
-          const { provider, logo } = loadAgentMeta(id) || guessLogo(info.provider || info.name);
+          const meta = loadAgentMeta(id) || guessLogo(info.provider || info.name);
+          const provider = info.provider || meta.provider;
+          const logo = info.logo || meta.logo;
           
           const agentTraces = (dbData.traces || []).filter((t: any) => t.agentId === id);
           const agentBlocked = (dbData.queue || []).filter((q: any) => q.agentId === id);
@@ -215,6 +217,7 @@ export default function Page() {
         name: agentName,
         owner: user.email,
         provider: selectedPreset.provider || 'Custom',
+        logo: selectedPreset.logo,
         policyId: selectedPolicyId || 'default',
         provider_api_key: providerApiKey || '',
         totalTokens: 0,

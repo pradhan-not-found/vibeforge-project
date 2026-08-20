@@ -25,13 +25,13 @@ export default function LLMTestPage() {
       const loadedAgents = Object.entries(dbData.agents)
         .filter(([id, info]: [string, any]) => info.owner === user?.email)
         .map(([id, info]: [string, any]) => {
-          const { logo, provider } = guessLogo(info.provider || info.name);
+          const guessed = guessLogo(info.provider || info.name);
           
           return {
             id,
             label: info.name,
-            provider: info.provider || provider,
-            logo
+            provider: info.provider || guessed.provider,
+            logo: info.logo || guessed.logo
           };
         });
       setAgents(loadedAgents);
