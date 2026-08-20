@@ -14,7 +14,6 @@ export type DatabaseSchema = {
     name: string;
     owner?: string;
     provider?: string;
-    logo?: string;
     provider_api_key?: string;
     proxy_api_key?: string;
     policyId?: string;
