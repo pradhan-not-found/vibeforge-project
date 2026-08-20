@@ -101,7 +101,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <aside className={`fixed inset-y-0 left-0 z-50 w-64 shrink-0 transition-transform duration-200 ease-in-out border-r border-[var(--app-hairline)] bg-white flex flex-col ${isMobileMenuOpen ? 'translate-x-0 shadow-2xl' : 'max-lg:-translate-x-full lg:translate-x-0'}`}>
           <div className="py-5 px-6 border-b border-[var(--app-hairline)] mb-4 flex items-center justify-between">
             <div className="flex items-center gap-2.5">
-              <img src="/icon.png" alt="Checkpost Logo" className="w-8 h-8 rounded-md" />
+              <div className="w-8 h-8 rounded-md overflow-hidden relative shrink-0">
+                <img 
+                  src="/_assets/static/logo.png" 
+                  alt="Checkpost Logo" 
+                  className="absolute max-w-none pointer-events-none" 
+                  style={{ width: '890px', left: '-27px', top: '-23px' }} 
+                />
+              </div>
               <div className="flex flex-col leading-[1.1]">
                 <span 
                   className="text-[26px] text-[var(--app-ink)] tracking-tight"
