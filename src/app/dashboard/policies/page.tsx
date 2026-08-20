@@ -168,13 +168,11 @@ export default function PoliciesPage() {
     if (dbData) {
       if (dbData.policyProfiles) setProfiles(dbData.policyProfiles);
       if (dbData.agents) {
-        const mapped = Object.entries(dbData.agents)
-          .filter(([_, info]: [string, any]) => info.owner === user?.email)
-          .map(([id, info]: [any, any]) => ({ id, ...info }));
+        const mapped = Object.entries(dbData.agents).map(([id, info]: [any, any]) => ({ id, ...info }));
         setAgents(mapped);
       }
     }
-  }, [dbData, user]);
+  }, [dbData]);
 
   const openNewModal = () => {
     setEditingId(null);

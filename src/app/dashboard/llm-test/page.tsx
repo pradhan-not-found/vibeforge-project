@@ -21,9 +21,7 @@ export default function LLMTestPage() {
 
   useEffect(() => {
     if (dbData?.agents) {
-      const loadedAgents = Object.entries(dbData.agents)
-        .filter(([id, info]: [string, any]) => info.owner === user?.email)
-        .map(([id, info]: [string, any]) => {
+      const loadedAgents = Object.entries(dbData.agents).map(([id, info]: [string, any]) => {
         const pLower = (info.provider || info.name).toLowerCase();
         let provider = info.provider || 'Custom';
         let logo = '/ai-logos/openai.svg';
@@ -45,7 +43,7 @@ export default function LLMTestPage() {
       setAgents(loadedAgents);
       if (loadedAgents.length > 0 && !agentId) setAgentId(loadedAgents[0].id);
     }
-  }, [dbData, user]);
+  }, [dbData]);
 
   const selectedAgent = agents.find(a => a.id === agentId) || agents[0] || { id: 'default', label: 'Loading...', provider: 'System', logo: '/ai-logos/openai.svg' };
 
