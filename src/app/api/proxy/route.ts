@@ -64,7 +64,7 @@ export async function POST(req: Request) {
         const genAI = new GoogleGenerativeAI(apiKey);
         let response;
         try {
-          const model = genAI.getGenerativeModel({ model: 'gemini-flash-latest' });
+          const model = genAI.getGenerativeModel({ model: agent.name });
           const result = await model.generateContent(prompt);
           response = await result.response;
         } catch (err: any) {
@@ -89,7 +89,7 @@ export async function POST(req: Request) {
         const groq = new Groq({ apiKey });
         const chatCompletion = await groq.chat.completions.create({
           messages: [{ role: 'user', content: prompt }],
-          model: 'llama-3.1-8b-instant',
+          model: agent.name,
         });
         text = chatCompletion.choices[0]?.message?.content || '';
         totalTokens = chatCompletion.usage?.total_tokens || Math.ceil(text.length / 4) + Math.ceil(prompt.length / 4);

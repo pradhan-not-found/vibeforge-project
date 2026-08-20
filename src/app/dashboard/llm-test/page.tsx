@@ -83,13 +83,29 @@ export default function LLMTestPage() {
   return (
     <div className="p-4 sm:p-8 w-full max-w-5xl mx-auto space-y-6 sm:space-y-8 pb-24">
       {/* Header */}
-      <div className="mb-4 sm:mb-8">
-        <h1 className="text-3xl sm:text-4xl font-sans font-normal tracking-tight text-[var(--app-ink)] mb-2 sm:mb-3">
-          Test Agent Proxy
-        </h1>
-        <p className="text-sm sm:text-base text-[var(--app-muted)] max-w-2xl leading-relaxed">
-          Execute a prompt against the managed agents. If the budget is exceeded, it will be blocked by the firewall.
-        </p>
+      <div className="mb-4 sm:mb-8 flex flex-col sm:flex-row sm:items-start justify-between gap-6">
+        <div>
+          <h1 className="text-3xl sm:text-4xl font-sans font-normal tracking-tight text-[var(--app-ink)] mb-2 sm:mb-3">
+            Test Agent Proxy
+          </h1>
+          <p className="text-sm sm:text-base text-[var(--app-muted)] max-w-2xl leading-relaxed">
+            Execute a prompt against the managed agents. If the budget is exceeded, it will be blocked by the firewall.
+          </p>
+        </div>
+        
+        {/* Active Agent Badge */}
+        {selectedAgent && selectedAgent.id !== 'default' && (
+          <div className="flex items-center gap-4 p-3 pr-5 bg-white dark:bg-[#111] border border-[var(--app-hairline)] rounded-2xl shadow-sm self-start animate-fade-in">
+            <div className="w-12 h-12 rounded-xl bg-[var(--app-soft)] border border-[var(--app-hairline)] flex items-center justify-center p-2.5 shrink-0">
+              <img src={selectedAgent.logo} alt={selectedAgent.label} className="w-full h-full object-contain drop-shadow-sm" onError={(e) => (e.currentTarget.style.display = 'none')} />
+            </div>
+            <div className="flex flex-col justify-center">
+              <span className="text-[10px] font-bold tracking-widest text-[var(--app-muted)] uppercase mb-0.5">Active Agent</span>
+              <span className="text-sm font-semibold text-[var(--app-ink)] leading-tight">{selectedAgent.label}</span>
+              <span className="text-xs text-[var(--app-muted)]">{selectedAgent.provider}</span>
+            </div>
+          </div>
+        )}
       </div>
 
       <MotionCard
@@ -168,7 +184,7 @@ export default function LLMTestPage() {
         {error && (
           <div className="mt-6 p-4 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/50 rounded-xl flex items-start gap-3">
             <div className="w-8 h-8 rounded-lg bg-red-100 dark:bg-red-900/50 flex items-center justify-center shrink-0">
-              <img src="/icon.png" alt="Blocked Icon" className="w-4 h-4 object-contain" />
+              <img src="/checkpost-icon.png" alt="Blocked Icon" className="w-4 h-4 object-contain" />
             </div>
             <div className="flex flex-col">
               <span className="text-sm font-semibold text-red-800 dark:text-red-300">Execution Blocked</span>
