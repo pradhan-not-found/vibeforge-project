@@ -6,6 +6,7 @@ import { MotionCard } from '@/components/MotionCard';
 import { useAuth } from '@/context/AuthContext';
 import { useDatabase } from '@/context/DatabaseContext';
 import { Diamond } from '@/components/Diamond';
+import { guessLogo } from '@/lib/guessLogo';
 
 export default function LLMTestPage() {
   const [prompt, setPrompt] = useState('');
@@ -24,24 +25,15 @@ export default function LLMTestPage() {
       const loadedAgents = Object.entries(dbData.agents)
         .filter(([id, info]: [string, any]) => info.owner === user?.email)
         .map(([id, info]: [string, any]) => {
-        const pLower = (info.provider || info.name).toLowerCase();
-        let provider = info.provider || 'Custom';
-        let logo = '/ai-logos/openai.svg';
-        if (pLower.includes('gemini') || pLower.includes('google')) { logo = '/ai-logos/gemini.svg'; }
-        else if (pLower.includes('claude') || pLower.includes('anthropic')) { logo = '/ai-logos/claude.png'; }
-        else if (pLower.includes('groq')) { logo = '/ai-logos/groq.png'; }
-        else if (pLower.includes('gpt') || pLower.includes('openai')) { logo = '/ai-logos/openai.svg'; }
-        else if (pLower.includes('meta') || pLower.includes('llama')) { logo = '/ai-logos/meta.svg'; }
-        else if (pLower.includes('mistral')) { logo = '/ai-logos/mistral.svg'; }
-        else if (pLower.includes('deepseek')) { logo = '/ai-logos/deepseek.svg'; }
-        
-        return {
-          id,
-          label: info.name,
-          provider,
-          logo
-        };
-      });
+          const { logo, provider } = guessLogo(info.provider || info.name);
+          
+          return {
+            id,
+            label: info.name,
+            provider: info.provider || provider,
+            logo
+          };
+        });
       setAgents(loadedAgents);
       if (loadedAgents.length > 0 && !agentId) setAgentId(loadedAgents[0].id);
     }
